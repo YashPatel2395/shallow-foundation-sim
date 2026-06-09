@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shallow Foundation Construction Simulation</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ HEADER ══ -->
+<header id="header">
+  <div id="header-title">
+    <span class="hard-hat">🏗️</span>
+    Shallow Foundation Construction Simulation
+  </div>
+  <div id="header-meta">
+    <div id="score-badge">Score: <span id="score-val">1000</span></div>
+    <div id="step-badge">Step <span id="step-cur">1</span> / 11</div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════ MAIN ═══ -->
+<main id="main">
+
+  <!-- LEFT: task panel -->
+  <aside id="task-panel">
+    <div id="task-title">Loading…</div>
+    <div id="task-desc"></div>
+    <ul id="task-subtasks"></ul>
+    <div id="task-why"></div>
+    <div id="task-warning"></div>
+  </aside>
+
+  <!-- CENTER: scene + action bar -->
+  <section id="center-col">
+    <div id="scene">
+      <!-- Three.js canvas injected by script.js -->
+      <!-- 3D HTML labels container -->
+      <div id="labels-3d"></div>
+      <!-- Camera controls overlay -->
+      <div id="cam-controls">
+        <button class="cam-btn" onclick="setCameraView('iso')">⬡ Iso</button>
+        <button class="cam-btn" onclick="setCameraView('top')">⬆ Top</button>
+        <button class="cam-btn" onclick="setCameraView('front')">⬛ Front</button>
+        <button class="cam-btn" onclick="setCameraView('side')">◧ Side</button>
+        <button class="cam-btn" id="reset-cam-btn" onclick="resetCamera()">↺ Reset</button>
+      </div>
+    </div>
+    <div id="action-bar"></div>
+  </section>
+
+  <!-- RIGHT: step checklist -->
+  <aside id="steps-panel">
+    <div class="steps-heading">Construction Steps</div>
+    <ol id="checklist"></ol>
+  </aside>
+
+</main>
+
+<!-- ═════════════════════════════════════════════ FEEDBACK BAR ══ -->
+<div id="feedback-bar" class="hidden"></div>
+
+<!-- ═════════════════════════════════════════════ RESULT OVERLAY ══ -->
+<div id="result-overlay" class="hidden">
+  <div id="result-card">
+    <div id="result-icon">🏆</div>
+    <h2>Construction Complete!</h2>
+    <p>The reinforced concrete pillar stands tall on the finished shallow foundation.</p>
+    <div id="result-score-line">Final Score: <span id="result-score">0</span></div>
+    <div id="result-grade"></div>
+    <button id="result-replay" onclick="location.reload()">Play Again</button>
+    <div id="result-refs">
+      <strong>References:</strong><br/>
+      1. <a href="https://idealgeotech.com.au/a-step-by-step-guide-to-the-foundation-construction-process/" target="_blank">Ideal Geotech – Foundation Construction Process</a><br/>
+      2. <a href="https://www.concretenetwork.com/concrete/foundation_construction_process.htm" target="_blank">Concrete Network – Foundation Construction</a>
+    </div>
+  </div>
+</div>
+
+<!-- Three.js global build (local file) -->
+<script src="three.min.js"></script>
+<!-- Main game script (regular script, not a module) -->
+<script defer src="script.js"></script>
+</body>
+</html>
