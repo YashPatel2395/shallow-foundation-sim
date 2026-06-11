@@ -93,8 +93,8 @@ body {
 
 /* ── LEFT PANEL ── */
 #task-panel {
-  width: 200px;
-  min-width: 200px;
+  width: 220px;
+  min-width: 220px;
   background: var(--navy-dark);
   color: var(--white);
   padding: 14px 12px;
@@ -161,6 +161,55 @@ body {
   color: #f5a89a;
 }
 #task-warning:empty { display: none; }
+
+/* ── STEP METADATA PANEL ── */
+#task-metadata {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(245,166,35,.22);
+}
+#task-metadata:empty { display: none; }
+
+.meta-section {
+  background: rgba(255,255,255,.05);
+  border-left: 2px solid rgba(245,166,35,.45);
+  border-radius: 0 4px 4px 0;
+  padding: 5px 7px;
+}
+.meta-label {
+  font-size: .62rem;
+  font-weight: 700;
+  color: var(--amber);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: 2px;
+}
+.meta-val {
+  font-size: .7rem;
+  line-height: 1.4;
+  color: rgba(255,255,255,.82);
+}
+.meta-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 2px;
+}
+.meta-tool-chip {
+  font-size: .62rem;
+  background: rgba(245,166,35,.18);
+  border: 1px solid rgba(245,166,35,.35);
+  border-radius: 3px;
+  padding: 1px 5px;
+  color: #f5c869;
+  white-space: nowrap;
+}
+.meta-section.quality  { border-left-color: rgba(39,174,96,.6); }
+.meta-section.mistake  { border-left-color: rgba(231,76,60,.55); }
+.meta-section.learning { border-left-color: rgba(52,152,219,.6); }
 
 /* ── CENTER COLUMN ── */
 #center-col {

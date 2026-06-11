@@ -133,10 +133,10 @@ const STEPS = [
   },
   {
     title: '5. Reinforcement Placement',
-    desc: 'Place steel rebar cage inside the formwork (longitudinal bars first, then cross bars).',
-    subtasks: ['Place 4 longitudinal bars', 'Place 4 cross bars', 'Order matters!'],
+    desc: 'Lay the full rebar mat inside the formwork — lower layer first, then cross layer on top.',
+    subtasks: ['Place lower mat (8 longitudinal bars)', 'Place cross mat (8 cross bars)', 'Grid complete'],
     why: 'Rebar provides tensile strength — concrete alone is brittle.',
-    warning: 'Cross bars before longitudinal bars = structural weakness.'
+    warning: 'Cross bars must go on top of longitudinal bars for proper grid structure.'
   },
   {
     title: '6. Concrete Placement',
@@ -160,25 +160,25 @@ const STEPS = [
     warning: 'Missing watering days reduces final strength by up to 40%.'
   },
   {
-    title: '9. Backfilling',
-    desc: 'Refill soil around the footing and compact it to prevent settlement.',
-    subtasks: ['Add soil 5 times', 'Compact 3 times (after 60% fill)', 'Reach 100% fill & compaction'],
-    why: 'Compacted backfill prevents lateral movement of the foundation.',
-    warning: 'Loose backfill allows foundation to shift under load.'
-  },
-  {
-    title: '10. Final Inspection',
+    title: '9. Final Inspection',
     desc: 'Verify 5 quality checkpoints on the completed foundation.',
     subtasks: ['Check all 5 quality points', 'Average score ≥ 80%', 'Proceed to pillar construction'],
     why: 'Final QA confirms the foundation meets design specifications.',
     warning: 'Defective foundation cannot support the structure above.'
   },
   {
-    title: '11. Pillar Construction',
+    title: '10. Pillar Construction',
     desc: 'Build the reinforced concrete column on the completed foundation.',
     subtasks: ['Place column rebar (4 bars)', 'Install column formwork', 'Pour column concrete', 'Strip formwork'],
     why: 'The column transfers structural loads to the foundation below.',
     warning: 'Column must be centred and plumb for load transfer.'
+  },
+  {
+    title: '11. Backfilling',
+    desc: 'Refill soil around the finished pillar and compact it — only the column top remains above ground.',
+    subtasks: ['Add soil 5 times around pillar', 'Compact 3 times (after 60% fill)', 'Reach 100% fill — pillar base buried'],
+    why: 'Backfilling after the pillar protects the underground foundation and sets the finished ground level.',
+    warning: 'Never backfill before the pillar concrete has fully cured — movement will misalign the column.'
   }
 ];
 
@@ -212,6 +212,98 @@ const FINAL_CHECKS = [
   { label: 'Drainage Clearance', note: 'Adequate fall for drainage.' },
   { label: 'Dimensions',         note: 'Width and length match drawings.' },
   { label: 'Bearing Surface',    note: 'Even contact with soil below.' }
+];
+
+/* Detailed educational metadata for every step — displayed in left panel */
+const STEP_META = [
+  {
+    purpose: 'Check whether the ground near the surface can safely support the foundation load.',
+    userAction: 'Click all soil test points and review the soil result.',
+    tools: ['Soil probes', 'Test markers', 'Soil report'],
+    qualityCheck: 'All test points must show acceptable bearing condition before construction starts.',
+    commonMistake: 'Skipping soil assessment can cause settlement or foundation failure.',
+    learningObjective: 'Foundation construction starts with checking the soil, not digging.'
+  },
+  {
+    purpose: 'Clear and level the work area so excavation and layout can be done safely and accurately.',
+    userAction: 'Remove debris, rocks, and vegetation; then level the marked area.',
+    tools: ['Hand tools', 'Clearing tools', 'Level tool', 'Site marking'],
+    qualityCheck: 'The construction area must be clean, level, and free from obstacles.',
+    commonMistake: 'Excavating before clearing the site creates unsafe and inaccurate work.',
+    learningObjective: 'A clean and level site is required before excavation begins.'
+  },
+  {
+    purpose: 'Remove soil to reach the required foundation depth below ground level.',
+    userAction: 'Excavate the marked area until the target depth is reached.',
+    tools: ['Excavator', 'Depth marker', 'Excavation boundary'],
+    qualityCheck: 'Excavation must reach the design depth without excessive over-digging.',
+    commonMistake: 'Too shallow leaves the foundation on weak topsoil; too deep wastes material.',
+    learningObjective: 'Foundation depth controls where the structural load is transferred into the soil.'
+  },
+  {
+    purpose: 'Create a temporary mold that holds the concrete footing in the correct shape and position.',
+    userAction: 'Place and align the footing formwork inside the excavation.',
+    tools: ['Wooden formwork boards', 'Alignment markers', 'Footing layout'],
+    qualityCheck: 'Formwork must be centered, level, and aligned with the planned foundation location.',
+    commonMistake: 'Misaligned formwork causes the foundation to be built in the wrong position.',
+    learningObjective: 'Formwork controls the shape and accuracy of concrete placement.'
+  },
+  {
+    purpose: 'Create a full-coverage steel mat so the footing can resist tension and cracking across its entire area.',
+    userAction: 'Place the lower longitudinal mat first, then lay the cross mat on top to form the full grid.',
+    tools: ['Steel rebars', 'Rebar mat', 'Spacers/chairs', 'Tie wire'],
+    qualityCheck: 'All bars must form a regular grid with even spacing; no bars touching the formwork directly.',
+    commonMistake: 'Placing cross bars before longitudinal bars gives an unstable grid that shifts during pour.',
+    learningObjective: 'A proper two-layer rebar mat covers the full footing area and resists loads in both directions.'
+  },
+  {
+    purpose: 'Pour concrete into the footing formwork to create the structural foundation underground.',
+    userAction: 'Pour concrete until the target fill level is reached without underfilling or overfilling.',
+    tools: ['Concrete truck', 'Discharge chute', 'Concrete mix', 'Formwork'],
+    qualityCheck: 'Concrete should fill the formwork evenly to the required level (88–98%).',
+    commonMistake: 'Pouring before reinforcement is complete, or overfilling the formwork.',
+    learningObjective: 'Concrete placement must follow reinforcement and formwork preparation.'
+  },
+  {
+    purpose: 'Verify that critical construction elements are correct before the foundation is covered.',
+    userAction: 'Inspect excavation depth, formwork alignment, rebar placement, and concrete level.',
+    tools: ['Inspector checklist', 'Inspection markers', 'Measuring tools'],
+    qualityCheck: 'All inspection items must pass before curing and backfilling proceed.',
+    commonMistake: 'Skipping inspection can hide errors that become impossible to fix later.',
+    learningObjective: 'Third-party inspection prevents hidden construction defects.'
+  },
+  {
+    purpose: 'Allow concrete to gain strength through proper moisture and time control.',
+    userAction: 'Maintain curing by watering the concrete for 7 days to reach required strength.',
+    tools: ['Water curing tool', 'Curing timer', 'Strength indicator'],
+    qualityCheck: 'Concrete strength must reach the required percentage before backfilling.',
+    commonMistake: 'Backfilling or loading concrete too early can damage weak concrete.',
+    learningObjective: 'Concrete needs time to develop strength — curing is not optional.'
+  },
+  {
+    purpose: 'Confirm the shallow foundation is complete and ready for above-ground structural work.',
+    userAction: 'Review the final foundation condition and approve the completed underground work.',
+    tools: ['Final checklist', 'Inspection report', 'Visual foundation review'],
+    qualityCheck: 'Foundation must be positioned, cured, and ready for column construction.',
+    commonMistake: 'Starting the column before confirming foundation quality risks structural failure.',
+    learningObjective: 'Final inspection connects underground foundation work to above-ground construction.'
+  },
+  {
+    purpose: 'Build the reinforced concrete column that transfers building load down to the footing.',
+    userAction: 'Place column rebar, install formwork, pour concrete, then strip the formwork.',
+    tools: ['Column rebars', 'Stirrups', 'Column formwork', 'Concrete', 'Finishing tools'],
+    qualityCheck: 'Column must be vertical, centered on footing, and connected to starter bars.',
+    commonMistake: 'A misaligned column transfers load incorrectly and creates structural problems.',
+    learningObjective: 'The column connects the above-ground structure to the buried foundation below.'
+  },
+  {
+    purpose: 'Refill soil around the finished pillar and compact to restore ground level, leaving only the column visible.',
+    userAction: 'Add soil in layers around the pillar base and compact until ground level is fully restored.',
+    tools: ['Backfill soil', 'Plate compactor', 'Soil layer indicator', 'Ground level marker'],
+    qualityCheck: 'Soil must be level with surrounding ground; pillar protrudes above at correct height.',
+    commonMistake: 'Backfilling before pillar concrete has cured causes column misalignment.',
+    learningObjective: 'Backfilling is the final step — it buries the foundation and sets the finished ground level.'
+  }
 ];
 
 /* ══════════════════════════════════════════════════════════════
@@ -480,9 +572,9 @@ const CAM_PRESETS = [
   { pos: new THREE.Vector3( 9,  4, 12), look: new THREE.Vector3(0,-1.5,0) }, // 5 concrete
   { pos: new THREE.Vector3( 8,  7, 11), look: new THREE.Vector3(0, 0,  0) }, // 6 inspection
   { pos: new THREE.Vector3( 4,  4,  6), look: new THREE.Vector3(0,-1,  0) }, // 7 curing
-  { pos: new THREE.Vector3( 7,  5,  9), look: new THREE.Vector3(0,-1,  0) }, // 8 backfill
-  { pos: new THREE.Vector3(10, 10, 13), look: new THREE.Vector3(0, 0,  0) }, // 9 final insp
-  { pos: new THREE.Vector3( 9,  5, 13), look: new THREE.Vector3(0, 3,  0) }  // 10 pillar
+  { pos: new THREE.Vector3(10, 10, 13), look: new THREE.Vector3(0, 0,  0) }, // 8 final insp
+  { pos: new THREE.Vector3( 8,  2, 11), look: new THREE.Vector3(0,-2,  0) }, // 9 pillar
+  { pos: new THREE.Vector3( 7,  5,  9), look: new THREE.Vector3(0,-1,  0) }  // 10 backfill
 ];
 
 let camTarget = null;
@@ -552,14 +644,14 @@ function buildGroundWithHole() {
     groundGroup.add(m);
   });
 
-  // Pit walls — 5×5 opening, 3 units deep
+  // Pit walls — 5×5 opening, 5 units deep
   const half = 2.5;
   const wallThick = 0.2;
   const wallDefs = [
-    { w: 5,         h: 3, d: wallThick, x:  0,           y: -1.5, z: -(half + wallThick / 2) }, // N
-    { w: 5,         h: 3, d: wallThick, x:  0,           y: -1.5, z:  (half + wallThick / 2) }, // S
-    { w: wallThick, h: 3, d: 5,         x: -(half + wallThick / 2), y: -1.5, z: 0             }, // W
-    { w: wallThick, h: 3, d: 5,         x:  (half + wallThick / 2), y: -1.5, z: 0             }  // E
+    { w: 5,         h: 5, d: wallThick, x:  0,                      y: -2.5, z: -(half + wallThick / 2) }, // N
+    { w: 5,         h: 5, d: wallThick, x:  0,                      y: -2.5, z:  (half + wallThick / 2) }, // S
+    { w: wallThick, h: 5, d: 5,         x: -(half + wallThick / 2), y: -2.5, z:  0                      }, // W
+    { w: wallThick, h: 5, d: 5,         x:  (half + wallThick / 2), y: -2.5, z:  0                      }  // E
   ];
   wallDefs.forEach(w => {
     const m = new THREE.Mesh(new THREE.BoxGeometry(w.w, w.h, w.d), dirtMat);
@@ -570,7 +662,7 @@ function buildGroundWithHole() {
 
   // Pit floor
   const floorMesh = new THREE.Mesh(new THREE.BoxGeometry(4.9, 0.12, 4.9), dirtMat);
-  floorMesh.position.set(0, -3.06, 0);
+  floorMesh.position.set(0, -5.06, 0);
   floorMesh.receiveShadow = true;
   groundGroup.add(floorMesh);
   OBJ.pitFloor = floorMesh;
@@ -801,8 +893,11 @@ function renderChecklist() {
 
 function renderTaskPanel(n) {
   const s = STEPS[n];
+  const m = STEP_META[n];
+
   DOM.taskTitle().textContent = s.title;
   DOM.taskDesc().textContent  = s.desc;
+
   const ul = DOM.taskSubs();
   ul.innerHTML = '';
   s.subtasks.forEach(t => {
@@ -810,8 +905,39 @@ function renderTaskPanel(n) {
     li.textContent = t;
     ul.appendChild(li);
   });
+
   DOM.taskWhy().textContent  = s.why     ? '💡 ' + s.why     : '';
   DOM.taskWarn().textContent = s.warning ? '⚠️ ' + s.warning : '';
+
+  const metaEl = $('task-metadata');
+  if (metaEl && m) {
+    const toolChips = m.tools.map(t =>
+      `<span class="meta-tool-chip">${t}</span>`
+    ).join('');
+
+    metaEl.innerHTML = `
+      <div class="meta-section">
+        <div class="meta-label">🎯 Purpose</div>
+        <div class="meta-val">${m.purpose}</div>
+      </div>
+      <div class="meta-section">
+        <div class="meta-label">🛠️ Materials / Tools</div>
+        <div class="meta-tools">${toolChips}</div>
+      </div>
+      <div class="meta-section quality">
+        <div class="meta-label">✅ Quality Check</div>
+        <div class="meta-val">${m.qualityCheck}</div>
+      </div>
+      <div class="meta-section mistake">
+        <div class="meta-label">⛔ Common Mistake</div>
+        <div class="meta-val">${m.commonMistake}</div>
+      </div>
+      <div class="meta-section learning">
+        <div class="meta-label">📚 Learning Objective</div>
+        <div class="meta-val">${m.learningObjective}</div>
+      </div>
+    `;
+  }
 }
 
 function markSubtask(index) {
@@ -948,18 +1074,18 @@ function buildDepthRuler() {
 
   // Vertical pole
   const pole = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.04, 0.04, 3.5, 6),
+    new THREE.CylinderGeometry(0.04, 0.04, 5.5, 6),
     MAT.rulerWhite
   );
-  pole.position.y = -1.75;
+  pole.position.y = -2.75;
   rg.add(pole);
 
-  // Tick marks at 0m, 0.5m, 1m, 1.5m, 2m, 2.5m, 3m
-  for (let d = 0; d <= 3; d += 0.5) {
+  // Tick marks at 0m, 0.5m … 5m
+  for (let d = 0; d <= 5; d += 0.5) {
     const isMajor = d % 1 === 0;
     const tick = new THREE.Mesh(
       new THREE.BoxGeometry(isMajor ? 0.36 : 0.22, 0.05, 0.05),
-      d === 3 ? MAT.rulerRed : MAT.rulerWhite
+      d === 5 ? MAT.rulerRed : MAT.rulerWhite
     );
     tick.position.y = -d;
     rg.add(tick);
@@ -1027,12 +1153,13 @@ function buildCompactor3D(x, z) {
   return cg;
 }
 
+// Formwork: full-height panels lining the 5-unit deep pit
 function buildFormwork3D() {
   const panels = [
-    { w: 5,    h: 3, d: 0.14, x: 0,      y: -1.5, z: -2.43 }, // N
-    { w: 5,    h: 3, d: 0.14, x: 0,      y: -1.5, z:  2.43 }, // S
-    { w: 0.14, h: 3, d: 4.72, x: -2.43,  y: -1.5, z: 0     }, // W
-    { w: 0.14, h: 3, d: 4.72, x:  2.43,  y: -1.5, z: 0     }  // E
+    { w: 5,    h: 5, d: 0.14, x:  0,     y: -2.5, z: -2.43 }, // N
+    { w: 5,    h: 5, d: 0.14, x:  0,     y: -2.5, z:  2.43 }, // S
+    { w: 0.14, h: 5, d: 4.72, x: -2.43,  y: -2.5, z:  0    }, // W
+    { w: 0.14, h: 5, d: 4.72, x:  2.43,  y: -2.5, z:  0    }  // E
   ];
   panels.forEach(p => {
     const m = new THREE.Mesh(new THREE.BoxGeometry(p.w, p.h, p.d), MAT.wood);
@@ -1077,35 +1204,49 @@ function createColumnRebarCage(baseY, height) {
   });
 }
 
-/* Realistic footing reinforcement — 6×6 bar grid at pit floor */
+/* Footing reinforcement — dense 11×11 rebar mat with concrete spacer chairs (matches real construction) */
 function createFootingRebarGrid() {
-  const barPositions = [-1.8, -1.08, -0.36, 0.36, 1.08, 1.8];
-  const barLen = 4.2;
-  const yLow  = -2.65;
-  const yHigh = -2.58;
+  // 11 bars per direction at 0.4 unit spacing — tight square-cell grid like real shallow foundation
+  const barPositions = [-2.0, -1.6, -1.2, -0.8, -0.4, 0, 0.4, 0.8, 1.2, 1.6, 2.0];
+  const barLen = 4.5;
+  const yLow  = -4.90;   // lower mat
+  const yHigh = -4.83;   // upper mat crossing on top
 
-  // Bars running along X axis (spaced in Z)
+  // Concrete spacer chairs — small blocks that lift the lower mat off the pit floor
+  // Placed at a 3×3 grid of positions across the mat
+  const chairXZ = [-1.5, 0, 1.5];
+  const chairMat = new THREE.MeshLambertMaterial({ color: 0x9e9e9e });
+  chairXZ.forEach(cx => {
+    chairXZ.forEach(cz => {
+      const c = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.10, 0.13), chairMat);
+      c.position.set(cx, -4.95, cz);
+      addStep(c);
+    });
+  });
+
+  // Lower mat: bars running along X axis (spaced in Z)
   barPositions.forEach(z => {
-    const m = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, barLen, 6), MAT.steel);
+    const m = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, barLen, 8), MAT.steel);
     m.rotation.z = Math.PI / 2;
     m.position.set(0, yLow, z);
     m.castShadow = true;
     addStep(m);
   });
 
-  // Bars running along Z axis (spaced in X), sitting slightly higher
+  // Upper mat: bars running along Z axis (spaced in X) — rotation.x = PI/2 so they lie flat
   barPositions.forEach(x => {
-    const m = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, barLen, 6), MAT.steel);
+    const m = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, barLen, 8), MAT.steel);
+    m.rotation.x = Math.PI / 2;
     m.position.set(x, yHigh, 0);
     m.castShadow = true;
     addStep(m);
   });
 }
 
+// Foundation slab — original 4.8×0.35×4.8, default sits at pit floor (y = -4.85)
 function buildConcreteSlab3D(yPos, alpha) {
-  // Foundation slab at bottom of pit
   const m = new THREE.Mesh(new THREE.BoxGeometry(4.8, 0.35, 4.8), MAT.concreteCured);
-  m.position.set(0, yPos !== undefined ? yPos : -3.0, 0);
+  m.position.set(0, yPos !== undefined ? yPos : -4.85, 0);
   m.castShadow = true; m.receiveShadow = true;
   if (alpha !== undefined) { m.material = m.material.clone(); m.material.transparent = true; m.material.opacity = alpha; }
   addStep(m);
@@ -2213,13 +2354,13 @@ const STEP_HANDLERS = [
         if (d) d.style.width = ss.depth + '%';
         if (p) p.textContent = Math.round(ss.depth) + '%';
 
-        // Move pit floor and walls down
+        // Move pit floor down — 5-unit deep pit
         const depthFrac = ss.depth / 100;
         if (OBJ.pitFloor) {
-          OBJ.pitFloor.position.y = -0.1 - depthFrac * 2.95;
+          OBJ.pitFloor.position.y = -0.1 - depthFrac * 4.95;
         }
         if (OBJ.excavPitViz) {
-          OBJ.excavPitViz.position.y = -0.02 - depthFrac * 2.95;
+          OBJ.excavPitViz.position.y = -0.02 - depthFrac * 4.95;
         }
 
         // Grow soil pile at milestone steps
@@ -2275,10 +2416,10 @@ const STEP_HANDLERS = [
       ss.count  = 0;
 
       const panels3D = {
-        north: { w: 5,    h: 3, d: 0.14, x: 0,     y: -1.5, z: -2.43, startY: 4 },
-        south: { w: 5,    h: 3, d: 0.14, x: 0,     y: -1.5, z:  2.43, startY: 4 },
-        west:  { w: 0.14, h: 3, d: 4.72, x: -2.43, y: -1.5, z: 0,     startY: 4 },
-        east:  { w: 0.14, h: 3, d: 4.72, x:  2.43, y: -1.5, z: 0,     startY: 4 }
+        north: { w: 5,    h: 5, d: 0.14, x:  0,    y: -2.5, z: -2.43, startY: 4 },
+        south: { w: 5,    h: 5, d: 0.14, x:  0,    y: -2.5, z:  2.43, startY: 4 },
+        west:  { w: 0.14, h: 5, d: 4.72, x: -2.43, y: -2.5, z:  0,    startY: 4 },
+        east:  { w: 0.14, h: 5, d: 4.72, x:  2.43, y: -2.5, z:  0,    startY: 4 }
       };
 
       const panelMeshes = {};
@@ -2341,100 +2482,123 @@ const STEP_HANDLERS = [
   {
     enter() {
       const ss = STATE.stepState;
-      ss.longPlaced  = 0;
-      ss.crossPlaced = 0;
-      ss.phase = 'longitudinal';
+      ss.lowerDone = false;
+      ss.upperDone = false;
 
       buildFormwork3D();
 
-      // 4 longitudinal bottom bars (run along Z-axis, spaced in X)
-      const longXPos = [-1.35, -0.45, 0.45, 1.35];
-      const longMeshes = longXPos.map(x => {
-        const m = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 4.2, 6), MAT.steel);
-        m.position.set(x, 8, 0);
-        m.castShadow = true;
-        addStep(m);
-        return { mesh: m, targetX: x, targetY: -2.65 };
+      /*
+       * Dense 11×11 rebar mat — tight 0.4-unit square cells with concrete spacer chairs.
+       * Lower mat: 11 bars running along X (spaced in Z), land at y=-4.90
+       * Upper mat: 11 bars running along Z (spaced in X), land at y=-4.83
+       * Spacer chairs drop first, then lower mat cascades, then upper mat cascades.
+       */
+      const matPositions = [-2.0, -1.6, -1.2, -0.8, -0.4, 0, 0.4, 0.8, 1.2, 1.6, 2.0];
+      const barLen = 4.5;
+
+      // Spacer chairs (9 blocks — placed before lower mat)
+      const chairXZ = [-1.5, 0, 1.5];
+      const chairMat = new THREE.MeshLambertMaterial({ color: 0x9e9e9e });
+      const chairs = [];
+      chairXZ.forEach(cx => {
+        chairXZ.forEach(cz => {
+          const c = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.10, 0.13), chairMat);
+          c.position.set(cx, 6, cz);
+          addStep(c);
+          chairs.push(c);
+        });
       });
 
-      // 4 cross bars (run along X-axis, spaced in Z)
-      const crossZPos = [-1.35, -0.45, 0.45, 1.35];
-      const crossMeshes = crossZPos.map(z => {
-        const m = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 4.2, 6), MAT.steel);
+      // Lower mat meshes (bars along X, spaced in Z)
+      const lowerBars = matPositions.map((z, i) => {
+        const m = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, barLen, 8), MAT.steel);
         m.rotation.z = Math.PI / 2;
-        m.position.set(0, 8, z);
+        m.position.set(0, 6 + i * 0.25, z);
         m.castShadow = true;
         addStep(m);
-        return { mesh: m, targetZ: z, targetY: -2.58 };
+        return m;
       });
 
-      const rebar = [
-        { key: 'L1', icon: '|', label: 'Long Bar 1', type: 'long',  idx: 0 },
-        { key: 'L2', icon: '|', label: 'Long Bar 2', type: 'long',  idx: 1 },
-        { key: 'L3', icon: '|', label: 'Long Bar 3', type: 'long',  idx: 2 },
-        { key: 'L4', icon: '|', label: 'Long Bar 4', type: 'long',  idx: 3 },
-        { key: 'C1', icon: '—', label: 'Cross Bar 1', type: 'cross', idx: 0 },
-        { key: 'C2', icon: '—', label: 'Cross Bar 2', type: 'cross', idx: 1 },
-        { key: 'C3', icon: '—', label: 'Cross Bar 3', type: 'cross', idx: 2 },
-        { key: 'C4', icon: '—', label: 'Cross Bar 4', type: 'cross', idx: 3 }
-      ];
+      // Upper mat meshes (bars along Z, spaced in X) — rotation.x = PI/2 so they lie flat
+      const upperBars = matPositions.map((x, i) => {
+        const m = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, barLen, 8), MAT.steel);
+        m.rotation.x = Math.PI / 2;
+        m.position.set(x, 6 + i * 0.25, 0);
+        m.castShadow = true;
+        addStep(m);
+        return m;
+      });
+
+      function dropBars(bars, targetY, onDone) {
+        bars.forEach((m, i) => {
+          safeTimeout(() => {
+            const startY = m.position.y;
+            let t = 0;
+            const iv = setInterval(() => {
+              t = Math.min(1, t + 0.05);
+              // ease-out: fast start, slow landing
+              const ease = 1 - Math.pow(1 - t, 3);
+              m.position.y = startY + (targetY - startY) * ease;
+              if (t >= 1) {
+                m.position.y = targetY;
+                clearInterval(iv);
+                if (i === bars.length - 1) onDone();
+              }
+            }, 16);
+          }, i * 80);  // 80ms stagger per bar
+        });
+      }
 
       const actionBar = DOM.actionBar();
-      actionBar.innerHTML = '<span style="color:#e0c87a;font-size:.78rem;width:100%;text-align:center;display:block;margin-bottom:2px;">Place longitudinal bars first, then cross bars</span>';
+      actionBar.innerHTML = '<span style="color:#e0c87a;font-size:.78rem;width:100%;text-align:center;display:block;margin-bottom:4px;">Place lower mat first, then cross mat on top</span>';
 
-      rebar.forEach(r => {
-        const item = el('div', 'panel-item');
-        item.innerHTML = `
-          <div class="item-icon" style="font-family:monospace;font-size:1.4rem;color:#607d8b;">${r.icon}${r.icon}</div>
-          <div class="item-label">${r.label}</div>
-        `;
-
-        item.addEventListener('click', () => {
-          if (item.classList.contains('placed')) return;
-          if (r.type === 'cross' && ss.longPlaced < 4) {
-            penalize('Place all longitudinal bars before cross bars!');
-            return;
-          }
-          item.classList.add('placed');
-          item.innerHTML += '<div style="color:var(--green-ok);font-size:.8rem;margin-top:2px;">✓</div>';
-
-          if (r.type === 'long') {
-            ss.longPlaced++;
-            markSubtask(0);
-            const entry = longMeshes[r.idx];
-            let t = 0;
-            const startY = entry.mesh.position.y;
-            const iv = setInterval(() => {
-              t = Math.min(1, t + 0.04);
-              entry.mesh.position.y = startY + (entry.targetY - startY) * t;
-              if (t >= 1) clearInterval(iv);
-            }, 16);
-            showFeedback('info', `Longitudinal bar ${ss.longPlaced}/4 placed.`);
-            if (ss.longPlaced === 4) {
-              ss.phase = 'cross';
-              showFeedback('correct', 'All longitudinal bars placed! Now add cross bars.');
-            }
-          } else {
-            ss.crossPlaced++;
-            markSubtask(1);
-            const entry = crossMeshes[r.idx];
-            let t = 0;
-            const startY = entry.mesh.position.y;
-            const iv = setInterval(() => {
-              t = Math.min(1, t + 0.04);
-              entry.mesh.position.y = startY + (entry.targetY - startY) * t;
-              if (t >= 1) clearInterval(iv);
-            }, 16);
-            showFeedback('info', `Cross bar ${ss.crossPlaced}/4 placed.`);
-            if (ss.crossPlaced === 4) {
-              showFeedback('correct', 'Rebar grid complete!');
-              safeTimeout(completeStep, 800);
-            }
-          }
+      // Lower mat button
+      const lowerItem = el('div', 'panel-item');
+      lowerItem.innerHTML = `
+        <div class="item-icon" style="font-family:monospace;font-size:1.1rem;color:#78909c;">═══</div>
+        <div class="item-label">Lower Mat<br><span style="font-size:.68rem;color:#aaa;">8 longitudinal bars (base layer)</span></div>
+      `;
+      lowerItem.addEventListener('click', () => {
+        if (ss.lowerDone) return;
+        ss.lowerDone = true;
+        lowerItem.classList.add('placed');
+        lowerItem.innerHTML += '<div style="color:var(--green-ok);font-size:.8rem;margin-top:2px;">✓ Placed</div>';
+        markSubtask(0);
+        showFeedback('info', 'Placing spacer chairs, then lower mat…');
+        // Drop chairs first, then cascade bars after a short delay
+        dropBars(chairs, -4.95, () => {
+          dropBars(lowerBars, -4.90, () => {
+            showFeedback('correct', 'Lower mat in place! Now place the cross mat.');
+            upperItem.style.opacity = '1';
+            upperItem.style.pointerEvents = 'auto';
+          });
         });
-
-        actionBar.appendChild(item);
       });
+
+      // Upper mat button (locked until lower mat is placed)
+      const upperItem = el('div', 'panel-item');
+      upperItem.style.opacity = '0.4';
+      upperItem.style.pointerEvents = 'none';
+      upperItem.innerHTML = `
+        <div class="item-icon" style="font-family:monospace;font-size:1.1rem;color:#78909c;">⊞⊞⊞</div>
+        <div class="item-label">Cross Mat<br><span style="font-size:.68rem;color:#aaa;">8 cross bars (top layer)</span></div>
+      `;
+      upperItem.addEventListener('click', () => {
+        if (ss.upperDone || !ss.lowerDone) return;
+        ss.upperDone = true;
+        upperItem.classList.add('placed');
+        upperItem.innerHTML += '<div style="color:var(--green-ok);font-size:.8rem;margin-top:2px;">✓ Placed</div>';
+        markSubtask(1);
+        showFeedback('info', 'Cross mat dropping into pit…');
+        dropBars(upperBars, -4.83, () => {
+          markSubtask(2);
+          showFeedback('correct', '✅ Full rebar grid complete! Ready for concrete.');
+          safeTimeout(completeStep, 900);
+        });
+      });
+
+      actionBar.appendChild(lowerItem);
+      actionBar.appendChild(upperItem);
     },
     cleanup() {}
   },
@@ -2453,10 +2617,10 @@ const STEP_HANDLERS = [
       buildConcreteTruck3D();
       buildPourStream();
 
-      // Concrete fill mesh (grows upward)
+      // Concrete fill mesh (grows upward from pit floor)
       const fillMat = MAT.concrete.clone();
       const fillMesh = new THREE.Mesh(new THREE.BoxGeometry(4.6, 0.01, 4.6), fillMat);
-      fillMesh.position.set(0, -2.99, 0);
+      fillMesh.position.set(0, -4.99, 0);
       addStep(fillMesh);
       OBJ.concreteFill = fillMesh;
 
@@ -2488,11 +2652,11 @@ const STEP_HANDLERS = [
         const p = $('conc-pct-label');
         if (b) b.style.width = pct + '%';
         if (p) p.textContent = Math.round(pct) + '%';
-        // Scale fill mesh height: max 2.8 at 100%
+        // Scale fill mesh height: max 0.35 at 100% (fills footing slab only, not the whole pit)
         if (OBJ.concreteFill) {
-          const h = Math.max(0.01, 2.8 * pct / 100);
+          const h = Math.max(0.01, 0.35 * pct / 100);
           OBJ.concreteFill.scale.y = h / 0.01;
-          OBJ.concreteFill.position.y = -3 + h / 2;
+          OBJ.concreteFill.position.y = -5 + h / 2;
         }
       }
 
@@ -2563,40 +2727,40 @@ const STEP_HANDLERS = [
 
       buildFormwork3D();
       buildRebar3D();
-      buildConcreteSlab3D(-0.2);
+      buildConcreteSlab3D();   // footing at pit floor y=-4.85
       buildInspector3D(4.5, 4.5);
 
       /* ── Inspection definitions ─────────────────────────── */
       const inspDefs = [
         {
-          pos:   new THREE.Vector3(0, -2.5, 0),
+          pos:   new THREE.Vector3(0, -4.2, 0),
           label: 'Pit Depth',
           icon:  '📏',
-          note:  '3.0m depth — within design specification',
+          note:  '5.0m depth — within design specification',
           camPos:  new THREE.Vector3(-6, 0.5, 6.5),
           camLook: new THREE.Vector3(0, -2.5, 0)
         },
         {
-          pos:   new THREE.Vector3(2.0, -1.2, 2.0),
+          pos:   new THREE.Vector3(2.0, -2.0, 2.0),
           label: 'Formwork Alignment',
           icon:  '📐',
           note:  'Plumb ±3mm, square within 5mm ✓',
           camPos:  new THREE.Vector3(6, 1.5, 8),
-          camLook: new THREE.Vector3(0, -1.5, 0)
+          camLook: new THREE.Vector3(0, -2.5, 0)
         },
         {
-          pos:   new THREE.Vector3(-1.2, -2.35, -1.2),
+          pos:   new THREE.Vector3(-1.2, -4.35, -1.2),
           label: 'Rebar Cover & Spacing',
           icon:  '⚙️',
           note:  '72mm bar spacing, 50mm edge cover ✓',
           camPos:  new THREE.Vector3(1, 1, 8),
-          camLook: new THREE.Vector3(0, -2.2, 0)
+          camLook: new THREE.Vector3(0, -4.2, 0)
         },
         {
-          pos:   new THREE.Vector3(0, -0.05, 0),
+          pos:   new THREE.Vector3(0, -0.5, 0),
           label: 'Concrete Fill Level',
           icon:  '🔲',
-          note:  '93% fill — within the 88-98% target zone ✓',
+          note:  '93% fill — within the 88–98% target zone ✓',
           camPos:  new THREE.Vector3(6, 5, 9),
           camLook: new THREE.Vector3(0, -0.5, 0)
         }
@@ -2719,14 +2883,14 @@ const STEP_HANDLERS = [
       buildFormwork3D();
       buildRebar3D();
 
-      // Concrete top
+      // Concrete slab filling the pit (grows darker as it cures)
       const concMat = MAT.concrete.clone();
-      const concMesh = new THREE.Mesh(new THREE.BoxGeometry(4.6, 2.8, 4.6), concMat);
-      concMesh.position.set(0, -1.6, 0);
+      const concMesh = new THREE.Mesh(new THREE.BoxGeometry(4.6, 4.8, 4.6), concMat);
+      concMesh.position.set(0, -2.6, 0);   // center of 4.8-unit tall fill starting at y=-5
       addStep(concMesh);
       OBJ.curingConcrete = concMesh;
 
-      // Curing blanket texture
+      // Curing blanket draped over the pit opening at ground level
       const blanketTex = makeCanvasTexture((ctx, s) => {
         ctx.fillStyle = '#1565c0';
         ctx.fillRect(0, 0, s, s);
@@ -2835,129 +2999,14 @@ const STEP_HANDLERS = [
     }
   },
 
-  /* ─────────────────── 8: Backfilling ─── */
-  {
-    enter() {
-      const ss = STATE.stepState;
-      ss.fillClicks    = 0;
-      ss.compactClicks = 0;
-      ss.fillPct       = 0;
-      ss.compactPct    = 0;
-      ss.maxFill       = 5;
-      ss.maxCompact    = 3;
-
-      buildFormwork3D();
-      buildConcreteSlab3D(-0.2);
-      buildCompactor3D(4.5, 1.5);
-
-      // Backfill boxes (4 corners around foundation)
-      const bfMat = MAT.dirt.clone();
-      const corners = [
-        { x: -1.9, z: -1.9 }, { x: 1.9, z: -1.9 },
-        { x: -1.9, z:  1.9 }, { x: 1.9, z:  1.9 }
-      ];
-      const bfMeshes = corners.map(c => {
-        const m = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.01, 2.0), bfMat.clone());
-        m.position.set(c.x, -3, c.z);
-        m.castShadow = true; m.receiveShadow = true;
-        addStep(m);
-        return m;
-      });
-      OBJ.backfillMeshes = bfMeshes;
-
-      const ab = DOM.actionBar();
-      ab.innerHTML = '';
-
-      // Fill meter
-      const fillWrap = makeMeter('Backfill', 'bf-fill', 'linear-gradient(to right,#2980b9,#27ae60)');
-      const compWrap = makeMeter('Compaction', 'bf-comp', 'linear-gradient(to right,#8e44ad,#c0392b)');
-      ab.appendChild(fillWrap);
-      ab.appendChild(compWrap);
-
-      function makeMeter(label, id, bg) {
-        const w = el('div', 'fill-meter-wrap');
-        w.appendChild(el('div', '', `<span style="color:#fff;font-size:.75rem;">${label}</span>`));
-        const tr = el('div', 'fill-meter-track');
-        const br = el('div', 'fill-meter-bar');
-        br.id = id + '-bar'; br.style.background = bg; br.style.width = '0%';
-        tr.appendChild(br);
-        const pl = el('div', '', '0%');
-        pl.id = id + '-pct'; pl.style.color = '#fff';
-        w.appendChild(tr); w.appendChild(pl);
-        return w;
-      }
-
-      const btnRow = el('div', '');
-      btnRow.style.cssText = 'display:flex;gap:8px;';
-
-      const soilBtn = makeBtn('🪣 Add Soil', 'btn btn-primary', () => {
-        if (ss.fillClicks >= ss.maxFill) return;
-        ss.fillClicks++;
-        ss.fillPct = Math.round((ss.fillClicks / ss.maxFill) * 100);
-        const b = $('bf-fill-bar'); const p = $('bf-fill-pct');
-        if (b) b.style.width = ss.fillPct + '%';
-        if (p) p.textContent = ss.fillPct + '%';
-
-        // Grow backfill meshes
-        bfMeshes.forEach(m => {
-          const h = Math.max(0.01, 3 * ss.fillPct / 100);
-          m.scale.y = h / 0.01;
-          m.position.y = -3 + h / 2;
-        });
-        showFeedback('info', `Fill: ${ss.fillPct}%`);
-        markSubtask(0);
-        if (ss.fillPct >= 60) compactBtn.disabled = false;
-        checkComplete();
-      });
-
-      const compactBtn = makeBtn('🔨 Compact', 'btn btn-secondary', () => {
-        if (ss.fillPct < 60) { showFeedback('wrong', 'Need 60% fill first!'); return; }
-        if (ss.compactClicks >= ss.maxCompact) return;
-        ss.compactClicks++;
-        ss.compactPct = Math.round((ss.compactClicks / ss.maxCompact) * 100);
-        const b = $('bf-comp-bar'); const p = $('bf-comp-pct');
-        if (b) b.style.width = ss.compactPct + '%';
-        if (p) p.textContent = ss.compactPct + '%';
-        shakeScene();
-        // Animate compactor shaking
-        if (OBJ.compactor) {
-          let t = 0;
-          const iv = setInterval(() => {
-            t++;
-            OBJ.compactor.position.y = Math.sin(t * 1.2) * 0.06;
-            if (t > 20) { clearInterval(iv); if (OBJ.compactor) OBJ.compactor.position.y = 0; }
-          }, 30);
-        }
-        showFeedback('info', `Compaction: ${ss.compactPct}%`);
-        markSubtask(1);
-        checkComplete();
-      });
-      compactBtn.disabled = true;
-
-      btnRow.appendChild(soilBtn);
-      btnRow.appendChild(compactBtn);
-      ab.appendChild(btnRow);
-
-      function checkComplete() {
-        if (ss.fillPct >= 100 && ss.compactPct >= 100) {
-          markSubtask(2);
-          showFeedback('correct', 'Backfilling complete!');
-          ab.innerHTML = '';
-          ab.appendChild(makeBtn('✅ Backfilling Complete', 'btn btn-green', () => completeStep()));
-        }
-      }
-    },
-    cleanup() {}
-  },
-
-  /* ─────────────────── 9: Final Inspection ─── */
+  /* ─────────────────── 8: Final Inspection ─── */
   {
     enter() {
       const ss = STATE.stepState;
       ss.checked = 0;
       ss.scores  = [];
 
-      buildConcreteSlab3D(0.0);
+      buildConcreteSlab3D();   // footing visible at pit floor
       buildInspector3D(4, 3);
 
       const checkPositions = [
@@ -3024,7 +3073,7 @@ const STEP_HANDLERS = [
     cleanup() {}
   },
 
-  /* ─────────────────── 10: Pillar Construction ─── */
+  /* ─────────────────── 9: Pillar Construction ─── */
   {
     enter() {
       const ss = STATE.stepState;
@@ -3035,34 +3084,59 @@ const STEP_HANDLERS = [
       ss.fwStripped    = 0;
       ss.phase         = 'rebar';
 
-      // Foundation slab visible
-      buildConcreteSlab3D(0.17);
+      /*
+       * Ground level = y 0.  Pit is 5 units deep.
+       * Column height = 6.  Center at y = -1.2  →  spans y = -4.2 to y = +1.8
+       * Underground : 4.2 units  (70 %)
+       * Above ground: 1.8 units  (30 %)
+       */
+      const COL_H   = 6;
+      const COL_CY  = -1.2;          // centre y
+      const COL_BOT = COL_CY - COL_H / 2;   // -4.2  (rebar/pour start)
+      const COL_TOP = COL_CY + COL_H / 2;   //  1.8  (cap sits here)
+      const COL_R   = 0.85;                  // original radius
 
-      // Column rebar cage (hidden until placed) — 4 corner bars
+      // Foundation slab visible at pit floor
+      buildConcreteSlab3D();
+
+      // Make ground, pit walls and grass 80% transparent so the underground
+      // column construction is clearly visible through the surrounding geometry
+      groundGroup.children.forEach(child => {
+        child.traverse(obj => {
+          if (!obj.isMesh) return;
+          obj.material = obj.material.clone();
+          obj.material.transparent = true;
+          obj.material.opacity     = 0.2;
+          obj.material.depthWrite  = false;   // prevents z-fighting on transparent surfaces
+        });
+      });
+
+      // Column rebar cage (hidden until placed) — 4 corner bars, full 6-unit height
       const colRebarMeshes = [];
       const colXZ = [[-0.55, -0.55], [0.55, -0.55], [-0.55, 0.55], [0.55, 0.55]];
       colXZ.forEach(([x, z]) => {
         const m = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.06, 0.06, 6, 6),
+          new THREE.CylinderGeometry(0.06, 0.06, COL_H, 6),
           MAT.steel
         );
-        m.position.set(x, 3.17, z);
+        m.position.set(x, COL_CY, z);
         m.visible = false;
         m.castShadow = true;
         addStep(m);
         colRebarMeshes.push(m);
       });
+
       // Stirrups (hidden group, shown after all 4 bars placed)
       const stirrupGroup = new THREE.Group();
       stirrupGroup.visible = false;
       addStep(stirrupGroup);
-      const stirrupYLevels = [0.5, 1.3, 2.1, 2.9, 3.7, 4.5];
+      const stirrupYLevels = [-3.9, -3.1, -2.3, -1.5, -0.7, 0.1];
       stirrupYLevels.forEach(y => {
         [
-          { len: 1.1, axis: 'x', x: 0,    z: -0.55 },
-          { len: 1.1, axis: 'x', x: 0,    z:  0.55 },
-          { len: 1.1, axis: 'z', x: -0.55, z: 0    },
-          { len: 1.1, axis: 'z', x:  0.55, z: 0    }
+          { len: 1.1, axis: 'x', x:  0,     z: -0.55 },
+          { len: 1.1, axis: 'x', x:  0,     z:  0.55 },
+          { len: 1.1, axis: 'z', x: -0.55,  z:  0    },
+          { len: 1.1, axis: 'z', x:  0.55,  z:  0    }
         ].forEach(s => {
           const sm = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, s.len, 5), MAT.steel);
           if (s.axis === 'x') sm.rotation.z = Math.PI / 2;
@@ -3072,39 +3146,42 @@ const STEP_HANDLERS = [
         });
       });
 
-      // Column formwork (2 half-shells)
+      // Column formwork (2 half-shells), full height, centered at COL_CY
       const fwHalves = [];
       [-1, 1].forEach(side => {
         const m = new THREE.Mesh(
-          new THREE.BoxGeometry(0.1, 6, 1.6),
+          new THREE.BoxGeometry(0.1, COL_H, 1.6),
           MAT.wood
         );
-        m.position.set(side * 0.85, 3.17, 0);
+        m.position.set(side * 0.85, COL_CY, 0);
         m.visible = false;
         m.castShadow = true;
         addStep(m);
         fwHalves.push(m);
       });
 
-      // Column concrete mesh
+      // Column concrete mesh (grows upward from COL_BOT)
       const colMat = MAT.concrete.clone();
-      const colMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.85, 0.01, 12), colMat);
-      colMesh.position.set(0, 0.17, 0);
+      const colMesh = new THREE.Mesh(new THREE.CylinderGeometry(COL_R, COL_R, 0.01, 12), colMat);
+      colMesh.position.set(0, COL_BOT, 0);
       colMesh.visible = false;
       addStep(colMesh);
       OBJ.columnConcrete = colMesh;
 
       // Final pillar mesh
       const pillarMat = new THREE.MeshLambertMaterial({ color: 0x616161, map: TEX.concrete });
-      const pillarMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.85, 6, 12), pillarMat);
-      pillarMesh.position.set(0, 3.17, 0);
+      const pillarMesh = new THREE.Mesh(new THREE.CylinderGeometry(COL_R, COL_R, COL_H, 12), pillarMat);
+      pillarMesh.position.set(0, COL_CY, 0);
       pillarMesh.visible = false;
       pillarMesh.castShadow = true;
       addStep(pillarMesh);
 
-      // Pillar cap
-      const capMesh = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, 0.2, 12), new THREE.MeshLambertMaterial({ color: 0x555555 }));
-      capMesh.position.set(0, 6.27, 0);
+      // Pillar cap — sits at top of above-ground portion
+      const capMesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.0, 1.0, 0.2, 12),
+        new THREE.MeshLambertMaterial({ color: 0x555555 })
+      );
+      capMesh.position.set(0, COL_TOP + 0.1, 0);
       capMesh.visible = false;
       capMesh.castShadow = true;
       addStep(capMesh);
@@ -3114,7 +3191,7 @@ const STEP_HANDLERS = [
       const targetMat = new THREE.MeshStandardMaterial({ color: 0xf39c12, emissive: 0xd4880a, emissiveIntensity: 0.5 });
       const rebarTargets = colXZ.map(([x, z]) => {
         const m = new THREE.Mesh(targetGeo, targetMat.clone());
-        m.position.set(x, 0.4, z);
+        m.position.set(x, COL_BOT + 0.4, z);   // just above footing top
         addStep(m);
         return m;
       });
@@ -3145,7 +3222,7 @@ const STEP_HANDLERS = [
           showFeedback('info', `Column rebar ${ss.rebarPlaced}/4 inserted.`);
           if (ss.rebarPlaced === 4) {
             stirrupGroup.visible = true;
-            rebarTargets.forEach(t => { scene.remove(t); });
+            rebarTargets.forEach(tgt => { scene.remove(tgt); });
             clickables3D = clickables3D.filter(c => !rebarTargets.includes(c.mesh));
             showFeedback('correct', 'All column rebar placed! Install formwork.');
             safeTimeout(phase_formwork, 600);
@@ -3214,10 +3291,11 @@ const STEP_HANDLERS = [
             const b = $('col-bar'); const p = $('col-pct');
             if (b) b.style.width = ss.concPct + '%';
             if (p) p.textContent = Math.round(ss.concPct) + '%';
-            const h = Math.max(0.01, 6 * ss.concPct / 100);
+            // Grow upward from COL_BOT
+            const h = Math.max(0.01, COL_H * ss.concPct / 100);
             if (colMesh) {
               colMesh.scale.y = h / 0.01;
-              colMesh.position.y = 0.17 + h / 2;
+              colMesh.position.y = COL_BOT + h / 2;
             }
             if (ss.concPct >= 100) stopPour();
           }, 80);
@@ -3298,11 +3376,11 @@ const STEP_HANDLERS = [
                   if (t2 >= 1) clearInterval(iv2);
                 }, 16);
 
-                showFeedback('correct', '🎉 Pillar revealed! Column stands complete!');
+                showFeedback('correct', '🎉 Pillar complete! Now backfill around it.');
                 safeTimeout(() => {
                   DOM.actionBar().innerHTML = '';
                   DOM.actionBar().appendChild(
-                    makeBtn('🏆 Complete Construction!', 'btn btn-green', () => completeStep())
+                    makeBtn('🪣 Proceed to Backfilling', 'btn btn-green', () => completeStep())
                   );
                 }, 1200);
               }
@@ -3311,7 +3389,145 @@ const STEP_HANDLERS = [
         });
       }
 
-      safeTimeout(() => {}, 200); // small delay for camera to settle
+      safeTimeout(() => {}, 200);
+    },
+    cleanup() {
+      // Restore ground opacity — ground is rebuilt on next startStep() anyway,
+      // but this keeps things clean if the step is re-entered
+      groundGroup.children.forEach(child => {
+        child.traverse(obj => {
+          if (!obj.isMesh) return;
+          obj.material.transparent = false;
+          obj.material.opacity     = 1.0;
+          obj.material.depthWrite  = true;
+        });
+      });
+    }
+  },
+
+  /* ─────────────────── 10: Backfilling ─── */
+  {
+    enter() {
+      const ss = STATE.stepState;
+      ss.fillClicks    = 0;
+      ss.compactClicks = 0;
+      ss.fillPct       = 0;
+      ss.compactPct    = 0;
+      ss.maxFill       = 5;
+      ss.maxCompact    = 3;
+
+      /*
+       * Show the completed pillar standing in the open pit, then fill soil
+       * around it until only the above-ground portion (y=0 to y=+1.8) is visible.
+       */
+      const COL_H  = 6;
+      const COL_CY = -1.2;
+      const COL_TOP = COL_CY + COL_H / 2;  // +1.8
+      const COL_R  = 0.85;
+
+      buildConcreteSlab3D();   // footing at pit floor
+      buildCompactor3D(4.5, 1.5);
+
+      // Completed pillar (visual only — result of step 10)
+      const pillarMat = new THREE.MeshLambertMaterial({ color: 0x616161, map: TEX.concrete });
+      const pillarMesh = new THREE.Mesh(new THREE.CylinderGeometry(COL_R, COL_R, COL_H, 12), pillarMat);
+      pillarMesh.position.set(0, COL_CY, 0);
+      pillarMesh.castShadow = true;
+      addStep(pillarMesh);
+
+      const capMesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.0, 1.0, 0.2, 12),
+        new THREE.MeshLambertMaterial({ color: 0x555555 })
+      );
+      capMesh.position.set(0, COL_TOP + 0.1, 0);
+      capMesh.castShadow = true;
+      addStep(capMesh);
+
+      // Backfill slab — rises from pit bottom (y=-5) up to ground (y=0) around the pillar
+      const bfMesh = new THREE.Mesh(new THREE.BoxGeometry(4.9, 0.01, 4.9), MAT.dirt.clone());
+      bfMesh.position.set(0, -5, 0);
+      bfMesh.receiveShadow = true;
+      addStep(bfMesh);
+      OBJ.backfillMeshes = [bfMesh];
+
+      const ab = DOM.actionBar();
+      ab.innerHTML = '';
+
+      function makeMeter(label, id, bg) {
+        const w = el('div', 'fill-meter-wrap');
+        w.appendChild(el('div', '', `<span style="color:#fff;font-size:.75rem;">${label}</span>`));
+        const tr = el('div', 'fill-meter-track');
+        const br = el('div', 'fill-meter-bar');
+        br.id = id + '-bar'; br.style.background = bg; br.style.width = '0%';
+        tr.appendChild(br);
+        const pl = el('div', '', '0%');
+        pl.id = id + '-pct'; pl.style.color = '#fff';
+        w.appendChild(tr); w.appendChild(pl);
+        return w;
+      }
+
+      const fillWrap = makeMeter('Backfill', 'bf-fill', 'linear-gradient(to right,#2980b9,#27ae60)');
+      const compWrap = makeMeter('Compaction', 'bf-comp', 'linear-gradient(to right,#8e44ad,#c0392b)');
+      ab.appendChild(fillWrap);
+      ab.appendChild(compWrap);
+
+      const btnRow = el('div', '');
+      btnRow.style.cssText = 'display:flex;gap:8px;';
+
+      const soilBtn = makeBtn('🪣 Add Soil', 'btn btn-primary', () => {
+        if (ss.fillClicks >= ss.maxFill) return;
+        ss.fillClicks++;
+        ss.fillPct = Math.round((ss.fillClicks / ss.maxFill) * 100);
+        const b = $('bf-fill-bar'); const p = $('bf-fill-pct');
+        if (b) b.style.width = ss.fillPct + '%';
+        if (p) p.textContent = ss.fillPct + '%';
+
+        // Grow backfill from pit bottom (y=-5) to ground level (y=0), rising around pillar
+        const h = Math.max(0.01, 5 * ss.fillPct / 100);
+        bfMesh.scale.y = h / 0.01;
+        bfMesh.position.y = -5 + h / 2;
+
+        showFeedback('info', `Backfill: ${ss.fillPct}%`);
+        markSubtask(0);
+        if (ss.fillPct >= 60) compactBtn.disabled = false;
+        checkComplete();
+      });
+
+      const compactBtn = makeBtn('🔨 Compact', 'btn btn-secondary', () => {
+        if (ss.fillPct < 60) { showFeedback('wrong', 'Need 60% fill first!'); return; }
+        if (ss.compactClicks >= ss.maxCompact) return;
+        ss.compactClicks++;
+        ss.compactPct = Math.round((ss.compactClicks / ss.maxCompact) * 100);
+        const b = $('bf-comp-bar'); const p = $('bf-comp-pct');
+        if (b) b.style.width = ss.compactPct + '%';
+        if (p) p.textContent = ss.compactPct + '%';
+        shakeScene();
+        if (OBJ.compactor) {
+          let t = 0;
+          const iv = setInterval(() => {
+            t++;
+            OBJ.compactor.position.y = Math.sin(t * 1.2) * 0.06;
+            if (t > 20) { clearInterval(iv); if (OBJ.compactor) OBJ.compactor.position.y = 0; }
+          }, 30);
+        }
+        showFeedback('info', `Compaction: ${ss.compactPct}%`);
+        markSubtask(1);
+        checkComplete();
+      });
+      compactBtn.disabled = true;
+
+      btnRow.appendChild(soilBtn);
+      btnRow.appendChild(compactBtn);
+      ab.appendChild(btnRow);
+
+      function checkComplete() {
+        if (ss.fillPct >= 100 && ss.compactPct >= 100) {
+          markSubtask(2);
+          showFeedback('correct', '🎉 Backfilling complete! Only the pillar top stands above ground.');
+          ab.innerHTML = '';
+          ab.appendChild(makeBtn('🏆 Construction Complete!', 'btn btn-green', () => completeStep()));
+        }
+      }
     },
     cleanup() {}
   }
