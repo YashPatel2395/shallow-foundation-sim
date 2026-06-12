@@ -1256,357 +1256,365 @@ function buildConcreteSlab3D(yPos, alpha) {
 function buildExcavator3D() {
   const g = new THREE.Group();
 
-  // ── PBR materials (MeshStandardMaterial) ─────────────────────
-  const paint    = new THREE.MeshStandardMaterial({ color: 0xf5a623, roughness: 0.65, metalness: 0.08 });
-  const paintDk  = new THREE.MeshStandardMaterial({ color: 0xd48a10, roughness: 0.68, metalness: 0.08 });
-  const steel    = new THREE.MeshStandardMaterial({ color: 0x212121, roughness: 0.50, metalness: 0.70 });
-  const steelMid = new THREE.MeshStandardMaterial({ color: 0x424242, roughness: 0.55, metalness: 0.60 });
-  const chrome   = new THREE.MeshStandardMaterial({ color: 0xb0bec5, roughness: 0.18, metalness: 0.88 });
-  const glass    = new THREE.MeshStandardMaterial({ color: 0x7ec8e3, roughness: 0.04, metalness: 0.10, transparent: true, opacity: 0.55 });
-  const rubber   = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.92, metalness: 0.00 });
-  const TRK = rubber;
-  const YEL = paint;
-  const GRAY = steel;
+  // ── John Deere colour palette ─────────────────────────────
+  const JDyellow  = new THREE.MeshStandardMaterial({ color: 0xf0d000, roughness: 0.55, metalness: 0.10 });
+  const JDyellowD = new THREE.MeshStandardMaterial({ color: 0xc8ac00, roughness: 0.60, metalness: 0.12 });
+  const JDblack   = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.55, metalness: 0.40 });
+  const JDdkGray  = new THREE.MeshStandardMaterial({ color: 0x2e2e2e, roughness: 0.50, metalness: 0.55 });
+  const chrome    = new THREE.MeshStandardMaterial({ color: 0xb8c4c8, roughness: 0.18, metalness: 0.90 });
+  const glass     = new THREE.MeshStandardMaterial({ color: 0x9dd4e8, roughness: 0.04, metalness: 0.05, transparent: true, opacity: 0.50 });
+  const rubber    = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.94, metalness: 0.00 });
+  const steelMid  = new THREE.MeshStandardMaterial({ color: 0x404040, roughness: 0.52, metalness: 0.62 });
 
-  /* ── UNDERCARRIAGE ─────────────────────────────────────── */
+  /* ── UNDERCARRIAGE ──────────────────────────────────────── */
 
-  // X-frame centre beam
-  const xBeam = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.36, 4.0), steel);
-  xBeam.position.y = 0.52;
+  // Centre X-frame
+  const xBeam = new THREE.Mesh(new THREE.BoxGeometry(0.60, 0.38, 3.80), JDblack);
+  xBeam.position.y = 0.54;
   xBeam.castShadow = true;
   g.add(xBeam);
-  // Cross braces
-  [-1.1, 1.1].forEach(z => {
-    const br = new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.2, 0.44), steel);
-    br.position.set(0, 0.52, z);
+  [-1.15, 1.15].forEach(z => {
+    const br = new THREE.Mesh(new THREE.BoxGeometry(3.10, 0.22, 0.46), JDblack);
+    br.position.set(0, 0.54, z);
     g.add(br);
   });
 
-  const makeTrackAssy = zOff => {
+  const makeTrack = zOff => {
     const tg = new THREE.Group();
     tg.position.z = zOff;
 
-    // Rubber track belt (lower wrap)
-    const belt = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.26, 0.60), rubber);
-    belt.position.y = 0.22;
+    // Main rubber belt
+    const belt = new THREE.Mesh(new THREE.BoxGeometry(4.50, 0.30, 0.72), rubber);
+    belt.position.y = 0.24;
     belt.castShadow = true;
     tg.add(belt);
 
-    // Segmented track links visible on top of belt
-    for (let i = -6; i <= 6; i++) {
-      const link = new THREE.Mesh(new THREE.BoxGeometry(0.27, 0.08, 0.64), steel);
-      link.position.set(i * 0.31, 0.37, 0);
-      tg.add(link);
+    // Track shoes (segmented links on belt surface)
+    for (let i = -7; i <= 7; i++) {
+      const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.09, 0.76), JDblack);
+      shoe.position.set(i * 0.30, 0.40, 0);
+      tg.add(shoe);
+    }
+    // Track grouser ridges on each shoe
+    for (let i = -7; i <= 7; i++) {
+      const gr = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.06, 0.78), JDdkGray);
+      gr.position.set(i * 0.30, 0.47, 0);
+      tg.add(gr);
     }
 
-    // Drive sprocket (rear) — star-tooth wheel
-    const sprBod = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, 0.58, 10), steel);
-    sprBod.rotation.x = Math.PI / 2;
-    sprBod.position.set(1.78, 0.34, 0);
-    sprBod.castShadow = true;
-    tg.add(sprBod);
+    // Drive sprocket (rear) — large toothed wheel
+    const sprR = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.66, 12), JDblack);
+    sprR.rotation.x = Math.PI / 2;
+    sprR.position.set(1.90, 0.36, 0);
+    sprR.castShadow = true;
+    tg.add(sprR);
     for (let t = 0; t < 10; t++) {
       const a = (t / 10) * Math.PI * 2;
-      const tooth = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.18, 0.56), steelMid);
-      tooth.position.set(1.78 + Math.cos(a) * 0.41, 0.34 + Math.sin(a) * 0.41, 0);
+      const tooth = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.20, 0.62), JDdkGray);
+      tooth.position.set(1.90 + Math.cos(a) * 0.43, 0.36 + Math.sin(a) * 0.43, 0);
       tooth.rotation.z = a;
       tg.add(tooth);
     }
-    const sprHub = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.62, 8), chrome);
+    const sprHub = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.70, 8), chrome);
     sprHub.rotation.x = Math.PI / 2;
-    sprHub.position.set(1.78, 0.34, 0);
+    sprHub.position.set(1.90, 0.36, 0);
     tg.add(sprHub);
 
-    // Front idler (smooth wheel)
-    const idler = new THREE.Mesh(new THREE.CylinderGeometry(0.30, 0.30, 0.56, 14), steelMid);
+    // Front idler wheel
+    const idler = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.62, 14), JDdkGray);
     idler.rotation.x = Math.PI / 2;
-    idler.position.set(-1.78, 0.30, 0);
+    idler.position.set(-1.90, 0.32, 0);
     idler.castShadow = true;
     tg.add(idler);
-    const idlerHub = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.60, 8), chrome);
+    const idlerHub = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.66, 8), chrome);
     idlerHub.rotation.x = Math.PI / 2;
-    idlerHub.position.set(-1.78, 0.30, 0);
+    idlerHub.position.set(-1.90, 0.32, 0);
     tg.add(idlerHub);
 
-    // Bottom track rollers (5)
-    [-1.1, -0.55, 0, 0.55, 1.1].forEach(x => {
-      const rl = new THREE.Mesh(new THREE.CylinderGeometry(0.155, 0.155, 0.52, 12), steel);
+    // Bottom rollers (6 — more than before for realism)
+    [-1.2, -0.72, -0.24, 0.24, 0.72, 1.2].forEach(x => {
+      const rl = new THREE.Mesh(new THREE.CylinderGeometry(0.160, 0.160, 0.56, 12), JDblack);
       rl.rotation.x = Math.PI / 2;
-      rl.position.set(x, 0.155, 0);
+      rl.position.set(x, 0.160, 0);
       tg.add(rl);
     });
 
     // Top carrier rollers (2)
-    [-0.5, 0.6].forEach(x => {
-      const cr = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.48, 10), steel);
+    [-0.55, 0.65].forEach(x => {
+      const cr = new THREE.Mesh(new THREE.CylinderGeometry(0.10, 0.10, 0.52, 10), JDdkGray);
       cr.rotation.x = Math.PI / 2;
-      cr.position.set(x, 0.62, 0);
+      cr.position.set(x, 0.66, 0);
       tg.add(cr);
     });
 
-    // Track guard / fender (covers top of track)
-    const guard = new THREE.Mesh(new THREE.BoxGeometry(4.0, 0.09, 0.70), steel);
-    guard.position.y = 0.74;
+    // Track guard plate
+    const guard = new THREE.Mesh(new THREE.BoxGeometry(4.30, 0.10, 0.80), JDblack);
+    guard.position.y = 0.78;
     tg.add(guard);
-    // Guard front/rear lips
-    [-2.0, 2.0].forEach(x => {
-      const lip = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.18, 0.70), steel);
-      lip.position.set(x, 0.64, 0);
+    // Front & rear guard lips
+    [-2.15, 2.15].forEach(x => {
+      const lip = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.22, 0.80), JDblack);
+      lip.position.set(x, 0.67, 0);
       tg.add(lip);
     });
 
-    // Rear mud guard
-    const mudG = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.35, 0.65), rubber);
-    mudG.position.set(2.06, 0.45, 0);
-    tg.add(mudG);
-
     return tg;
   };
-  g.add(makeTrackAssy(-1.58));
-  g.add(makeTrackAssy( 1.58));
+  g.add(makeTrack(-1.65));
+  g.add(makeTrack( 1.65));
 
-  /* ── UPPER BODY ─────────────────────────────────────────── */
+  /* ── UPPER STRUCTURE ────────────────────────────────────── */
   const upper = new THREE.Group();
-  upper.position.y = 0.79;
+  upper.position.y = 0.82;
   g.add(upper);
 
   // Slewing ring
-  const ring = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.65, 0.14, 16), steel);
-  ring.position.y = -0.07;
+  const ring = new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.68, 0.16, 18), JDdkGray);
+  ring.position.y = -0.08;
   upper.add(ring);
 
-  // Deck plate
-  const deck = new THREE.Mesh(new THREE.BoxGeometry(2.55, 0.13, 2.2), paintDk);
-  deck.position.set(-0.05, 0.065, 0);
+  // Main deck
+  const deck = new THREE.Mesh(new THREE.BoxGeometry(2.80, 0.14, 2.30), JDyellowD);
+  deck.position.set(-0.10, 0.07, 0);
   deck.castShadow = true;
   upper.add(deck);
 
-  // Engine compartment (rear-left)
-  const engComp = new THREE.Mesh(new THREE.BoxGeometry(1.55, 0.75, 1.65), paint);
-  engComp.position.set(-0.38, 0.51, 0);
-  engComp.castShadow = true;
-  upper.add(engComp);
-  // Engine hood (top)
-  const engHood = new THREE.Mesh(new THREE.BoxGeometry(1.48, 0.13, 1.58), paintDk);
-  engHood.position.set(-0.38, 0.92, 0);
-  upper.add(engHood);
-  // Engine louvers on side (rows of slats)
-  for (let i = 0; i < 6; i++) {
-    const louver = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.07, 1.28), steel);
-    louver.position.set(-1.17, 0.22 + i * 0.11, 0);
-    upper.add(louver);
+  // Engine/body compartment — longer and taller (JD body is substantial)
+  const body = new THREE.Mesh(new THREE.BoxGeometry(1.80, 0.88, 1.80), JDyellow);
+  body.position.set(-0.42, 0.58, 0);
+  body.castShadow = true;
+  upper.add(body);
+  // Body top hood (slightly darker panel)
+  const hood = new THREE.Mesh(new THREE.BoxGeometry(1.74, 0.14, 1.74), JDyellowD);
+  hood.position.set(-0.42, 1.09, 0);
+  upper.add(hood);
+  // Side louvers (engine cooling vents)
+  for (let i = 0; i < 7; i++) {
+    const lv = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.08, 1.40), JDblack);
+    lv.position.set(-1.33, 0.22 + i * 0.11, 0);
+    upper.add(lv);
   }
-  // Grille mesh on engine face
-  for (let r = 0; r < 4; r++) {
-    const gBar = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.05, 1.55), steel);
-    gBar.position.set(-0.4, 0.3 + r * 0.14, 0.84);
-    upper.add(gBar);
+  // Rear grille bars
+  for (let r = 0; r < 5; r++) {
+    const gb = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.06, 1.70), JDblack);
+    gb.position.set(-0.44, 0.26 + r * 0.13, 0.92);
+    upper.add(gb);
   }
 
-  // Exhaust stack (with cap)
-  const exStack = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 1.0, 10), steel);
-  exStack.position.set(-0.95, 1.45, -0.58);
+  // Exhaust stack with heat-shield
+  const exStack = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 1.15, 10), JDdkGray);
+  exStack.position.set(-1.0, 1.60, -0.62);
   upper.add(exStack);
-  const exCap = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.07, 0.1, 10), steel);
-  exCap.position.set(-0.95, 1.98, -0.58);
+  const exCap = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.08, 0.12, 10), JDdkGray);
+  exCap.position.set(-1.0, 2.22, -0.62);
   upper.add(exCap);
+  const exShield = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.90, 0.22), JDblack);
+  exShield.position.set(-1.0, 1.55, -0.62);
+  upper.add(exShield);
 
-  // Hydraulic oil tank (distinct right-side box)
-  const oilTank = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.82, 0.66), paint);
-  oilTank.position.set(-0.88, 0.52, 0.9);
-  upper.add(oilTank);
-  const oilCap = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.06, 8), chrome);
-  oilCap.position.set(-0.88, 0.96, 0.9);
-  upper.add(oilCap);
+  // Hydraulic tank (right side, yellow)
+  const htank = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.90, 0.68), JDyellow);
+  htank.position.set(-0.90, 0.58, 0.95);
+  upper.add(htank);
+  const htCap = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.07, 8), chrome);
+  htCap.position.set(-0.90, 1.07, 0.95);
+  upper.add(htCap);
 
-  // Counterweight — heavy cast block at rear
-  const cwtMain = new THREE.Mesh(new THREE.BoxGeometry(0.94, 0.66, 2.12), steel);
-  cwtMain.position.set(-1.32, 0.4, 0);
-  cwtMain.castShadow = true;
-  upper.add(cwtMain);
-  const cwtFace = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.62, 2.08), steelMid);
-  cwtFace.position.set(-1.79, 0.38, 0);
-  upper.add(cwtFace);
-  // Warning stripe on cwt
-  const cwtStripe = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.14, 2.06), paint);
-  cwtStripe.position.set(-1.8, 0.7, 0);
+  // Counterweight — large curved black block at rear (JD counterweights are very prominent)
+  const cwt = new THREE.Mesh(new THREE.BoxGeometry(1.10, 0.78, 2.40), JDblack);
+  cwt.position.set(-1.50, 0.46, 0);
+  cwt.castShadow = true;
+  upper.add(cwt);
+  // Counterweight face (rounded front edge suggestion)
+  const cwtFront = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.74, 2.36), JDdkGray);
+  cwtFront.position.set(-0.97, 0.44, 0);
+  upper.add(cwtFront);
+  // Yellow warning stripe on counterweight
+  const cwtStripe = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.16, 2.34), JDyellow);
+  cwtStripe.position.set(-2.04, 0.72, 0);
   upper.add(cwtStripe);
 
-  // Fuel filler cap
-  const fuelCap = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.06, 8), chrome);
-  fuelCap.position.set(-0.22, 0.94, 0.65);
-  upper.add(fuelCap);
-
-  // Steps (access ladder on right)
-  [0.3, 0.6].forEach(y => {
-    const stp = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.06, 0.28), chrome);
-    stp.position.set(0.58, y + 0.13, 1.02);
+  // Access steps
+  [0.25, 0.55].forEach(y => {
+    const stp = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.07, 0.30), chrome);
+    stp.position.set(0.62, y + 0.14, 1.08);
     upper.add(stp);
   });
+  // Grab handle
+  const handle = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.55, 0.04), chrome);
+  handle.position.set(0.80, 0.70, 1.08);
+  upper.add(handle);
 
-  /* ── CAB ─────────────────────────────────────────────────── */
+  /* ── CAB (JD style: large rectangular cab, black roof, big glass) ── */
   const cab = new THREE.Group();
-  cab.position.set(0.48, 0.13, 0.22);
+  cab.position.set(0.45, 0.14, -0.28);
   upper.add(cab);
 
-  // Cab frame (rear post + floor)
-  const cabFloor = new THREE.Mesh(new THREE.BoxGeometry(1.14, 0.09, 1.22), paintDk);
-  cab.add(cabFloor);
-  const rearPost = new THREE.Mesh(new THREE.BoxGeometry(0.09, 1.3, 1.22), steel);
-  rearPost.position.set(-0.53, 0.65, 0);
-  cab.add(rearPost);
-  // Front corner posts (ROPS)
-  [-0.57, 0.57].forEach(z => {
-    const fp = new THREE.Mesh(new THREE.BoxGeometry(0.09, 1.3, 0.09), steel);
-    fp.position.set(0.53, 0.65, z);
-    fp.castShadow = true;
-    cab.add(fp);
+  // Cab lower body (yellow)
+  const cabBody = new THREE.Mesh(new THREE.BoxGeometry(1.18, 0.50, 1.18), JDyellow);
+  cabBody.position.y = 0.25;
+  cab.add(cabBody);
+
+  // ROPS pillars — 4 corner posts (black)
+  [[-0.55, -0.55], [-0.55, 0.55], [0.55, -0.55], [0.55, 0.55]].forEach(([x, z]) => {
+    const post = new THREE.Mesh(new THREE.BoxGeometry(0.10, 1.45, 0.10), JDblack);
+    post.position.set(x, 0.93, z);
+    post.castShadow = true;
+    cab.add(post);
   });
-  // Roof with slight overhang
-  const cabRoof = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.1, 1.3), paintDk);
-  cabRoof.position.y = 1.35;
+
+  // Cab roof (black, flat with slight overhang)
+  const cabRoof = new THREE.Mesh(new THREE.BoxGeometry(1.30, 0.12, 1.30), JDblack);
+  cabRoof.position.y = 1.72;
   cabRoof.castShadow = true;
   cab.add(cabRoof);
-  // Roof lights
-  [-0.24, 0.24].forEach(z => {
-    const wl = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.09, 0.1),
-      new THREE.MeshStandardMaterial({ color: 0xffffcc, emissive: 0xffff44, emissiveIntensity: 0.35, roughness: 0.1 }));
-    wl.position.set(0.52, 1.42, z);
-    cab.add(wl);
+
+  // Work lights on roof corners
+  [[-0.30, -0.30], [-0.30, 0.30], [0.30, -0.30], [0.30, 0.30]].forEach(([x, z]) => {
+    const lt = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.10, 0.12),
+      new THREE.MeshStandardMaterial({ color: 0xffffdd, emissive: 0xffff88, emissiveIntensity: 0.6, roughness: 0.1 }));
+    lt.position.set(x, 1.78, z);
+    cab.add(lt);
   });
 
-  // Glass panels
-  const fGlass = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.9, 1.0), glass);
-  fGlass.position.set(0.55, 0.65, 0);
+  // Large front glass (full-height windshield)
+  const fGlass = new THREE.Mesh(new THREE.BoxGeometry(0.07, 1.10, 1.04), glass);
+  fGlass.position.set(0.57, 0.80, 0);
   cab.add(fGlass);
-  const sGlassL = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.7, 0.07), glass);
-  sGlassL.position.set(0.06, 0.72, -0.59);
+  // Front glass frame (black border)
+  const fFrame = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.16, 1.10), JDblack);
+  fFrame.position.set(0.60, 0.80, 0);
+  cab.add(fFrame);
+  // (glass sits in front of frame visually)
+  fGlass.position.x = 0.58;
+
+  // Side glass panels
+  const sGlassL = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.85, 0.07), glass);
+  sGlassL.position.set(0.02, 0.80, -0.60);
   cab.add(sGlassL);
-  const sGlassR = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.7, 0.07), glass);
-  sGlassR.position.set(0.06, 0.72, 0.59);
+  const sGlassR = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.85, 0.07), glass);
+  sGlassR.position.set(0.02, 0.80, 0.60);
   cab.add(sGlassR);
-  const rGlass = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.55, 0.88), glass);
-  rGlass.position.set(-0.51, 0.82, 0);
+
+  // Rear glass (smaller)
+  const rGlass = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.62, 0.95), glass);
+  rGlass.position.set(-0.58, 0.92, 0);
   cab.add(rGlass);
 
-  // Wiper blade
-  const wiper = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.025, 0.72), steel);
-  wiper.position.set(0.57, 0.62, -0.12);
-  wiper.rotation.z = 0.3;
+  // Wiper
+  const wiper = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.03, 0.78), JDdkGray);
+  wiper.position.set(0.60, 0.55, -0.08);
+  wiper.rotation.z = 0.25;
   cab.add(wiper);
-  // Door handle
-  const dHandle = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.04, 0.24), chrome);
-  dHandle.position.set(0.57, 0.42, 0);
-  cab.add(dHandle);
 
   /* ── ARM ASSEMBLY ───────────────────────────────────────── */
   const armBase = new THREE.Group();
-  armBase.position.set(0.92, 0.78, 0);
+  armBase.position.set(1.00, 0.80, 0);
   upper.add(armBase);
 
-  // Boom foot bracket
-  const bracket = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.44, 0.92), steel);
-  bracket.position.y = 0.22;
+  // Boom foot bracket (wider than before)
+  const bracket = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.50, 1.00), JDblack);
+  bracket.position.y = 0.25;
   armBase.add(bracket);
 
-  // Boom pivot group
+  // Boom pivot — steeper angle for active-digging look
   const boomPivot = new THREE.Group();
-  boomPivot.position.y = 0.44;
-  boomPivot.rotation.z = -0.62;
+  boomPivot.position.y = 0.50;
+  boomPivot.rotation.z = -0.55;   // boom angled up ~55°
   armBase.add(boomPivot);
 
-  // Boom body (two-section look: wider at base, narrowing toward tip)
-  const boomBase = new THREE.Mesh(new THREE.BoxGeometry(0.36, 1.65, 0.3), paint);
-  boomBase.position.y = 0.82;
-  boomBase.castShadow = true;
-  boomPivot.add(boomBase);
-  const boomTip = new THREE.Mesh(new THREE.BoxGeometry(0.29, 1.4, 0.24), paint);
-  boomTip.position.set(0.0, 2.1, 0);
-  boomPivot.add(boomTip);
+  // Boom body — wider, two-section, proper yellow JD arm
+  const boomSect1 = new THREE.Mesh(new THREE.BoxGeometry(0.40, 1.80, 0.34), JDyellow);
+  boomSect1.position.y = 0.90;
+  boomSect1.castShadow = true;
+  boomPivot.add(boomSect1);
+  const boomSect2 = new THREE.Mesh(new THREE.BoxGeometry(0.32, 1.60, 0.28), JDyellow);
+  boomSect2.position.set(0, 2.55, 0);
+  boomPivot.add(boomSect2);
 
-  // Boom hydraulic cylinder (housing + chrome rod)
-  const hcB_hous = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.5, 10), steelMid);
-  hcB_hous.position.set(0.26, 0.75, 0);
-  hcB_hous.rotation.z = 0.22;
-  boomPivot.add(hcB_hous);
-  const hcB_rod = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.8, 8), chrome);
-  hcB_rod.position.set(0.30, 1.42, 0);
-  hcB_rod.rotation.z = 0.22;
-  boomPivot.add(hcB_rod);
-  // Clevis at top of cylinder
-  const hcB_eye = new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.025, 5, 8), steel);
-  hcB_eye.position.set(0.33, 1.85, 0);
-  hcB_eye.rotation.x = Math.PI / 2;
-  boomPivot.add(hcB_eye);
+  // Boom hydraulic cylinder (thick, prominent)
+  const hcBh = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.095, 1.70, 10), steelMid);
+  hcBh.position.set(0.28, 0.82, 0);
+  hcBh.rotation.z = 0.20;
+  boomPivot.add(hcBh);
+  const hcBr = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.90, 8), chrome);
+  hcBr.position.set(0.33, 1.62, 0);
+  hcBr.rotation.z = 0.20;
+  boomPivot.add(hcBr);
 
-  // Stick pivot group
+  // Stick pivot — angle forward/down for digging pose
   const stickPivot = new THREE.Group();
-  stickPivot.position.set(0.05, 3.2, 0);
-  stickPivot.rotation.z = 0.48;
+  stickPivot.position.set(0.04, 3.50, 0);
+  stickPivot.rotation.z = 0.55;   // stick angled forward
   boomPivot.add(stickPivot);
 
-  const stick = new THREE.Mesh(new THREE.BoxGeometry(0.25, 1.9, 0.22), paint);
-  stick.position.y = 0.95;
+  const stick = new THREE.Mesh(new THREE.BoxGeometry(0.28, 2.10, 0.24), JDyellow);
+  stick.position.y = 1.05;
   stick.castShadow = true;
   stickPivot.add(stick);
 
-  const hcS_hous = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 1.1, 10), steelMid);
-  hcS_hous.position.set(0.2, 0.55, 0);
-  hcS_hous.rotation.z = 0.16;
-  stickPivot.add(hcS_hous);
-  const hcS_rod = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.6, 8), chrome);
-  hcS_rod.position.set(0.22, 1.06, 0);
-  hcS_rod.rotation.z = 0.16;
-  stickPivot.add(hcS_rod);
+  // Stick cylinder
+  const hcSh = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 1.25, 10), steelMid);
+  hcSh.position.set(0.22, 0.60, 0);
+  hcSh.rotation.z = 0.14;
+  stickPivot.add(hcSh);
+  const hcSr = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, 0.70, 8), chrome);
+  hcSr.position.set(0.25, 1.18, 0);
+  hcSr.rotation.z = 0.14;
+  stickPivot.add(hcSr);
 
-  // Bucket pivot group
+  // Bucket pivot — curled down for active-scooping pose
   const bucketPivot = new THREE.Group();
-  bucketPivot.position.set(0, 1.9, 0);
-  bucketPivot.rotation.z = -0.42;
+  bucketPivot.position.set(0, 2.10, 0);
+  bucketPivot.rotation.z = -0.60;   // bucket curled into digging position
   stickPivot.add(bucketPivot);
 
-  // Bucket — proper U-profile: back plate + bottom plate + two side plates
-  const bkSideMat = paint;
-  // Left & right cheek plates
-  [-0.44, 0.44].forEach(z => {
-    const plate = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.62, 0.07), bkSideMat);
-    plate.position.set(-0.02, 0.08, z);
-    plate.castShadow = true;
-    bucketPivot.add(plate);
+  // Bucket — wider, deeper, more realistic JD bucket shape
+  // Side cheek plates (yellow)
+  [-0.52, 0.52].forEach(z => {
+    const side = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.72, 0.09), JDyellow);
+    side.position.set(-0.02, 0.06, z);
+    side.castShadow = true;
+    bucketPivot.add(side);
   });
-  // Back plate
-  const bkBack = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.62, 0.88), steel);
-  bkBack.position.set(-0.46, 0.08, 0);
+  // Back plate (black/steel)
+  const bkBack = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.70, 1.04), JDblack);
+  bkBack.position.set(-0.52, 0.06, 0);
   bucketPivot.add(bkBack);
-  // Curved bottom (approximated by two angled boxes)
-  const bkBot = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.09, 0.88), steel);
-  bkBot.rotation.z = 0.35;
-  bkBot.position.set(0.04, -0.16, 0);
-  bucketPivot.add(bkBot);
-  // Cutting edge (sharp steel lip)
-  const cutEdge = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.12, 0.9), steelMid);
-  cutEdge.position.set(0.46, -0.19, 0);
+  // Bottom floor
+  const bkFloor = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.10, 1.04), JDblack);
+  bkFloor.rotation.z = 0.30;
+  bkFloor.position.set(0.06, -0.22, 0);
+  bucketPivot.add(bkFloor);
+  // Second floor section (curved profile)
+  const bkFloor2 = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.10, 1.04), JDdkGray);
+  bkFloor2.rotation.z = -0.25;
+  bkFloor2.position.set(0.42, -0.28, 0);
+  bucketPivot.add(bkFloor2);
+  // Cutting edge (heavy steel lip)
+  const cutEdge = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.14, 1.06), steelMid);
+  cutEdge.position.set(0.56, -0.26, 0);
   bucketPivot.add(cutEdge);
-  // Bucket teeth: base adapter + conical tip
+  // Bucket teeth (5 — wider spacing)
   for (let t = -2; t <= 2; t++) {
-    const adp = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.06, 0.14), steel);
-    adp.position.set(0.5, -0.18, t * 0.17);
+    const adp = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.08, 0.15), JDblack);
+    adp.position.set(0.62, -0.24, t * 0.20);
     bucketPivot.add(adp);
-    const tip = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.22, 4), steelMid);
+    const tip = new THREE.Mesh(new THREE.ConeGeometry(0.055, 0.26, 4), steelMid);
     tip.rotation.z = -Math.PI / 2;
-    tip.position.set(0.68, -0.18, t * 0.17);
+    tip.position.set(0.82, -0.24, t * 0.20);
     bucketPivot.add(tip);
   }
 
-  // Bucket cylinder (controls curl)
-  const hcK_hous = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.55, 8), steelMid);
-  hcK_hous.position.set(0.2, 0.5, 0);
-  hcK_hous.rotation.z = 0.5;
-  bucketPivot.add(hcK_hous);
-  const hcK_rod = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 0.3, 7), chrome);
-  hcK_rod.position.set(0.3, 0.26, 0);
-  hcK_rod.rotation.z = 0.5;
-  bucketPivot.add(hcK_rod);
+  // Bucket cylinder
+  const hcKh = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.65, 8), steelMid);
+  hcKh.position.set(0.22, 0.55, 0);
+  hcKh.rotation.z = 0.55;
+  bucketPivot.add(hcKh);
+  const hcKr = new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.042, 0.35, 7), chrome);
+  hcKr.position.set(0.34, 0.28, 0);
+  hcKr.rotation.z = 0.55;
+  bucketPivot.add(hcKr);
 
   g.position.set(-5.5, 0, -3.0);
   g.rotation.y = 0.35;
