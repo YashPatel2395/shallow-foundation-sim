@@ -133,10 +133,10 @@ const STEPS = [
   },
   {
     title: '5. Reinforcement Placement',
-    desc: 'Lay the full rebar mat inside the formwork — lower layer first, then cross layer on top.',
-    subtasks: ['Place lower mat (8 longitudinal bars)', 'Place cross mat (8 cross bars)', 'Grid complete'],
-    why: 'Rebar provides tensile strength — concrete alone is brittle.',
-    warning: 'Cross bars must go on top of longitudinal bars for proper grid structure.'
+    desc: 'Lay the base rebar mat first, then place the column rebar cage ready for the column.',
+    subtasks: ['Place lower mat (8 longitudinal bars)', 'Place cross mat (8 cross bars)', 'Place column rebar (4 corner bars)', 'Reinforcement complete'],
+    why: 'Rebar provides tensile strength — base mat resists footing loads, column cage transfers structural loads upward.',
+    warning: 'Column rebar must be placed before concrete is poured — it cannot be added afterwards.'
   },
   {
     title: '6. Concrete Placement',
@@ -168,10 +168,10 @@ const STEPS = [
   },
   {
     title: '10. Pillar Construction',
-    desc: 'Build the reinforced concrete column on the completed foundation.',
-    subtasks: ['Place column rebar (4 bars)', 'Install column formwork', 'Pour column concrete', 'Strip formwork'],
+    desc: 'Install formwork around the pre-placed column rebar, pour concrete, water and cure it, then strip the formwork.',
+    subtasks: ['Install column formwork', 'Pour column concrete', 'Water & cure column concrete', 'Strip formwork'],
     why: 'The column transfers structural loads to the foundation below.',
-    warning: 'Column must be centred and plumb for load transfer.'
+    warning: 'Column must be centred and plumb for load transfer. Water the concrete immediately after pouring.'
   },
   {
     title: '11. Backfilling',
@@ -2599,11 +2599,104 @@ const STEP_HANDLERS = [
         markSubtask(1);
         showFeedback('info', 'Cross mat dropping into pit…');
         dropBars(upperBars, -4.83, () => {
-          markSubtask(2);
-          showFeedback('correct', '✅ Full rebar grid complete! Ready for concrete.');
-          safeTimeout(completeStep, 900);
+          showFeedback('correct', '✅ Base rebar grid complete! Now place column rebar.');
+          safeTimeout(phase_columnRebar, 600);
         });
       });
+
+      function phase_columnRebar() {
+        ss.colRebarPlaced = 0;
+        const COL_H  = 6;
+        const COL_CY = -1.2;
+        const COL_BOT = COL_CY - COL_H / 2;  // -4.2
+        const colXZ  = [[-0.55, -0.55], [0.55, -0.55], [-0.55, 0.55], [0.55, 0.55]];
+
+        // Column rebar bars (hidden until clicked) — added directly to scene so they
+        // persist across step changes (not via addStep which gets cleared each step).
+        const colRebarMeshes = colXZ.map(([x, z]) => {
+          const m = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.06, 0.06, COL_H, 6),
+            MAT.steel
+          );
+          m.position.set(x, COL_CY, z);
+          m.visible = false;
+          m.castShadow = true;
+          scene.add(m);
+          return m;
+        });
+        OBJ.columnRebarMeshes = colRebarMeshes;
+
+        // Stirrups (shown after all 4 bars placed) — also persistent
+        const stirrupGroup = new THREE.Group();
+        stirrupGroup.visible = false;
+        scene.add(stirrupGroup);
+        OBJ.columnStirrupGroup = stirrupGroup;
+        [-3.9, -3.1, -2.3, -1.5, -0.7, 0.1].forEach(y => {
+          [
+            { len: 1.1, axis: 'x', x:  0,     z: -0.55 },
+            { len: 1.1, axis: 'x', x:  0,     z:  0.55 },
+            { len: 1.1, axis: 'z', x: -0.55,  z:  0    },
+            { len: 1.1, axis: 'z', x:  0.55,  z:  0    }
+          ].forEach(s => {
+            const sm = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, s.len, 5), MAT.steel);
+            if (s.axis === 'x') sm.rotation.z = Math.PI / 2;
+            else                 sm.rotation.x = Math.PI / 2;
+            sm.position.set(s.x, y, s.z);
+            stirrupGroup.add(sm);
+          });
+        });
+
+        // Click targets on footing level
+        const targetGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.05, 8);
+        const targetMat = new THREE.MeshStandardMaterial({ color: 0xf39c12, emissive: 0xd4880a, emissiveIntensity: 0.5 });
+        const colTargets = colXZ.map(([x, z]) => {
+          const m = new THREE.Mesh(targetGeo, targetMat.clone());
+          m.position.set(x, COL_BOT + 0.4, z);
+          addStep(m);
+          return m;
+        });
+
+        const actionBar = DOM.actionBar();
+        actionBar.innerHTML = '<span style="color:#e0c87a;font-size:.82rem;width:100%;text-align:center;display:block;">Click 4 corner spots to insert column rebar</span>';
+
+        clickables3D.push(...colTargets.map((m, i) => ({
+          mesh: m,
+          pulse: true,
+          phase: i * 0.9,
+          onHit() {
+            if (m.userData.done) return;
+            m.userData.done = true;
+            m.material.color.set(0x27ae60);
+            m.material.emissive.set(0x1e8449);
+            ss.colRebarPlaced++;
+
+            // Grow rebar upward
+            const rb = colRebarMeshes[i];
+            rb.visible = true;
+            rb.scale.y = 0.001;
+            let t = 0;
+            const iv = setInterval(() => {
+              t = Math.min(1, t + 0.04);
+              rb.scale.y = t;
+              if (t >= 1) clearInterval(iv);
+            }, 16);
+
+            showFeedback('info', `Column rebar ${ss.colRebarPlaced}/4 inserted.`);
+            if (ss.colRebarPlaced === 4) {
+              stirrupGroup.visible = true;
+              colTargets.forEach(tgt => scene.remove(tgt));
+              clickables3D = clickables3D.filter(c => !colTargets.includes(c.mesh));
+              markSubtask(2);
+              showFeedback('correct', '✅ All column rebar placed! Reinforcement complete.');
+              safeTimeout(() => {
+                markSubtask(3);
+                DOM.actionBar().innerHTML = '';
+                DOM.actionBar().appendChild(makeBtn('✅ Reinforcement Complete', 'btn btn-green', () => completeStep()));
+              }, 800);
+            }
+          }
+        })));
+      }
 
       actionBar.appendChild(lowerItem);
       actionBar.appendChild(upperItem);
@@ -3085,12 +3178,12 @@ const STEP_HANDLERS = [
   {
     enter() {
       const ss = STATE.stepState;
-      ss.rebarPlaced   = 0;
       ss.fwPlaced      = 0;
       ss.concPct       = 0;
       ss.concreteComplete = false;
       ss.fwStripped    = 0;
-      ss.phase         = 'rebar';
+      ss.waterClicks   = 0;
+      ss.phase         = 'formwork';
 
       /*
        * Ground level = y 0.  Pit is 5 units deep.
@@ -3100,9 +3193,9 @@ const STEP_HANDLERS = [
        */
       const COL_H   = 6;
       const COL_CY  = -1.2;          // centre y
-      const COL_BOT = COL_CY - COL_H / 2;   // -4.2  (rebar/pour start)
+      const COL_BOT = COL_CY - COL_H / 2;   // -4.2  (pour start)
       const COL_TOP = COL_CY + COL_H / 2;   //  1.8  (cap sits here)
-      const COL_R   = 0.85;                  // original radius
+      const COL_R   = 0.85;
 
       // Foundation slab visible at pit floor
       buildConcreteSlab3D();
@@ -3115,44 +3208,14 @@ const STEP_HANDLERS = [
           obj.material = obj.material.clone();
           obj.material.transparent = true;
           obj.material.opacity     = 0.2;
-          obj.material.depthWrite  = false;   // prevents z-fighting on transparent surfaces
+          obj.material.depthWrite  = false;
         });
       });
 
-      // Column rebar cage (hidden until placed) — 4 corner bars, full 6-unit height
-      const colRebarMeshes = [];
-      const colXZ = [[-0.55, -0.55], [0.55, -0.55], [-0.55, 0.55], [0.55, 0.55]];
-      colXZ.forEach(([x, z]) => {
-        const m = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.06, 0.06, COL_H, 6),
-          MAT.steel
-        );
-        m.position.set(x, COL_CY, z);
-        m.visible = false;
-        m.castShadow = true;
-        addStep(m);
-        colRebarMeshes.push(m);
-      });
-
-      // Stirrups (hidden group, shown after all 4 bars placed)
-      const stirrupGroup = new THREE.Group();
-      stirrupGroup.visible = false;
-      addStep(stirrupGroup);
-      const stirrupYLevels = [-3.9, -3.1, -2.3, -1.5, -0.7, 0.1];
-      stirrupYLevels.forEach(y => {
-        [
-          { len: 1.1, axis: 'x', x:  0,     z: -0.55 },
-          { len: 1.1, axis: 'x', x:  0,     z:  0.55 },
-          { len: 1.1, axis: 'z', x: -0.55,  z:  0    },
-          { len: 1.1, axis: 'z', x:  0.55,  z:  0    }
-        ].forEach(s => {
-          const sm = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, s.len, 5), MAT.steel);
-          if (s.axis === 'x') sm.rotation.z = Math.PI / 2;
-          else                 sm.rotation.x = Math.PI / 2;
-          sm.position.set(s.x, y, s.z);
-          stirrupGroup.add(sm);
-        });
-      });
+      // Column rebar cage — persistent objects placed during the Reinforcement step,
+      // still in the scene. Reference them from OBJ to hide after formwork strip.
+      const colRebarMeshes = OBJ.columnRebarMeshes || [];
+      const stirrupGroup   = OBJ.columnStirrupGroup || null;
 
       // Column formwork (2 half-shells), full height, centered at COL_CY
       const fwHalves = [];
@@ -3194,51 +3257,9 @@ const STEP_HANDLERS = [
       capMesh.castShadow = true;
       addStep(capMesh);
 
-      // Click targets on foundation top (4 spots)
-      const targetGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.05, 8);
-      const targetMat = new THREE.MeshStandardMaterial({ color: 0xf39c12, emissive: 0xd4880a, emissiveIntensity: 0.5 });
-      const rebarTargets = colXZ.map(([x, z]) => {
-        const m = new THREE.Mesh(targetGeo, targetMat.clone());
-        m.position.set(x, COL_BOT + 0.4, z);   // just above footing top
-        addStep(m);
-        return m;
-      });
-
-      clickables3D.push(...rebarTargets.map((m, i) => ({
-        mesh: m,
-        pulse: true,
-        phase: i * 0.9,
-        onHit() {
-          if (m.userData.done) return;
-          m.userData.done = true;
-          m.material.color.set(0x27ae60);
-          m.material.emissive.set(0x1e8449);
-          ss.rebarPlaced++;
-
-          // Show rebar growing upward
-          const rb = colRebarMeshes[i];
-          rb.visible = true;
-          rb.scale.y = 0.001;
-          let t = 0;
-          const iv = setInterval(() => {
-            t = Math.min(1, t + 0.04);
-            rb.scale.y = t;
-            if (t >= 1) clearInterval(iv);
-          }, 16);
-
-          markSubtask(0);
-          showFeedback('info', `Column rebar ${ss.rebarPlaced}/4 inserted.`);
-          if (ss.rebarPlaced === 4) {
-            stirrupGroup.visible = true;
-            rebarTargets.forEach(tgt => { scene.remove(tgt); });
-            clickables3D = clickables3D.filter(c => !rebarTargets.includes(c.mesh));
-            showFeedback('correct', 'All column rebar placed! Install formwork.');
-            safeTimeout(phase_formwork, 600);
-          }
-        }
-      })));
-
-      DOM.actionBar().innerHTML = '<span style="color:#e0c87a;font-size:.82rem;">Click 4 spots on the foundation to insert column rebar</span>';
+      // Start directly at formwork phase (rebar already placed in Step 5)
+      showFeedback('info', 'Column rebar is in place from the Reinforcement step. Install formwork now.');
+      safeTimeout(phase_formwork, 600);
 
       function phase_formwork() {
         ss.phase = 'formwork';
@@ -3257,7 +3278,7 @@ const STEP_HANDLERS = [
             item.classList.add('placed');
             item.innerHTML += '<div style="color:var(--green-ok);font-size:.8rem;margin-top:2px;">✓</div>';
             ss.fwPlaced++;
-            markSubtask(1);
+            markSubtask(0);
             fwHalves[h.idx].visible = true;
             showFeedback('info', `${h.label} installed.`);
             if (ss.fwPlaced === 2) {
@@ -3322,14 +3343,14 @@ const STEP_HANDLERS = [
             showFeedback('wrong', '⚠️ Column overfilled! (−20 pts)');
             ss.concreteComplete = true;
             pourBtn.disabled = true;
-            safeTimeout(phase_strip, 1200);
+            safeTimeout(phase_water, 1200);
           } else {
             ss.concreteComplete = true;
             pourBtn.disabled = true;
             STATE.score += 20; updateHUD();
-            markSubtask(2);
-            showFeedback('correct', `Column poured at ${Math.round(pct)}%! +20 bonus!`);
-            safeTimeout(phase_strip, 1000);
+            markSubtask(1);
+            showFeedback('correct', `Column poured at ${Math.round(pct)}%! +20 bonus! Now water the concrete.`);
+            safeTimeout(phase_water, 1000);
           }
         }
 
@@ -3338,6 +3359,59 @@ const STEP_HANDLERS = [
         pourBtn.addEventListener('mouseleave', stopPour);
         pourBtn.addEventListener('touchstart', e => { e.preventDefault(); startPour(); }, { passive: false });
         pourBtn.addEventListener('touchend',   stopPour);
+      }
+
+      function phase_water() {
+        ss.phase = 'water';
+        const WATER_DAYS = 3;
+        ss.waterClicks = 0;
+
+        function renderWaterUI() {
+          const ab = DOM.actionBar();
+          ab.innerHTML = '';
+
+          const dayLbl = el('div', 'day-counter', `Curing Day ${ss.waterClicks + 1} / ${WATER_DAYS}`);
+          ab.appendChild(dayLbl);
+
+          const wrap = el('div', 'fill-meter-wrap');
+          wrap.appendChild(el('div', '', '<span style="color:#fff;font-size:.75rem;">Column Concrete Strength</span>'));
+          const tr = el('div', 'fill-meter-track');
+          const br = el('div', 'fill-meter-bar');
+          br.id = 'col-strength-bar';
+          br.style.background = 'linear-gradient(to right,#1565c0,#42a5f5)';
+          br.style.width = (ss.waterClicks / WATER_DAYS * 100) + '%';
+          tr.appendChild(br);
+          const pct = el('div', '', Math.round(ss.waterClicks / WATER_DAYS * 100) + '%');
+          pct.id = 'col-strength-pct'; pct.style.color = '#aef';
+          wrap.appendChild(tr); wrap.appendChild(pct);
+          ab.appendChild(wrap);
+
+          const waterBtn = makeBtn('💧 Water Column Concrete', 'btn btn-primary', () => {
+            ss.waterClicks++;
+            const b = $('col-strength-bar'); const p = $('col-strength-pct');
+            if (b) b.style.width = (ss.waterClicks / WATER_DAYS * 100) + '%';
+            if (p) p.textContent = Math.round(ss.waterClicks / WATER_DAYS * 100) + '%';
+            // Water particle effect on column top
+            for (let i = 0; i < 15; i++) {
+              spawnParticles(
+                new THREE.Vector3((Math.random() - 0.5) * 1.2, COL_TOP + 0.2, (Math.random() - 0.5) * 1.2),
+                MAT.waterBlue.clone(), 1
+              );
+            }
+            showFeedback('correct', `Column watered — Day ${ss.waterClicks}/${WATER_DAYS}.`);
+            if (ss.waterClicks >= WATER_DAYS) {
+              markSubtask(2);
+              waterBtn.disabled = true;
+              showFeedback('correct', '✅ Column concrete cured! Strip the formwork.');
+              safeTimeout(phase_strip, 900);
+            } else {
+              renderWaterUI();
+            }
+          });
+          ab.appendChild(waterBtn);
+        }
+
+        renderWaterUI();
       }
 
       function phase_strip() {
@@ -3410,6 +3484,15 @@ const STEP_HANDLERS = [
           obj.material.depthWrite  = true;
         });
       });
+      // Remove the persistent column rebar (placed in Reinforcement step, kept alive until now)
+      if (OBJ.columnRebarMeshes) {
+        OBJ.columnRebarMeshes.forEach(m => scene.remove(m));
+        delete OBJ.columnRebarMeshes;
+      }
+      if (OBJ.columnStirrupGroup) {
+        scene.remove(OBJ.columnStirrupGroup);
+        delete OBJ.columnStirrupGroup;
+      }
     }
   },
 
