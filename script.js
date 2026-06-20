@@ -99,6 +99,195 @@ class OrbitControls {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   APP STATE & NAVIGATION
+══════════════════════════════════════════════════════════════ */
+
+const appState = {
+  currentView: 'dashboard',  // dashboard | shallow | driven-pile | drilled-shaft
+  simInitialized: false,
+};
+
+function hideAllViews() {
+  ['dashboardView', 'shallowSimView', 'comingSoonView'].forEach(id => {
+    const v = document.getElementById(id);
+    if (v) v.classList.add('hidden');
+  });
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+}
+
+function showDashboard() {
+  hideAllViews();
+  const v = document.getElementById('dashboardView');
+  if (v) v.classList.remove('hidden');
+  const nb = document.getElementById('nav-btn-dashboard');
+  if (nb) nb.classList.add('active');
+  appState.currentView = 'dashboard';
+}
+
+function showShallowFoundationSimulation() {
+  hideAllViews();
+  const v = document.getElementById('shallowSimView');
+  if (v) v.classList.remove('hidden');
+  const nb = document.getElementById('nav-btn-shallow');
+  if (nb) nb.classList.add('active');
+  appState.currentView = 'shallow';
+
+  if (!appState.simInitialized) {
+    appState.simInitialized = true;
+    // Small delay so the DOM has rendered the view before Three.js reads dimensions
+    setTimeout(init, 50);
+  } else {
+    // Recalc renderer dimensions in case the window was resized while on dashboard
+    setTimeout(onResize, 50);
+  }
+}
+
+function resetSimulation() {
+  // If not currently on sim view, navigate there first then reset
+  if (appState.currentView !== 'shallow') {
+    showShallowFoundationSimulation();
+    // After navigation, schedule the reset after init completes
+    setTimeout(() => _doReset(), 200);
+    return;
+  }
+  _doReset();
+}
+
+function _doReset() {
+  // Close result overlay if showing
+  const ro = document.getElementById('result-overlay');
+  if (ro) ro.classList.add('hidden');
+
+  // Clean up persistent column rebar placed during reinforcement step
+  if (typeof OBJ !== 'undefined') {
+    if (OBJ.columnRebarMeshes) {
+      OBJ.columnRebarMeshes.forEach(m => { if (typeof scene !== 'undefined') scene.remove(m); });
+      delete OBJ.columnRebarMeshes;
+    }
+    if (OBJ.columnStirrupGroup) {
+      if (typeof scene !== 'undefined') scene.remove(OBJ.columnStirrupGroup);
+      delete OBJ.columnStirrupGroup;
+    }
+  }
+
+  // Reset score
+  if (typeof STATE !== 'undefined') {
+    STATE.score = 1000;
+    STATE.penalties = 0;
+  }
+
+  if (typeof startStep === 'function') startStep(0);
+}
+
+function showComingSoon(type) {
+  hideAllViews();
+  const v = document.getElementById('comingSoonView');
+  if (v) v.classList.remove('hidden');
+  appState.currentView = type;
+
+  const navId = type === 'driven-pile' ? 'nav-btn-driven' : 'nav-btn-drilled';
+  const nb = document.getElementById(navId);
+  if (nb) nb.classList.add('active');
+
+  populateComingSoon(type);
+}
+
+function populateComingSoon(type) {
+  const inner = document.getElementById('coming-soon-inner');
+  if (!inner) return;
+
+  const data = {
+    'driven-pile': {
+      icon: '🔨',
+      title: 'Driven Pile Foundation',
+      desc: 'Learn how prefabricated piles are positioned and driven into the ground using a pile driving hammer until the required depth or resistance is reached.',
+      objectives: [
+        'Understand pile positioning and alignment',
+        'Learn pile driving using hammer impacts',
+        'Monitor depth and blow count',
+        'Understand pile cap construction',
+      ],
+      sequence: [
+        'Site preparation',
+        'Pile layout and positioning',
+        'Pile alignment check',
+        'Pile driving hammer setup',
+        'Driving pile with hammer blows',
+        'Monitoring depth and blow count',
+        'Reaching design depth or refusal',
+        'Cutting pile head',
+        'Constructing pile cap',
+        'Final inspection',
+      ],
+    },
+    'drilled-shaft': {
+      icon: '🕳️',
+      title: 'Drilled Shaft Foundation',
+      desc: 'Learn how a deep borehole is drilled, inspected, reinforced with a steel cage, and filled with concrete to create a drilled shaft foundation.',
+      objectives: [
+        'Understand borehole drilling and spoil removal',
+        'Learn reinforcement cage placement',
+        'Simulate concrete placement in a drilled shaft',
+        'Understand final shaft inspection',
+      ],
+      sequence: [
+        'Site preparation',
+        'Shaft layout and marking',
+        'Drilling borehole',
+        'Removing soil and spoil',
+        'Borehole inspection',
+        'Lowering reinforcement cage',
+        'Concrete placement',
+        'Curing',
+        'Shaft top preparation',
+        'Final inspection',
+      ],
+    },
+  };
+
+  const d = data[type];
+  if (!d) return;
+
+  inner.innerHTML = `
+    <button class="cs-back-btn" onclick="showDashboard()">← Back to Dashboard</button>
+
+    <div class="cs-header">
+      <div class="cs-icon">${d.icon}</div>
+      <div class="cs-head-text">
+        <div class="cs-badge-coming">🔒 Coming Soon</div>
+        <h1 class="cs-title">${d.title}</h1>
+        <p class="cs-desc">${d.desc}</p>
+      </div>
+    </div>
+
+    <div class="cs-body">
+      <div class="cs-card">
+        <div class="cs-card-title">Learning Objectives</div>
+        <ul class="cs-obj-list">
+          ${d.objectives.map(o => `<li>${o}</li>`).join('')}
+        </ul>
+      </div>
+      <div class="cs-card">
+        <div class="cs-card-title">Planned Construction Sequence</div>
+        <ol class="cs-seq-list">
+          ${d.sequence.map(s => `<li>${s}</li>`).join('')}
+        </ol>
+      </div>
+    </div>
+
+    <div class="cs-notify-banner">
+      <div class="cs-notify-text">
+        <h3>This module is under development</h3>
+        <p>The Shallow Foundation module is complete and ready to use. Check back later for this chapter.</p>
+      </div>
+      <button class="cs-notify-back" onclick="showDashboard()">← Back to Dashboard</button>
+    </div>
+  `;
+}
+
+/* Navigation is initialized when DOM is ready — see BOOT section below */
+
+/* ══════════════════════════════════════════════════════════════
    CONSTANTS
 ══════════════════════════════════════════════════════════════ */
 
@@ -3629,4 +3818,4 @@ const STEP_HANDLERS = [
    BOOT
 ══════════════════════════════════════════════════════════════ */
 
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', showDashboard);

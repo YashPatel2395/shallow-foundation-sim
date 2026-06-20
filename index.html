@@ -3,66 +3,213 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shallow Foundation Construction Simulation</title>
+  <title>Foundation Construction Simulation Lab</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════ HEADER ══ -->
-<header id="header">
-  <div id="header-title">
-    <span class="hard-hat">🏗️</span>
-    Shallow Foundation Construction Simulation
+<!-- NAVBAR - always visible -->
+<nav id="navbar">
+  <div id="nav-brand">
+    <span class="nav-logo">🏗️</span>
+    <span id="nav-title">Foundation Construction Simulation Lab</span>
   </div>
-  <div id="header-meta">
-    <div id="score-badge">Score: <span id="score-val">1000</span></div>
-    <div id="step-badge">Step <span id="step-cur">1</span> / 11</div>
+  <div id="nav-links">
+    <button class="nav-btn" id="nav-btn-dashboard" onclick="showDashboard()">Dashboard</button>
+    <button class="nav-btn" id="nav-btn-shallow" onclick="showShallowFoundationSimulation()">Shallow Foundation</button>
+    <button class="nav-btn" id="nav-btn-driven" onclick="showComingSoon('driven-pile')">Driven Pile</button>
+    <button class="nav-btn" id="nav-btn-drilled" onclick="showComingSoon('drilled-shaft')">Drilled Shaft</button>
   </div>
-</header>
+</nav>
 
-<!-- ═══════════════════════════════════════════════════════ MAIN ═══ -->
-<main id="main">
+<!-- DASHBOARD VIEW - shown by default -->
+<div id="dashboardView" class="view-section">
 
-  <!-- LEFT: task panel -->
-  <aside id="task-panel">
-    <div id="task-title">Loading…</div>
-    <div id="task-desc"></div>
-    <ul id="task-subtasks"></ul>
-    <div id="task-why"></div>
-    <div id="task-warning"></div>
-    <div id="task-metadata"></div>
-  </aside>
-
-  <!-- CENTER: scene + action bar -->
-  <section id="center-col">
-    <div id="scene">
-      <!-- Three.js canvas injected by script.js -->
-      <!-- 3D HTML labels container -->
-      <div id="labels-3d"></div>
-      <!-- Camera controls overlay -->
-      <div id="cam-controls">
-        <button class="cam-btn" onclick="setCameraView('iso')">⬡ Iso</button>
-        <button class="cam-btn" onclick="setCameraView('top')">⬆ Top</button>
-        <button class="cam-btn" onclick="setCameraView('front')">⬛ Front</button>
-        <button class="cam-btn" onclick="setCameraView('side')">◧ Side</button>
-        <button class="cam-btn" id="reset-cam-btn" onclick="resetCamera()">↺ Reset</button>
+  <div id="dashboard-hero">
+    <div id="dashboard-hero-content">
+      <div id="dashboard-badge">⚙️ Civil Engineering Training Platform</div>
+      <h1 id="dashboard-title">Foundation Construction<br>Simulation Lab</h1>
+      <p id="dashboard-subtitle">Interactive 3D learning modules for foundation construction methods. Master each technique through hands-on simulation.</p>
+      <div id="dashboard-stats">
+        <div class="stat-item"><span class="stat-num">3</span><span class="stat-lbl">Modules</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat-item"><span class="stat-num">11</span><span class="stat-lbl">Steps</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat-item"><span class="stat-num">1</span><span class="stat-lbl">Available Now</span></div>
       </div>
     </div>
-    <div id="action-bar"></div>
-  </section>
+    <div id="dashboard-hero-visual">
+      <div class="hero-graphic">
+        <div class="hero-layer hero-sky">🌤️</div>
+        <div class="hero-layer hero-building">🏗️</div>
+        <div class="hero-layer hero-ground">🪨</div>
+      </div>
+    </div>
+  </div>
 
-  <!-- RIGHT: step checklist -->
-  <aside id="steps-panel">
-    <div class="steps-heading">Construction Steps</div>
-    <ol id="checklist"></ol>
-  </aside>
+  <div id="dashboard-chapters">
+    <div class="chapters-heading">
+      <h2>Learning Modules</h2>
+      <div class="chapters-subhead">Choose a foundation type to begin your training</div>
+    </div>
+    <div id="chapter-cards">
 
-</main>
+      <!-- Chapter 1: Shallow Foundation - Available -->
+      <article class="chapter-card card-available">
+        <div class="card-top-bar"></div>
+        <div class="card-inner">
+          <div class="card-head">
+            <div class="card-icon-wrap">
+              <span class="card-icon">🧱</span>
+            </div>
+            <span class="card-badge badge-available">✓ Available</span>
+          </div>
+          <h3 class="card-title">Shallow Foundation</h3>
+          <p class="card-desc">Learn the complete sequence of constructing a shallow foundation, including soil assessment, excavation, reinforcement, concrete placement, backfilling, and final column construction.</p>
+          <div class="card-objectives">
+            <div class="obj-heading">Learning Objectives</div>
+            <ul class="obj-list">
+              <li>Understand shallow foundation construction sequence</li>
+              <li>Learn why most of the foundation system is below ground</li>
+              <li>Practice inspection and quality checks</li>
+              <li>Visualize footing, rebar, backfill, and pillar construction</li>
+            </ul>
+          </div>
+          <div class="card-footer">
+            <div class="card-chips">
+              <span class="chip">🪜 11 Steps</span>
+              <span class="chip">🕐 ~30 min</span>
+            </div>
+            <button class="card-btn btn-available" onclick="showShallowFoundationSimulation()">Start Simulation →</button>
+          </div>
+        </div>
+      </article>
 
-<!-- ═════════════════════════════════════════════ FEEDBACK BAR ══ -->
+      <!-- Chapter 2: Driven Pile - Coming Soon -->
+      <article class="chapter-card card-coming">
+        <div class="card-top-bar"></div>
+        <div class="card-inner">
+          <div class="card-head">
+            <div class="card-icon-wrap">
+              <span class="card-icon">🔨</span>
+            </div>
+            <span class="card-badge badge-coming">🔒 Coming Soon</span>
+          </div>
+          <h3 class="card-title">Driven Pile Foundation</h3>
+          <p class="card-desc">Learn how prefabricated piles are positioned and driven into the ground using a pile driving hammer until the required depth or resistance is reached.</p>
+          <div class="card-objectives">
+            <div class="obj-heading">Learning Objectives</div>
+            <ul class="obj-list">
+              <li>Understand pile positioning and alignment</li>
+              <li>Learn pile driving using hammer impacts</li>
+              <li>Monitor depth and blow count</li>
+              <li>Understand pile cap construction</li>
+            </ul>
+          </div>
+          <div class="card-footer">
+            <div class="card-chips">
+              <span class="chip">🪜 10 Steps</span>
+              <span class="chip">🔒 Locked</span>
+            </div>
+            <button class="card-btn btn-coming" onclick="showComingSoon('driven-pile')">Preview Module →</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Chapter 3: Drilled Shaft - Coming Soon -->
+      <article class="chapter-card card-coming">
+        <div class="card-top-bar"></div>
+        <div class="card-inner">
+          <div class="card-head">
+            <div class="card-icon-wrap">
+              <span class="card-icon">🕳️</span>
+            </div>
+            <span class="card-badge badge-coming">🔒 Coming Soon</span>
+          </div>
+          <h3 class="card-title">Drilled Shaft Foundation</h3>
+          <p class="card-desc">Learn how a deep borehole is drilled, inspected, reinforced with a steel cage, and filled with concrete to create a drilled shaft foundation.</p>
+          <div class="card-objectives">
+            <div class="obj-heading">Learning Objectives</div>
+            <ul class="obj-list">
+              <li>Understand borehole drilling and spoil removal</li>
+              <li>Learn reinforcement cage placement</li>
+              <li>Simulate concrete placement in a drilled shaft</li>
+              <li>Understand final shaft inspection</li>
+            </ul>
+          </div>
+          <div class="card-footer">
+            <div class="card-chips">
+              <span class="chip">🪜 10 Steps</span>
+              <span class="chip">🔒 Locked</span>
+            </div>
+            <button class="card-btn btn-coming" onclick="showComingSoon('drilled-shaft')">Preview Module →</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <footer id="dashboard-footer">
+    <p>Foundation Construction Simulation Lab &nbsp;·&nbsp; Civil Engineering Training Platform</p>
+  </footer>
+</div>
+
+<!-- SHALLOW SIMULATION VIEW - hidden by default -->
+<div id="shallowSimView" class="view-section hidden">
+
+  <header id="header">
+    <div id="header-left">
+      <button id="back-btn" onclick="showDashboard()">← Dashboard</button>
+      <div id="header-title">
+        <span class="hard-hat">🏗️</span>
+        Shallow Foundation Simulation
+      </div>
+    </div>
+    <div id="header-meta">
+      <button id="reset-sim-btn" onclick="resetSimulation()">↺ Reset</button>
+      <div id="score-badge">Score: <span id="score-val">1000</span></div>
+      <div id="step-badge">Step <span id="step-cur">1</span> / 11</div>
+    </div>
+  </header>
+
+  <main id="main">
+    <aside id="task-panel">
+      <div id="task-title">Loading…</div>
+      <div id="task-desc"></div>
+      <ul id="task-subtasks"></ul>
+      <div id="task-why"></div>
+      <div id="task-warning"></div>
+      <div id="task-metadata"></div>
+    </aside>
+    <section id="center-col">
+      <div id="scene">
+        <div id="labels-3d"></div>
+        <div id="cam-controls">
+          <button class="cam-btn" onclick="setCameraView('iso')">⬡ Iso</button>
+          <button class="cam-btn" onclick="setCameraView('top')">⬆ Top</button>
+          <button class="cam-btn" onclick="setCameraView('front')">⬛ Front</button>
+          <button class="cam-btn" onclick="setCameraView('side')">◧ Side</button>
+          <button class="cam-btn" id="reset-cam-btn" onclick="resetCamera()">↺ Reset</button>
+        </div>
+      </div>
+      <div id="action-bar"></div>
+    </section>
+    <aside id="steps-panel">
+      <div class="steps-heading">Construction Steps</div>
+      <ol id="checklist"></ol>
+    </aside>
+  </main>
+
+</div>
+
+<!-- COMING SOON VIEW - hidden by default, dynamically populated -->
+<div id="comingSoonView" class="view-section hidden">
+  <div id="coming-soon-inner"></div>
+</div>
+
+<!-- Fixed overlays - always in DOM -->
 <div id="feedback-bar" class="hidden"></div>
-
-<!-- ═════════════════════════════════════════════ RESULT OVERLAY ══ -->
 <div id="result-overlay" class="hidden">
   <div id="result-card">
     <div id="result-icon">🏆</div>
@@ -70,7 +217,10 @@
     <p>The reinforced concrete pillar stands tall on the finished shallow foundation.</p>
     <div id="result-score-line">Final Score: <span id="result-score">0</span></div>
     <div id="result-grade"></div>
-    <button id="result-replay" onclick="location.reload()">Play Again</button>
+    <div class="result-actions">
+      <button id="result-replay" onclick="resetSimulation()">Play Again</button>
+      <button id="result-dashboard-btn" onclick="showDashboard()">← Dashboard</button>
+    </div>
     <div id="result-refs">
       <strong>References:</strong><br/>
       1. <a href="https://idealgeotech.com.au/a-step-by-step-guide-to-the-foundation-construction-process/" target="_blank">Ideal Geotech – Foundation Construction Process</a><br/>
@@ -79,9 +229,7 @@
   </div>
 </div>
 
-<!-- Three.js global build (local file) -->
 <script src="three.min.js"></script>
-<!-- Main game script (regular script, not a module) -->
 <script defer src="script.js"></script>
 </body>
 </html>
