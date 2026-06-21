@@ -328,7 +328,7 @@ controls.maxDistance   = 60;
 controls.target.set(0, -2, 0);
 
 // Lights
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
 scene.add(ambientLight);
 
 const sunLight = new THREE.DirectionalLight(0xfff5e0, 2.0);
@@ -345,7 +345,7 @@ sunLight.shadow.camera.bottom = -25;
 sunLight.shadow.bias = -0.001;
 scene.add(sunLight);
 
-const hemiLight = new THREE.HemisphereLight(0x87ceeb, 0x5a6e3a, 0.4);
+const hemiLight = new THREE.HemisphereLight(0xaadaff, 0x8B6340, 0.5);
 scene.add(hemiLight);
 
 const fillLight = new THREE.DirectionalLight(0xffd0a0, 0.45);
@@ -515,16 +515,16 @@ function clearScene3D() {
 ══════════════════════════════════════════════════════════════ */
 
 const CAM_PRESETS = [
-  { pos: new THREE.Vector3(12, 8, 14),  look: new THREE.Vector3(0, -2, 0) },
-  { pos: new THREE.Vector3(10, 12, 10), look: new THREE.Vector3(0, 0, 0) },
-  { pos: new THREE.Vector3(8, 5, 12),   look: new THREE.Vector3(0, 0, 0) },
-  { pos: new THREE.Vector3(8, 4, 10),   look: new THREE.Vector3(0, 2, 0) },
-  { pos: new THREE.Vector3(6, 3, 8),    look: new THREE.Vector3(0, 2, 0) },
-  { pos: new THREE.Vector3(10, 4, 14),  look: new THREE.Vector3(0, 2, 0) },
-  { pos: new THREE.Vector3(10, 4, 14),  look: new THREE.Vector3(0, -4, 0) },
-  { pos: new THREE.Vector3(6, 2, 8),    look: new THREE.Vector3(0, 1, 0) },
-  { pos: new THREE.Vector3(8, 4, 10),   look: new THREE.Vector3(0, 0, 0) },
-  { pos: new THREE.Vector3(10, 6, 12),  look: new THREE.Vector3(0, 0, 0) }
+  { pos: new THREE.Vector3(14, 8, 16),  look: new THREE.Vector3(0, -1, 0) },   // 0 investigation
+  { pos: new THREE.Vector3(10, 14, 10), look: new THREE.Vector3(0, 0, 0) },    // 1 layout (top-ish)
+  { pos: new THREE.Vector3(10, 5, 14),  look: new THREE.Vector3(0, 0, 0) },    // 2 selection
+  { pos: new THREE.Vector3(10, 5, 13),  look: new THREE.Vector3(0, 3, 0) },    // 3 position pile
+  { pos: new THREE.Vector3(7, 4, 10),   look: new THREE.Vector3(0, 3, 0) },    // 4 alignment
+  { pos: new THREE.Vector3(12, 5, 16),  look: new THREE.Vector3(0, -3, 0) },   // 5 driving
+  { pos: new THREE.Vector3(12, 4, 14),  look: new THREE.Vector3(0, -6, 0) },   // 6 refusal
+  { pos: new THREE.Vector3(8, 3, 10),   look: new THREE.Vector3(0, 0, 0) },    // 7 cut head
+  { pos: new THREE.Vector3(10, 3, 12),  look: new THREE.Vector3(0, -1, 0) },   // 8 pile cap
+  { pos: new THREE.Vector3(12, 6, 14),  look: new THREE.Vector3(0, 0, 0) }     // 9 inspection
 ];
 
 let camTarget = null;
@@ -535,10 +535,11 @@ function setCamPreset(n) {
 }
 
 const VIEW_PRESETS = {
-  iso:   { pos: new THREE.Vector3(10,  8, 10),  look: new THREE.Vector3(0, 0, 0) },
-  top:   { pos: new THREE.Vector3(0,  22, 0.1), look: new THREE.Vector3(0, 0, 0) },
-  front: { pos: new THREE.Vector3(0,   3, 18),  look: new THREE.Vector3(0, 0, 0) },
-  side:  { pos: new THREE.Vector3(18,  3,  0),  look: new THREE.Vector3(0, 0, 0) }
+  iso:       { pos: new THREE.Vector3(14,  8, 16),   look: new THREE.Vector3(0, -2, 0) },
+  top:       { pos: new THREE.Vector3(0,  26, 0.1),  look: new THREE.Vector3(0, 0, 0) },
+  front:     { pos: new THREE.Vector3(0,   4, 22),   look: new THREE.Vector3(0, -2, 0) },
+  side:      { pos: new THREE.Vector3(22,  4,  0),   look: new THREE.Vector3(0, -2, 0) },
+  cutaway:   { pos: new THREE.Vector3(12,  2, 12),   look: new THREE.Vector3(0, -8, 0) },
 };
 
 window.setCameraView = function(name) {
@@ -548,7 +549,7 @@ window.setCameraView = function(name) {
 
 window.resetCamera = function() {
   setCamPreset(STATE.currentStep);
-  controls.target.set(0, -2, 0);
+  controls.target.set(0, -3, 0);
 };
 
 /* ══════════════════════════════════════════════════════════════
@@ -564,12 +565,44 @@ scene.add(soilLayerGroup);
 function buildGround() {
   while (groundGroup.children.length) groundGroup.remove(groundGroup.children[0]);
 
-  // Green ground plane
-  const geo = new THREE.PlaneGeometry(40, 40);
-  const mesh = new THREE.Mesh(geo, MAT.grass);
-  mesh.rotation.x = -Math.PI / 2;
-  mesh.receiveShadow = true;
-  groundGroup.add(mesh);
+  // Use three PlaneGeometry pieces leaving the cutaway opening (x:0-6, z:0-6) uncovered.
+  // All at y=0.01 to sit just above the soil layer top face (eliminates z-fighting).
+  const grassMat = MAT.grass.clone();
+  grassMat.polygonOffset = true;
+  grassMat.polygonOffsetFactor = -1;
+  grassMat.polygonOffsetUnits = -1;
+
+  // Piece 1: Full left side (x: -20→0, z: -20→20)
+  const geo1 = new THREE.PlaneGeometry(20, 40);
+  const m1 = new THREE.Mesh(geo1, grassMat);
+  m1.rotation.x = -Math.PI / 2;
+  m1.position.set(-10, 0.01, 0);
+  m1.receiveShadow = true;
+  groundGroup.add(m1);
+
+  // Piece 2: Right back (x: 0→20, z: -20→0)
+  const geo2 = new THREE.PlaneGeometry(20, 20);
+  const m2 = new THREE.Mesh(geo2, grassMat);
+  m2.rotation.x = -Math.PI / 2;
+  m2.position.set(10, 0.01, -10);
+  m2.receiveShadow = true;
+  groundGroup.add(m2);
+
+  // Piece 3: Right front beyond cutaway (x: 6→20, z: 0→20)
+  const geo3 = new THREE.PlaneGeometry(14, 20);
+  const m3 = new THREE.Mesh(geo3, grassMat);
+  m3.rotation.x = -Math.PI / 2;
+  m3.position.set(13, 0.01, 10);
+  m3.receiveShadow = true;
+  groundGroup.add(m3);
+
+  // Narrow strip connecting cutaway edge to full coverage (x: 0→6, z: 6→20)
+  const geo4 = new THREE.PlaneGeometry(6, 14);
+  const m4 = new THREE.Mesh(geo4, grassMat);
+  m4.rotation.x = -Math.PI / 2;
+  m4.position.set(3, 0.01, 13);
+  m4.receiveShadow = true;
+  groundGroup.add(m4);
 }
 
 function buildSoilLayers() {
@@ -606,28 +639,57 @@ function buildSoilLayers() {
     brMesh.receiveShadow = true;
     soilLayerGroup.add(brMesh);
 
-    // Add a label sprite on the exposed face
-    const labelY = cy;
+    // Label on exposed cutaway face: right side (x=6), facing camera at angle
     const labelCanvas = document.createElement('canvas');
-    labelCanvas.width = 256;
-    labelCanvas.height = 64;
+    labelCanvas.width = 320;
+    labelCanvas.height = 72;
     const lctx = labelCanvas.getContext('2d');
-    lctx.fillStyle = 'rgba(0,0,0,0.6)';
-    lctx.fillRect(0, 0, 256, 64);
+    lctx.fillStyle = 'rgba(0,0,0,0.75)';
+    lctx.roundRect(0, 0, 320, 72, 8);
+    lctx.fill();
     lctx.fillStyle = '#fff';
-    lctx.font = 'bold 22px sans-serif';
-    lctx.textAlign = 'center';
-    lctx.fillText(l.label, 128, 28);
+    lctx.font = 'bold 24px sans-serif';
+    lctx.textAlign = 'left';
+    lctx.fillText(l.label, 14, 30);
     lctx.font = '16px sans-serif';
-    lctx.fillStyle = '#ccc';
-    const depthRange = `${Math.abs(l.yTop)}m - ${Math.abs(l.yBot)}m`;
-    lctx.fillText(depthRange, 128, 50);
+    lctx.fillStyle = '#f5a623';
+    const depthRange = `${Math.abs(l.yTop).toFixed(0)}m – ${Math.abs(l.yBot).toFixed(0)}m depth`;
+    lctx.fillText(depthRange, 14, 54);
     const labelTex = new THREE.CanvasTexture(labelCanvas);
     const labelSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: labelTex, transparent: true }));
-    labelSprite.scale.set(3, 0.75, 1);
-    labelSprite.position.set(half / 2 + 0.1, labelY, half / 2 + 0.5);
+    labelSprite.scale.set(3.5, 0.82, 1);
+    // Place label at the exposed right face of the cutaway (x=6.5, facing outward)
+    labelSprite.position.set(7.2, cy, -half / 2);
     soilLayerGroup.add(labelSprite);
   });
+
+  // Depth scale ruler on the cutaway edge (x=6, z=0 line)
+  const rulerMat = new THREE.MeshLambertMaterial({ color: 0xdddddd });
+  const ruler = new THREE.Mesh(new THREE.BoxGeometry(0.06, 22, 0.06), rulerMat);
+  ruler.position.set(6.1, -11, 0);
+  soilLayerGroup.add(ruler);
+
+  for (let d = 0; d <= 20; d += 2) {
+    const tick = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.06, 0.06), rulerMat);
+    tick.position.set(6.28, -d, 0);
+    soilLayerGroup.add(tick);
+  }
+
+  // "Ground Level" marker at y=0
+  const glCanvas = document.createElement('canvas');
+  glCanvas.width = 280; glCanvas.height = 52;
+  const glctx = glCanvas.getContext('2d');
+  glctx.fillStyle = 'rgba(245,166,35,0.85)';
+  glctx.roundRect(0, 0, 280, 52, 6); glctx.fill();
+  glctx.fillStyle = '#112640';
+  glctx.font = 'bold 22px sans-serif';
+  glctx.textAlign = 'center';
+  glctx.fillText('\u25b6 Ground Level (0.0m)', 140, 32);
+  const glTex = new THREE.CanvasTexture(glCanvas);
+  const glSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: glTex, transparent: true }));
+  glSprite.scale.set(3.2, 0.6, 1);
+  glSprite.position.set(8.5, 0.3, -1);
+  soilLayerGroup.add(glSprite);
 }
 
 function buildTrees() {
@@ -657,6 +719,84 @@ function buildTrees() {
     scene.add(g);
     persistObjs.push(g);
   });
+}
+
+function buildSiteFencing() {
+  const fencePostMat = new THREE.MeshLambertMaterial({ color: 0xf5a623 });
+  const fenceRailMat = new THREE.MeshLambertMaterial({ color: 0xf5a623, transparent: true, opacity: 0.75 });
+  const panelMat = new THREE.MeshLambertMaterial({ color: 0x1a5276, transparent: true, opacity: 0.6 });
+
+  // Construction site perimeter fence posts (12 x 12 area)
+  const postPositions = [
+    // South side (z=+12) posts
+    [-8, 12], [-4, 12], [0, 12], [4, 12], [8, 12],
+    // North side (z=-12) posts
+    [-8, -12], [-4, -12], [0, -12], [4, -12], [8, -12],
+    // West side (x=-8)
+    [-8, -8], [-8, -4], [-8, 0], [-8, 4], [-8, 8],
+    // East side (x=+8)
+    [8, -8], [8, -4], [8, 0], [8, 4], [8, 8]
+  ];
+
+  postPositions.forEach(([x, z]) => {
+    const post = new THREE.Mesh(
+      new THREE.BoxGeometry(0.12, 2.2, 0.12),
+      fencePostMat
+    );
+    post.position.set(x, 1.1, z);
+    post.castShadow = true;
+    scene.add(post);
+    persistObjs.push(post);
+  });
+
+  // Fence rails along south and north sides
+  [12, -12].forEach(z => {
+    const rail = new THREE.Mesh(
+      new THREE.BoxGeometry(16, 0.08, 0.08),
+      fenceRailMat
+    );
+    rail.position.set(0, 2.0, z);
+    scene.add(rail);
+    persistObjs.push(rail);
+
+    const rail2 = rail.clone();
+    rail2.position.y = 1.0;
+    scene.add(rail2);
+    persistObjs.push(rail2);
+  });
+
+  // Fence rails along east and west sides
+  [-8, 8].forEach(x => {
+    const rail = new THREE.Mesh(
+      new THREE.BoxGeometry(0.08, 0.08, 24),
+      fenceRailMat
+    );
+    rail.position.set(x, 2.0, 0);
+    scene.add(rail);
+    persistObjs.push(rail);
+
+    const rail2 = rail.clone();
+    rail2.position.y = 1.0;
+    scene.add(rail2);
+    persistObjs.push(rail2);
+  });
+
+  // Site sign
+  const signPost = new THREE.Mesh(
+    new THREE.BoxGeometry(0.1, 2.5, 0.1),
+    new THREE.MeshLambertMaterial({ color: 0x888888 })
+  );
+  signPost.position.set(-7, 1.25, 11.5);
+  scene.add(signPost);
+  persistObjs.push(signPost);
+
+  const signBoard = new THREE.Mesh(
+    new THREE.BoxGeometry(3, 1, 0.1),
+    new THREE.MeshLambertMaterial({ color: 0xf5a623 })
+  );
+  signBoard.position.set(-5.5, 2.5, 11.5);
+  scene.add(signBoard);
+  persistObjs.push(signBoard);
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -894,14 +1034,23 @@ function buildPile(horizontal) {
 }
 
 function buildPileCapMesh() {
-  // Pile cap: connects 4 piles, approx 6x6x1.5 meters
+  // Pile cap: 6.5 x 1.2 x 6.5 m, center buried at y = -0.6 (spans y=-1.2 to y=0)
   const capGroup = new THREE.Group();
-  const capGeo = new THREE.BoxGeometry(6.5, 1.5, 6.5);
+  const capGeo = new THREE.BoxGeometry(6.5, 1.2, 6.5);
   const cap = new THREE.Mesh(capGeo, MAT.concrete);
   cap.castShadow = true;
   cap.receiveShadow = true;
-  cap.position.y = 0.75 + 0.5; // sits above cut-off level
+  cap.position.y = -0.6;  // centered below grade
   capGroup.add(cap);
+
+  // Small pedestal above cap where column will sit
+  const ped = new THREE.Mesh(
+    new THREE.BoxGeometry(1.2, 0.4, 1.2),
+    MAT.concrete
+  );
+  ped.position.y = 0.2;  // sits on top of cap, at grade level
+  capGroup.add(ped);
+
   return capGroup;
 }
 
@@ -1049,6 +1198,7 @@ function init() {
   buildGround();
   buildSoilLayers();
   buildTrees();
+  buildSiteFencing();
 
   const gridHelper = new THREE.GridHelper(30, 30, 0x444444, 0x2a2a2a);
   gridHelper.position.y = 0.02;
@@ -1902,15 +2052,15 @@ const STEP_HANDLERS = [
       addStep(rig);
       OBJ.rig = rig;
 
-      // Build vertical pile: tip at ground level (y=0), top at y=20
+      // Build vertical pile: tip at y=-2, top at y=18 (within mast height)
       const pile = buildPile(false);
-      pile.position.set(0, 10, 0); // center of 20m pile at y=10
+      pile.position.set(0, 8, 0); // center: tip at y=-2, top at y=18
       addStep(pile);
       OBJ.pileGroup = pile;
 
       // Position hammer at top of pile
       if (OBJ.hammer) {
-        OBJ.hammer.position.y = 20 + 1.0; // just above pile top
+        OBJ.hammer.position.y = 18 + 0.8; // just above pile top
       }
 
       const ab = DOM.actionBar();
@@ -1985,7 +2135,7 @@ const STEP_HANDLERS = [
         }
 
         ss.hammerCycleActive = true;
-        const hammerStartY = OBJ.pileGroup.position.y + 10 + 1.0;
+        const hammerStartY = OBJ.pileGroup.position.y + 10 + 0.8;
 
         // Phase 1: Hammer rises (300ms)
         if (OBJ.hammer) {
@@ -2014,7 +2164,7 @@ const STEP_HANDLERS = [
                 ss.blows++;
 
                 // Move pile down
-                OBJ.pileGroup.position.y = 10 - ss.depth;
+                OBJ.pileGroup.position.y = 8 - ss.depth;
 
                 // Impact flash
                 if (OBJ.impactFlash) {
@@ -2068,7 +2218,7 @@ const STEP_HANDLERS = [
 
                 // Update hammer position to track pile top
                 if (OBJ.hammer) {
-                  OBJ.hammer.position.y = OBJ.pileGroup.position.y + 10 + 1.0;
+                  OBJ.hammer.position.y = OBJ.pileGroup.position.y + 10 + 0.8;
                 }
 
                 // Check if we've entered Dense Sand -> step 6 complete
@@ -2144,13 +2294,13 @@ const STEP_HANDLERS = [
 
       // Build pile at current driven position
       const pile = buildPile(false);
-      pile.position.set(0, 10 - ss.depth, 0);
+      pile.position.set(0, 8 - ss.depth, 0);
       addStep(pile);
       OBJ.pileGroup = pile;
 
       // Position hammer
       if (OBJ.hammer) {
-        OBJ.hammer.position.y = pile.position.y + 10 + 1.0;
+        OBJ.hammer.position.y = pile.position.y + 10 + 0.8;
       }
 
       const ab = DOM.actionBar();
@@ -2192,7 +2342,7 @@ const STEP_HANDLERS = [
         if (ss.hammerCycleActive || ss.refusalAchieved) return;
         ss.hammerCycleActive = true;
 
-        const hammerStartY = OBJ.pileGroup.position.y + 10 + 1.0;
+        const hammerStartY = OBJ.pileGroup.position.y + 10 + 0.8;
         if (OBJ.hammer) OBJ.hammer.position.y = hammerStartY;
 
         const riseTarget = hammerStartY + 2;
@@ -2220,7 +2370,7 @@ const STEP_HANDLERS = [
                 if (ss.recentBlows.length > 10) ss.recentBlows.shift();
 
                 // Move pile
-                OBJ.pileGroup.position.y = 10 - ss.depth;
+                OBJ.pileGroup.position.y = 8 - ss.depth;
 
                 // Flash
                 if (OBJ.impactFlash) {
@@ -2235,7 +2385,7 @@ const STEP_HANDLERS = [
                 );
 
                 // Update hammer position
-                if (OBJ.hammer) OBJ.hammer.position.y = OBJ.pileGroup.position.y + 10 + 1.0;
+                if (OBJ.hammer) OBJ.hammer.position.y = OBJ.pileGroup.position.y + 10 + 0.8;
 
                 // Update stats
                 const depthEl = $('ref-depth');
@@ -2356,7 +2506,7 @@ const STEP_HANDLERS = [
       // Build pile at driven depth — the pile top sticks above ground
       const pileTopY = 10 - STATE.drivenDepth + 10; // top of pile
       const pile = buildPile(false);
-      pile.position.set(0, 10 - STATE.drivenDepth, 0);
+      pile.position.set(0, 8 - STATE.drivenDepth, 0);
       addStep(pile);
       OBJ.pileGroup = pile;
 
@@ -2465,23 +2615,32 @@ const STEP_HANDLERS = [
         [-2.5, 0, 2.5],  [2.5, 0, 2.5]
       ];
 
+      // Show a shallow excavation pit (below-grade concrete mat)
+      const pitGeo = new THREE.BoxGeometry(7.5, 0.08, 7.5);
+      const pit = new THREE.Mesh(pitGeo, new THREE.MeshLambertMaterial({ color: 0x9e8060 }));
+      pit.position.set(0, -0.52, 0);
+      pit.receiveShadow = true;
+      addStep(pit);
+
       pilePositions.forEach(([px, py, pz]) => {
+        // Stub: pile head 300mm below grade (cut-off at y=-0.3)
+        // Show a 600mm stub emerging from excavation floor to cut-off level
         const stub = new THREE.Mesh(
-          new THREE.BoxGeometry(0.5, 1.0, 0.5),
+          new THREE.BoxGeometry(0.5, 0.6, 0.5),
           MAT.concrete
         );
-        stub.position.set(px, 0.5, pz);
+        stub.position.set(px, -0.2, pz);  // center at y=-0.2, spans y=-0.5 to y=0.1
         stub.castShadow = true;
         addStep(stub);
 
-        // Rebar sticking up
+        // Starter rebar protruding upward from pile head (embedded into future cap)
         for (let dx = -1; dx <= 1; dx += 2) {
           for (let dz = -1; dz <= 1; dz += 2) {
             const rebar = new THREE.Mesh(
-              new THREE.CylinderGeometry(0.02, 0.02, 0.5, 6),
+              new THREE.CylinderGeometry(0.022, 0.022, 0.8, 6),
               MAT.rebarSteel
             );
-            rebar.position.set(px + dx * 0.12, 1.25, pz + dz * 0.12);
+            rebar.position.set(px + dx * 0.12, 0.25, pz + dz * 0.12);
             addStep(rebar);
           }
         }
@@ -2511,10 +2670,10 @@ const STEP_HANDLERS = [
 
               // Add 3D formwork panel
               const fwDefs = [
-                { w: 7.5, h: 2.0, d: 0.15, x: 0, y: 1, z: -3.5 },    // N
-                { w: 7.5, h: 2.0, d: 0.15, x: 0, y: 1, z: 3.5 },     // S
-                { w: 0.15, h: 2.0, d: 7.0, x: 3.5, y: 1, z: 0 },     // E
-                { w: 0.15, h: 2.0, d: 7.0, x: -3.5, y: 1, z: 0 }     // W
+                { w: 7.2, h: 1.6, d: 0.15, x: 0,    y: -0.3, z: -3.6 },  // N
+                { w: 7.2, h: 1.6, d: 0.15, x: 0,    y: -0.3, z:  3.6 },  // S
+                { w: 0.15, h: 1.6, d: 7.0, x:  3.6, y: -0.3, z: 0 },     // E
+                { w: 0.15, h: 1.6, d: 7.0, x: -3.6, y: -0.3, z: 0 }      // W
               ];
               const def = fwDefs[i];
               const fw = new THREE.Mesh(
@@ -2553,17 +2712,18 @@ const STEP_HANDLERS = [
                 new THREE.CylinderGeometry(0.03, 0.03, 6.5, 6),
                 MAT.rebarSteel
               );
+              // Bottom mat bars (X-direction)
               barX.rotation.z = Math.PI / 2;
-              barX.position.set(0, 1.3, i * 0.85);
+              barX.position.set(0, -1.0, i * 0.7);
               rebarGroup.add(barX);
 
-              // Z-direction bars
+              // Top mat bars (Z-direction)
               const barZ = new THREE.Mesh(
                 new THREE.CylinderGeometry(0.03, 0.03, 6.5, 6),
                 MAT.rebarSteel
               );
               barZ.rotation.x = Math.PI / 2;
-              barZ.position.set(i * 0.85, 1.35, 0);
+              barZ.position.set(i * 0.7, -0.5, 0);
               rebarGroup.add(barZ);
             }
             addStep(rebarGroup);
@@ -2583,7 +2743,7 @@ const STEP_HANDLERS = [
             new THREE.BoxGeometry(6.8, 0.01, 6.8),
             MAT.concreteWet
           );
-          fillMesh.position.set(0, 0.01, 0);
+          fillMesh.position.set(0, -1.1, 0);  // starts at bottom of cap excavation
           addStep(fillMesh);
           OBJ.pileFill = fillMesh;
 
@@ -2617,7 +2777,7 @@ const STEP_HANDLERS = [
               // Grow fill mesh
               const h = Math.max(0.01, 1.8 * ss.pourLevel / 100);
               fillMesh.scale.y = h / 0.01;
-              fillMesh.position.y = h / 2;
+              fillMesh.position.y = -1.1 + h / 2;
 
               if (ss.pourLevel >= 85 && ss.pourLevel <= 98) {
                 // In target zone
@@ -2700,19 +2860,27 @@ const STEP_HANDLERS = [
               if (idx > -1) stepObjects.splice(idx, 1);
             });
 
-            // Add finished pile cap
+            // Add finished pile cap (below grade)
             const capGroup = new THREE.Group();
             const cap = new THREE.Mesh(
-              new THREE.BoxGeometry(6.5, 1.8, 6.5),
+              new THREE.BoxGeometry(6.5, 1.2, 6.5),
               MAT.concreteDark
             );
-            cap.position.y = 0.9;
+            cap.position.y = -0.6;  // centered below grade
             cap.castShadow = true;
             cap.receiveShadow = true;
             capGroup.add(cap);
+
+            // Small pedestal above cap where column will sit
+            const ped = new THREE.Mesh(
+              new THREE.BoxGeometry(1.2, 0.4, 1.2),
+              MAT.concreteDark
+            );
+            ped.position.y = 0.2;  // sits on top of cap, at grade level
+            capGroup.add(ped);
             addStep(capGroup);
 
-            spawnParticles(new THREE.Vector3(0, 1.5, 0), MAT.yellow, 12);
+            spawnParticles(new THREE.Vector3(0, 0.2, 0), MAT.yellow, 12);
             showFeedback('correct', 'Formwork stripped! Pile cap complete.');
             safeTimeout(() => completeStep(), 1500);
           });
