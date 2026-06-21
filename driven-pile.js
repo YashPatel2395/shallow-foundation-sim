@@ -323,8 +323,12 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.maxPolarAngle = Math.PI * 0.85;
 controls.minDistance   = 3;
-controls.maxDistance   = 60;
+controls.maxDistance   = 80;
 controls.target.set(0, -10, 0);
+
+// Cancel any camera preset transition the moment the user touches the camera
+renderer.domElement.addEventListener('pointerdown', () => { camTarget = null; });
+renderer.domElement.addEventListener('wheel',       () => { camTarget = null; }, { passive: true });
 
 // Lighting — tuned for a dark engineering environment
 // Bright enough to read soil colors and concrete clearly, no harsh shadows
@@ -2087,22 +2091,22 @@ const STEP_HANDLERS = [
         ss.hammerCycleActive = true;
         const hammerStartY = OBJ.pileGroup.position.y + 10 + 0.8;
 
-        // Phase 1: Hammer rises (300ms)
+        // Phase 1: Hammer rises
         if (OBJ.hammer) {
           OBJ.hammer.position.y = hammerStartY;
         }
         const riseTarget = hammerStartY + 2;
         let riseT = 0;
         const riseInterval = safeInterval(() => {
-          riseT += 0.06;
+          riseT += 0.20;          // fast rise
           if (riseT >= 1) {
             clearInterval(riseInterval);
             if (OBJ.hammer) OBJ.hammer.position.y = riseTarget;
 
-            // Phase 2: Hammer falls (150ms)
+            // Phase 2: Hammer falls
             let fallT = 0;
             const fallInterval = safeInterval(() => {
-              fallT += 0.12;
+              fallT += 0.35;      // fast fall
               if (fallT >= 1) {
                 clearInterval(fallInterval);
                 if (OBJ.hammer) OBJ.hammer.position.y = hammerStartY;
@@ -2205,7 +2209,7 @@ const STEP_HANDLERS = [
         }
         driveInterval = safeInterval(() => {
           if (ss.driving) doBlowCycle();
-        }, 500);
+        }, 180);
         doBlowCycle();
       });
 
@@ -2298,14 +2302,14 @@ const STEP_HANDLERS = [
         const riseTarget = hammerStartY + 2;
         let riseT = 0;
         const riseInterval = safeInterval(() => {
-          riseT += 0.06;
+          riseT += 0.20;          // fast rise (matches step 5 speed)
           if (riseT >= 1) {
             clearInterval(riseInterval);
             if (OBJ.hammer) OBJ.hammer.position.y = riseTarget;
 
             let fallT = 0;
             const fallInterval = safeInterval(() => {
-              fallT += 0.12;
+              fallT += 0.35;      // fast fall
               if (fallT >= 1) {
                 clearInterval(fallInterval);
                 if (OBJ.hammer) OBJ.hammer.position.y = hammerStartY;
@@ -2423,7 +2427,7 @@ const STEP_HANDLERS = [
         ss.driving = true;
         driveInterval = safeInterval(() => {
           if (ss.driving && !ss.refusalAchieved) doRefusalBlow();
-        }, 500);
+        }, 180);
         doRefusalBlow();
       });
 
@@ -2453,30 +2457,35 @@ const STEP_HANDLERS = [
       rig.position.x = 5; // move rig to side
       addStep(rig);
 
-      // Build pile at driven depth — the pile top sticks above ground
-      const pileTopY = 10 - STATE.drivenDepth + 10; // top of pile
+      // Build pile at driven depth
+      // Pile center: 8 - drivenDepth  →  top: (8 - drivenDepth) + 10
+      const pileCenterY = 8 - STATE.drivenDepth;
+      const pileTopY    = pileCenterY + 10;         // correct formula
       const pile = buildPile(false);
-      pile.position.set(0, 8 - STATE.drivenDepth, 0);
+      pile.position.set(0, pileCenterY, 0);
       addStep(pile);
       OBJ.pileGroup = pile;
 
-      // Cut line at y=0.5 (design elevation 500mm above ground)
-      const cutLineGeo = new THREE.BoxGeometry(1.5, 0.05, 1.5);
-      const cutLine = new THREE.Mesh(cutLineGeo, MAT.cutLine);
-      cutLine.position.set(0, 0.5, 0);
+      // Cut-off ring around the cylinder at y = pileTopY - 0.5
+      // (cut 500mm below pile top to remove damaged head concrete)
+      const CUT_Y = Math.min(pileTopY - 0.5, 0.5); // never above 0.5m grade
+      const cutLine = new THREE.Mesh(
+        new THREE.TorusGeometry(0.3, 0.04, 8, 24),
+        MAT.cutLine
+      );
+      cutLine.rotation.x = Math.PI / 2;
+      cutLine.position.set(0, CUT_Y, 0);
       addStep(cutLine);
+      create3DLabel(cutLine, `Cut-off: ${CUT_Y >= 0 ? '+' : ''}${CUT_Y.toFixed(2)}m`, '');
 
-      // Label for cut line
-      create3DLabel(cutLine, 'Cut-off: +0.5m', '');
-
-      // Portion of pile above cut line (to be removed) — tinted red to mark removal zone
-      const aboveHeight = pileTopY - 0.5;
-      if (aboveHeight > 0) {
+      // Red overlay — only on the section above cut line
+      const aboveHeight = pileTopY - CUT_Y;
+      if (aboveHeight > 0.05) {
         const abovePile = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.23, 0.23, aboveHeight, 16),
-          new THREE.MeshLambertMaterial({ color: 0xcc5555, transparent: true, opacity: 0.55 })
+          new THREE.CylinderGeometry(0.225, 0.225, aboveHeight, 16),
+          new THREE.MeshLambertMaterial({ color: 0xcc3333, transparent: true, opacity: 0.6 })
         );
-        abovePile.position.set(0, 0.5 + aboveHeight / 2, 0);
+        abovePile.position.set(0, CUT_Y + aboveHeight / 2, 0);
         addStep(abovePile);
         OBJ.abovePile = abovePile;
       }
@@ -2494,43 +2503,46 @@ const STEP_HANDLERS = [
           ab.innerHTML = '';
           const cutBtn = makeBtn('Cut Pile Head', 'btn-primary', () => {
             markSubtask(1);
-            // Animate the above portion fading out
+            // Fade out the damaged section — pile below the cut stays in scene
             if (OBJ.abovePile) {
               let fadeT = 0;
               const fadeInterval = safeInterval(() => {
-                fadeT += 0.05;
+                fadeT += 0.07;
                 if (fadeT >= 1) {
                   clearInterval(fadeInterval);
+                  // Remove only the damaged overlay — the pile mesh (OBJ.pileGroup) stays
                   scene.remove(OBJ.abovePile);
                   const si = stepObjects.indexOf(OBJ.abovePile);
                   if (si > -1) stepObjects.splice(si, 1);
+                  // Also hide the cut-off ring now that cut is done
+                  scene.remove(cutLine);
 
                   markSubtask(2);
-                  spawnParticles(new THREE.Vector3(0, 0.5, 0), MAT.concrete, 10);
-                  showFeedback('correct', 'Pile head cut! Concrete removed.');
+                  spawnParticles(new THREE.Vector3(0, CUT_Y, 0), MAT.concrete, 12);
+                  showFeedback('correct', 'Pile head cut! Damaged concrete removed.');
 
                   safeTimeout(() => {
-                    // Show exposed rebar stubs at cut level, ready to embed into pile cap
+                    // Show 4 exposed starter bars at cut level
                     for (let dx = -1; dx <= 1; dx += 2) {
                       for (let dz = -1; dz <= 1; dz += 2) {
                         const rebar = new THREE.Mesh(
-                          new THREE.CylinderGeometry(0.022, 0.022, 0.65, 6),
+                          new THREE.CylinderGeometry(0.022, 0.022, 0.7, 6),
                           MAT.rebarSteel
                         );
-                        rebar.position.set(dx * 0.1, 0.825, dz * 0.1);
+                        rebar.position.set(dx * 0.09, CUT_Y + 0.35, dz * 0.09);
                         addStep(rebar);
                       }
                     }
                     markSubtask(3);
-                    showFeedback('correct', 'Pile reinforcement exposed! Pile head at design elevation: +0.5m');
+                    showFeedback('correct', 'Rebar exposed and ready for pile cap connection.');
                     ab.innerHTML = '';
-                    ab.appendChild(makeBtn('Continue', 'btn-green', () => completeStep()));
-                  }, 800);
+                    ab.appendChild(makeBtn('Continue →', 'btn-green', () => completeStep()));
+                  }, 600);
                   return;
                 }
-                OBJ.abovePile.material.opacity = 0.5 * (1 - fadeT);
-                OBJ.abovePile.position.y += 0.02;
-              }, 30);
+                // Pure fade — no positional movement, pile stays exactly where it is
+                OBJ.abovePile.material.opacity = 0.6 * (1 - fadeT);
+              }, 25);
             } else {
               markSubtask(2);
               markSubtask(3);
@@ -2559,37 +2571,55 @@ const STEP_HANDLERS = [
       ss.cureClicks = 0;
       ss.formworkStripped = false;
 
-      // Show 4 pile stubs sticking up
+      // Pile positions for 4-pile group
       const pilePositions = [
-        [-2.5, 0, -2.5], [2.5, 0, -2.5],
-        [-2.5, 0, 2.5],  [2.5, 0, 2.5]
+        [-2.5, -2.5], [2.5, -2.5],
+        [-2.5,  2.5], [2.5,  2.5]
       ];
 
-      // Show a shallow excavation pit (below-grade concrete mat)
-      const pitGeo = new THREE.BoxGeometry(7.5, 0.08, 7.5);
-      const pit = new THREE.Mesh(pitGeo, new THREE.MeshLambertMaterial({ color: 0x9e8060 }));
+      // Show excavation pit floor
+      const pit = new THREE.Mesh(
+        new THREE.BoxGeometry(7.5, 0.08, 7.5),
+        new THREE.MeshLambertMaterial({ color: 0x7a6045 })
+      );
       pit.position.set(0, -0.52, 0);
       pit.receiveShadow = true;
       addStep(pit);
 
-      pilePositions.forEach(([px, py, pz]) => {
-        // Cylinder stub — 400 mm diameter, 600 mm exposed above excavation floor
-        const stub = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.22, 0.22, 0.6, 16),
+      // Show 4 FULL cylinder piles going deep through all soil layers
+      // This makes it clear the piles are still there and the cap is connecting them
+      pilePositions.forEach(([px, pz]) => {
+        // Full pile shaft — driven to ~STATE.drivenDepth or default 17m
+        const depth    = STATE.drivenDepth > 0 ? STATE.drivenDepth : 17;
+        const pileLen  = depth + 0.5;          // length from cut-off to tip
+        const pileGrp  = new THREE.Group();
+
+        const shaft = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.22, 0.22, pileLen, 16),
           MAT.concrete
         );
-        stub.position.set(px, -0.2, pz);   // center at y=-0.2: spans y=-0.5 to y=0.1
-        stub.castShadow = true;
-        addStep(stub);
+        shaft.castShadow = true;
+        pileGrp.add(shaft);
 
-        // Starter rebar stubs protruding from pile head, to be embedded into pile cap
+        const tip = new THREE.Mesh(
+          new THREE.ConeGeometry(0.22, 0.5, 16),
+          MAT.steel
+        );
+        tip.position.y = -(pileLen / 2) - 0.25;
+        pileGrp.add(tip);
+
+        // Center of pile: cut-off at y=-0.2, tip at y = -0.2 - pileLen
+        pileGrp.position.set(px, -0.2 - pileLen / 2, pz);
+        addStep(pileGrp);
+
+        // Starter rebar stubs at the cut-off level
         for (let dx = -1; dx <= 1; dx += 2) {
           for (let dz = -1; dz <= 1; dz += 2) {
             const rebar = new THREE.Mesh(
               new THREE.CylinderGeometry(0.02, 0.02, 0.85, 6),
               MAT.rebarSteel
             );
-            rebar.position.set(px + dx * 0.1, 0.23, pz + dz * 0.1);
+            rebar.position.set(px + dx * 0.09, 0.22, pz + dz * 0.09);
             addStep(rebar);
           }
         }
@@ -2867,18 +2897,32 @@ const STEP_HANDLERS = [
       capGroup.add(ped);
       addStep(capGroup);
 
-      // Show 4 cylinder pile stubs beneath cap
-      const pilePositions = [
-        [-2.5, 0, -2.5], [2.5, 0, -2.5],
-        [-2.5, 0, 2.5],  [2.5, 0, 2.5]
+      // Show 4 full piles going through soil layers — the complete foundation picture
+      const pilePosInsp = [
+        [-2.5, -2.5], [2.5, -2.5],
+        [-2.5,  2.5], [2.5,  2.5]
       ];
-      pilePositions.forEach(([px, py, pz]) => {
-        const stub = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.22, 0.22, 0.6, 16),
-          MAT.concrete
+      pilePosInsp.forEach(([px, pz]) => {
+        const depth   = STATE.drivenDepth > 0 ? STATE.drivenDepth : 17;
+        const pileLen = depth + 0.5;
+        const grp     = new THREE.Group();
+
+        const shaft = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.22, 0.22, pileLen, 16),
+          MAT.concreteDark
         );
-        stub.position.set(px, -0.2, pz);
-        addStep(stub);
+        shaft.castShadow = true;
+        grp.add(shaft);
+
+        const tip = new THREE.Mesh(
+          new THREE.ConeGeometry(0.22, 0.5, 16),
+          MAT.steel
+        );
+        tip.position.y = -(pileLen / 2) - 0.25;
+        grp.add(tip);
+
+        grp.position.set(px, -0.2 - pileLen / 2, pz);
+        addStep(grp);
       });
 
       // Inspection diamonds
