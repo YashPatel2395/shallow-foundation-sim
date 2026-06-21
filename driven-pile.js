@@ -1383,6 +1383,11 @@ function el(tag, cls, html) {
 function resetSimulation() {
   const ro = $('result-overlay');
   if (ro) ro.classList.add('hidden');
+  // Remove any scene-level persistent objects before resetting
+  if (OBJ.persistentCap) {
+    scene.remove(OBJ.persistentCap);
+    delete OBJ.persistentCap;
+  }
   STATE.score = 1000;
   STATE.penalties = 0;
   STATE.drivenDepth = 0;
@@ -2839,25 +2844,34 @@ const STEP_HANDLERS = [
               if (idx > -1) stepObjects.splice(idx, 1);
             });
 
-            // Add finished pile cap (below grade)
+            // Remove the fill mesh — replacing it with a clean finished cap
+            if (OBJ.pileFill) {
+              scene.remove(OBJ.pileFill);
+              const fi = stepObjects.indexOf(OBJ.pileFill);
+              if (fi > -1) stepObjects.splice(fi, 1);
+            }
+
+            // Build finished pile cap and add DIRECTLY to scene (not via addStep)
+            // so it survives clearScene3D() and stays visible into step 9
             const capGroup = new THREE.Group();
             const cap = new THREE.Mesh(
               new THREE.BoxGeometry(6.5, 1.2, 6.5),
               MAT.concreteDark
             );
-            cap.position.y = -0.6;  // centered below grade
+            cap.position.y = -0.6;
             cap.castShadow = true;
             cap.receiveShadow = true;
             capGroup.add(cap);
-
-            // Small pedestal above cap where column will sit
             const ped = new THREE.Mesh(
               new THREE.BoxGeometry(1.2, 0.4, 1.2),
               MAT.concreteDark
             );
-            ped.position.y = 0.2;  // sits on top of cap, at grade level
+            ped.position.y = 0.2;
             capGroup.add(ped);
-            addStep(capGroup);
+
+            // Direct scene add — bypasses stepObjects so it is NOT cleared on step change
+            scene.add(capGroup);
+            OBJ.persistentCap = capGroup;
 
             spawnParticles(new THREE.Vector3(0, 0.2, 0), MAT.yellow, 12);
             showFeedback('correct', 'Formwork stripped! Pile cap complete.');
@@ -2871,6 +2885,7 @@ const STEP_HANDLERS = [
     },
     cleanup() {
       delete OBJ.pileFill;
+      // persistentCap intentionally NOT removed here — it carries into step 9
     }
   },
 
@@ -2882,20 +2897,17 @@ const STEP_HANDLERS = [
       ss.total = 5;
       ss.reportGenerated = false;
 
-      // Show finished pile cap — centered below grade (cap bottom at y=-1.2, top at y=0)
-      const capGroup = new THREE.Group();
-      const cap = new THREE.Mesh(
-        new THREE.BoxGeometry(6.5, 1.2, 6.5),
-        MAT.concreteDark
-      );
-      cap.position.y = -0.6;
-      cap.castShadow = true;
-      capGroup.add(cap);
-      // Small pedestal above at grade level for column connection
-      const ped = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.35, 1.2), MAT.concreteDark);
-      ped.position.y = 0.18;
-      capGroup.add(ped);
-      addStep(capGroup);
+      // Pile cap is persistent from step 8 (OBJ.persistentCap).
+      // If user jumped straight to step 9 (e.g. via reset edge-case), add a fresh one.
+      if (!OBJ.persistentCap) {
+        const capGroup = new THREE.Group();
+        const cap = new THREE.Mesh(new THREE.BoxGeometry(6.5, 1.2, 6.5), MAT.concreteDark);
+        cap.position.y = -0.6; cap.castShadow = true; capGroup.add(cap);
+        const ped = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.35, 1.2), MAT.concreteDark);
+        ped.position.y = 0.18; capGroup.add(ped);
+        scene.add(capGroup);
+        OBJ.persistentCap = capGroup;
+      }
 
       // Show 4 full piles going through soil layers — the complete foundation picture
       const pilePosInsp = [
@@ -2999,7 +3011,13 @@ const STEP_HANDLERS = [
       const ab = DOM.actionBar();
       ab.innerHTML = '<div class="step-instruction">Click each inspection diamond to verify construction quality</div>';
     },
-    cleanup() {}
+    cleanup() {
+      // Remove the persistent pile cap now that the simulation is complete
+      if (OBJ.persistentCap) {
+        scene.remove(OBJ.persistentCap);
+        delete OBJ.persistentCap;
+      }
+    }
   }
 
 ]; // end STEP_HANDLERS
