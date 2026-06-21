@@ -124,12 +124,11 @@
       <div id="scene">
         <div id="labels-3d"></div>
         <div id="cam-controls">
-          <button class="cam-btn" onclick="setCameraView('iso')">Iso</button>
-          <button class="cam-btn" onclick="setCameraView('top')">Top</button>
-          <button class="cam-btn" onclick="setCameraView('front')">Front</button>
-          <button class="cam-btn" onclick="setCameraView('side')">Side</button>
-          <button class="cam-btn" id="reset-cam-btn" onclick="resetCamera()">Reset</button>
-          <button class="cam-btn" onclick="setCameraView('cutaway')" title="Underground cutaway view">Cutaway</button>
+          <button class="cam-btn" onclick="setCameraView('iso')" title="3/4 section view">Section</button>
+          <button class="cam-btn" onclick="setCameraView('front')" title="Front elevation — full depth">Elevation</button>
+          <button class="cam-btn" onclick="setCameraView('cutaway')" title="Deep view — bearing layer">Deep</button>
+          <button class="cam-btn" onclick="setCameraView('top')" title="Plan view">Plan</button>
+          <button class="cam-btn" id="reset-cam-btn" onclick="resetCamera()">↺ Reset</button>
         </div>
       </div>
       <div id="action-bar"></div>
