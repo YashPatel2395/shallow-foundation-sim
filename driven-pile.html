@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Driven Pile Foundation Simulation — Foundation Construction Lab</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Driven Pile specific styles */
+    .soil-layer-label {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 2px;
+    }
+
+    .alignment-indicator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .blow-display {
+      width: 100%;
+      background: rgba(0,0,0,0.2);
+      border-radius: 6px;
+      padding: 8px 12px;
+      border: 1px solid rgba(245,166,35,0.2);
+    }
+
+    .refusal-banner {
+      width: 100%;
+    }
+
+    .pile-report {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(245,166,35,0.3);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px 0;
+      text-align: left;
+    }
+    .pile-report h3 {
+      margin: 0;
+    }
+    .pile-report table {
+      border-collapse: collapse;
+    }
+    .pile-report td {
+      padding: 4px 10px 4px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      height: 6px;
+      border-radius: 3px;
+      background: #546e7a;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #f5a623;
+      cursor: pointer;
+    }
+
+    /* Override body overflow for this standalone page */
+    body {
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div id="nav-brand">
+    <span class="nav-logo">🏗️</span>
+    <span id="nav-title">Foundation Construction Simulation Lab</span>
+  </div>
+  <div id="nav-links">
+    <button class="nav-btn" onclick="window.location.href='index.html'">Dashboard</button>
+    <button class="nav-btn" onclick="window.location.href='index.html'">Shallow Foundation</button>
+    <button class="nav-btn active">Driven Pile</button>
+    <button class="nav-btn" onclick="window.location.href='index.html'">Drilled Shaft</button>
+  </div>
+</nav>
+
+<!-- SIMULATION VIEW -->
+<div id="simView" class="view-section">
+
+  <header id="header">
+    <div id="header-left">
+      <button id="back-btn" onclick="window.location.href='index.html'">← Dashboard</button>
+      <div id="header-title">
+        <span class="hard-hat">🔨</span>
+        Driven Pile Foundation Simulation
+      </div>
+    </div>
+    <div id="header-meta">
+      <button id="reset-sim-btn" onclick="resetSimulation()">↺ Reset</button>
+      <div id="score-badge">Score: <span id="score-val">1000</span></div>
+      <div id="step-badge">Step <span id="step-cur">1</span> / 10</div>
+    </div>
+  </header>
+
+  <main id="main">
+    <aside id="task-panel">
+      <div id="task-title">Loading...</div>
+      <div id="task-desc"></div>
+      <ul id="task-subtasks"></ul>
+      <div id="task-why"></div>
+      <div id="task-warning"></div>
+      <div id="task-metadata"></div>
+    </aside>
+    <section id="center-col">
+      <div id="scene">
+        <div id="labels-3d"></div>
+        <div id="cam-controls">
+          <button class="cam-btn" onclick="setCameraView('iso')">Iso</button>
+          <button class="cam-btn" onclick="setCameraView('top')">Top</button>
+          <button class="cam-btn" onclick="setCameraView('front')">Front</button>
+          <button class="cam-btn" onclick="setCameraView('side')">Side</button>
+          <button class="cam-btn" id="reset-cam-btn" onclick="resetCamera()">Reset</button>
+        </div>
+      </div>
+      <div id="action-bar"></div>
+    </section>
+    <aside id="steps-panel">
+      <div class="steps-heading">Construction Steps</div>
+      <ol id="checklist"></ol>
+    </aside>
+  </main>
+
+</div>
+
+<!-- Fixed overlays -->
+<div id="feedback-bar" class="hidden"></div>
+<div id="result-overlay" class="hidden">
+  <div id="result-card">
+    <div id="result-icon">🏗️</div>
+    <h2>Driven Pile Foundation Complete!</h2>
+    <p>All piles driven and pile cap constructed.</p>
+    <div id="result-score-line">Final Score: <span id="result-score">0</span></div>
+    <div id="result-grade"></div>
+    <div class="result-actions">
+      <button id="result-replay" onclick="resetSimulation()">Play Again</button>
+      <button id="result-dashboard-btn" onclick="window.location.href='index.html'">← Dashboard</button>
+    </div>
+  </div>
+</div>
+
+<script src="three.min.js"></script>
+<script defer src="driven-pile.js"></script>
+</body>
+</html>

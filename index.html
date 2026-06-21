@@ -17,7 +17,7 @@
   <div id="nav-links">
     <button class="nav-btn" id="nav-btn-dashboard" onclick="showDashboard()">Dashboard</button>
     <button class="nav-btn" id="nav-btn-shallow" onclick="showShallowFoundationSimulation()">Shallow Foundation</button>
-    <button class="nav-btn" id="nav-btn-driven" onclick="showComingSoon('driven-pile')">Driven Pile</button>
+    <button class="nav-btn" id="nav-btn-driven" onclick="window.location.href='driven-pile.html'">Driven Pile</button>
     <button class="nav-btn" id="nav-btn-drilled" onclick="showComingSoon('drilled-shaft')">Drilled Shaft</button>
   </div>
 </nav>
@@ -35,7 +35,7 @@
         <div class="stat-divider"></div>
         <div class="stat-item"><span class="stat-num">11</span><span class="stat-lbl">Steps</span></div>
         <div class="stat-divider"></div>
-        <div class="stat-item"><span class="stat-num">1</span><span class="stat-lbl">Available Now</span></div>
+        <div class="stat-item"><span class="stat-num">2</span><span class="stat-lbl">Available Now</span></div>
       </div>
     </div>
     <div id="dashboard-hero-visual">
@@ -85,15 +85,15 @@
         </div>
       </article>
 
-      <!-- Chapter 2: Driven Pile - Coming Soon -->
-      <article class="chapter-card card-coming">
+      <!-- Chapter 2: Driven Pile - Available -->
+      <article class="chapter-card card-available" onclick="window.location.href='driven-pile.html'">
         <div class="card-top-bar"></div>
         <div class="card-inner">
           <div class="card-head">
             <div class="card-icon-wrap">
               <span class="card-icon">🔨</span>
             </div>
-            <span class="card-badge badge-coming">🔒 Coming Soon</span>
+            <span class="card-badge badge-available">✓ Available</span>
           </div>
           <h3 class="card-title">Driven Pile Foundation</h3>
           <p class="card-desc">Learn how prefabricated piles are positioned and driven into the ground using a pile driving hammer until the required depth or resistance is reached.</p>
@@ -109,9 +109,9 @@
           <div class="card-footer">
             <div class="card-chips">
               <span class="chip">🪜 10 Steps</span>
-              <span class="chip">🔒 Locked</span>
+              <span class="chip">🕐 ~30 min</span>
             </div>
-            <button class="card-btn btn-coming" onclick="showComingSoon('driven-pile')">Preview Module →</button>
+            <button class="card-btn btn-available" onclick="window.location.href='driven-pile.html'">Start Simulation →</button>
           </div>
         </div>
       </article>
