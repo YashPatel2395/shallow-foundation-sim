@@ -1139,8 +1139,26 @@ function init() {
   buildGround();
   buildSoilLayers();
   buildGradeLine();
+  initZoomSlider();
   startStep(0);
   animate();
+}
+
+function initZoomSlider() {
+  const slider = document.getElementById('zoom-slider');
+  if (!slider) return;
+
+  // Slider → camera: keep direction, change radius
+  slider.addEventListener('input', () => {
+    camTarget = null;   // stop any in-flight preset transition
+    const dist = parseFloat(slider.value);
+    const dir  = new THREE.Vector3()
+      .subVectors(camera.position, controls.target)
+      .normalize();
+    camera.position.copy(controls.target).addScaledVector(dir, dist);
+  });
+
+  // Slider value is refreshed in the animate loop (see below)
 }
 
 // Thin amber line marking ground level across the cutaway opening — engineering grade marker
@@ -1432,6 +1450,12 @@ function animate() {
 
   // Particle update
   updateParticles(dt);
+
+  // Keep zoom slider thumb in sync with actual camera distance
+  const _zs = document.getElementById('zoom-slider');
+  if (_zs && document.activeElement !== _zs) {
+    _zs.value = Math.round(camera.position.distanceTo(controls.target));
+  }
 
   update3DLabels();
   controls.update();
@@ -2722,12 +2746,14 @@ const STEP_HANDLERS = [
           // Concrete pour
           ab.innerHTML = '<div class="step-instruction">Pour concrete into the pile cap formwork</div>';
 
-          // Concrete fill mesh
+          // Concrete fill mesh — dimensions match the finished pile cap exactly:
+          // 6.5 × 1.2 × 6.5 centred at y=-0.6 (spans y=-1.2 to y=0).
+          // Starting height 0.01 so it appears to rise from the excavation floor.
           const fillMesh = new THREE.Mesh(
-            new THREE.BoxGeometry(6.8, 0.01, 6.8),
+            new THREE.BoxGeometry(6.5, 0.01, 6.5),
             MAT.concreteWet
           );
-          fillMesh.position.set(0, -1.1, 0);  // starts at bottom of cap excavation
+          fillMesh.position.set(0, -1.2, 0);
           addStep(fillMesh);
           OBJ.pileFill = fillMesh;
 
@@ -2758,10 +2784,11 @@ const STEP_HANDLERS = [
               if (bar) bar.style.width = ss.pourLevel + '%';
               if (pct) pct.textContent = ss.pourLevel + '%';
 
-              // Grow fill mesh
-              const h = Math.max(0.01, 1.8 * ss.pourLevel / 100);
+              // Grow fill mesh from excavation floor upward.
+              // Max height = 1.2 (matches finished cap height).
+              const h = Math.max(0.01, 1.2 * ss.pourLevel / 100);
               fillMesh.scale.y = h / 0.01;
-              fillMesh.position.y = -1.1 + h / 2;
+              fillMesh.position.y = -1.2 + h / 2;
 
               if (ss.pourLevel >= 85 && ss.pourLevel <= 98) {
                 // In target zone

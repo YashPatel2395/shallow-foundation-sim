@@ -75,6 +75,30 @@
     body {
       overflow: hidden;
     }
+
+    /* Zoom slider */
+    #zoom-control {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 6px;
+      border-left: 1px solid rgba(255,255,255,0.12);
+      margin-left: 2px;
+    }
+    .zoom-icon {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      line-height: 1;
+      user-select: none;
+    }
+    #zoom-slider {
+      width: 72px;
+      height: 4px;
+      accent-color: #f5a623;
+      cursor: pointer;
+      background: rgba(255,255,255,0.12);
+      border-radius: 2px;
+    }
   </style>
 </head>
 <body>
@@ -129,6 +153,11 @@
           <button class="cam-btn" onclick="setCameraView('cutaway')" title="Deep view — bearing layer">Deep</button>
           <button class="cam-btn" onclick="setCameraView('top')" title="Plan view">Plan</button>
           <button class="cam-btn" id="reset-cam-btn" onclick="resetCamera()">↺ Reset</button>
+          <div id="zoom-control">
+            <span class="zoom-icon">−</span>
+            <input type="range" id="zoom-slider" min="4" max="75" step="1" value="30" title="Zoom">
+            <span class="zoom-icon">+</span>
+          </div>
         </div>
       </div>
       <div id="action-bar"></div>
