@@ -1,5 +1,5 @@
 /* ============================================================
-   DRIVEN PILE FOUNDATION CONSTRUCTION SIMULATION — Three.js 3D
+   DRILLED SHAFT FOUNDATION CONSTRUCTION SIMULATION — Three.js 3D
    THREE is loaded globally from three.min.js
    ============================================================ */
 
@@ -105,51 +105,51 @@ const STEPS = [
   {
     title: '1. Site Investigation',
     desc: 'Conduct soil boring tests at 5 locations to determine soil profile and bearing capacity.',
-    subtasks: ['Test point BH-1', 'Test point BH-2', 'Test point BH-3', 'Test point BH-4', 'Test point BH-5', 'Review soil report'],
-    why: 'Site investigation determines if shallow foundations are adequate. Deep foundations are required when soft/weak soils extend to great depth.',
-    warning: 'Skipping site investigation leads to foundation failure — one of the most costly construction mistakes.'
+    subtasks: ['Test point BH-1','Test point BH-2','Test point BH-3','Test point BH-4','Test point BH-5','Review soil report'],
+    why: 'Drilled shafts require detailed soil knowledge to design shaft diameter, depth, and concrete mix.',
+    warning: 'Skipping borings risks drilling into unexpected rock or losing borehole stability.'
   },
   {
-    title: '2. Pile Layout',
-    desc: 'Mark the exact positions for all 4 piles based on the structural design drawings.',
-    subtasks: ['Place pile marker P1', 'Place pile marker P2', 'Place pile marker P3', 'Place pile marker P4'],
-    why: 'Pile positions must align with column loads. Incorrect layout misses the load path entirely.',
-    warning: 'Layout errors cannot be corrected after driving. Check twice, drive once.'
+    title: '2. Shaft Layout',
+    desc: 'Mark the exact positions for all 4 drilled shaft centres using survey equipment.',
+    subtasks: ['Place shaft marker S1','Place shaft marker S2','Place shaft marker S3','Place shaft marker S4'],
+    why: 'Shaft positions must align with column loads. Incorrect layout misses the load path entirely.',
+    warning: 'Layout errors cannot be corrected after drilling. Check twice, drill once.'
   },
   {
-    title: '3. Pile Selection',
-    desc: 'Choose the appropriate pile type for this medium-rise structure on soft clay over dense sand.',
-    subtasks: ['Review pile options', 'Select correct pile type', 'Confirm selection'],
-    why: 'Pile type affects cost, installation method, load capacity, and suitability for soil conditions.',
-    warning: 'Timber piles decay in alternating wet/dry conditions. Steel piles corrode in aggressive soils.'
+    title: '3. Mobilise Drilling Rig',
+    desc: 'Position the rotary drilling rig over shaft S1 and complete rig setup checks.',
+    subtasks: ['Drive rig to shaft S1','Extend Kelly bar','Attach drill bucket','Confirm rig level'],
+    why: 'The rotary drilling rig rotates a cutting tool to remove soil and create the borehole.',
+    warning: 'Rig must be perfectly centred over the shaft marker to maintain borehole alignment.'
   },
   {
-    title: '4. Position Pile',
-    desc: 'Use the crane to lift the concrete pile from storage and position it over the pile marker.',
-    subtasks: ['Attach lifting sling', 'Crane lifts pile vertical', 'Guide pile to position'],
-    why: 'Correct positioning ensures the pile is driven to the design location under the column.',
-    warning: 'Never stand under a suspended pile. Maintain clear exclusion zone during lifting.'
+    title: '4. Drill Borehole',
+    desc: 'Rotate the drill bucket to excavate all 4 boreholes to the design depth of 17 m.',
+    subtasks: ['Drill shaft S1 to 17 m','Drill shaft S2 to 17 m','Drill shaft S3 to 17 m','Drill shaft S4 to 17 m'],
+    why: 'The borehole must reach firm bearing stratum. Spoil is lifted and deposited beside the rig.',
+    warning: 'Monitor for borehole collapse in soft soils — install casing immediately if walls begin to slump.'
   },
   {
-    title: '5. Alignment Check',
-    desc: 'Verify the pile is perfectly vertical using theodolite readings from two directions.',
-    subtasks: ['Check North-South verticality', 'Check East-West verticality', 'Confirm within ±0.5°'],
-    why: 'An out-of-plumb pile induces bending. Tolerance is typically ±1:75 (0.75°).',
-    warning: 'Misaligned piles transfer load eccentrically, reducing capacity and causing structural problems.'
+    title: '5. Install Temporary Casing',
+    desc: 'Lower a steel casing into each borehole to prevent collapse during reinforcement and concrete placement.',
+    subtasks: ['Lower casing into S1','Lower casing into S2','Lower casing into S3','Lower casing into S4'],
+    why: 'Temporary casing supports unstable borehole walls and keeps the hole circular for the rebar cage.',
+    warning: 'Casing must reach stable soil — partial casing leaves the lower shaft unprotected.'
   },
   {
-    title: '6. Drive Pile',
-    desc: 'Operate the drop hammer to drive the pile through soft soils to the bearing layer.',
-    subtasks: ['Begin driving in topsoil', 'Drive through soft clay', 'Drive through loose sand', 'Enter dense sand'],
-    why: 'Impact energy is transferred through the pile to the tip, which displaces and compresses soil.',
-    warning: 'Monitor blow count carefully. Rapid change indicates layer change or obstruction.'
+    title: '6. Lower Reinforcement Cage',
+    desc: 'Lower a pre-assembled steel rebar cage into each cased borehole.',
+    subtasks: ['Lower cage into S1','Lower cage into S2','Lower cage into S3','Lower cage into S4'],
+    why: 'The rebar cage provides tensile strength to the drilled shaft, enabling it to resist bending and tension.',
+    warning: 'Cage must be centred with concrete cover spacers — contact with casing wall causes corrosion.'
   },
   {
-    title: '7. Reach Pile Refusal',
-    desc: 'Recognize when the pile has reached the bearing layer and refusal condition is achieved.',
-    subtasks: ['Monitor penetration per blow', 'Observe decreasing movement', 'Confirm refusal criteria', 'Record final depth'],
-    why: 'Pile refusal indicates the pile tip has reached a strong bearing layer capable of carrying design loads.',
-    warning: 'Premature refusal on an obstruction (boulder) must be distinguished from true bearing layer refusal.'
+    title: '7. Pour Concrete — Tremie Method',
+    desc: 'Pour concrete from the bottom of each borehole upward using a tremie pipe. Withdraw casing as concrete rises.',
+    subtasks: ['Tremie pour shaft S1 — withdraw casing','Tremie pour shaft S2 — withdraw casing','Tremie pour shaft S3 — withdraw casing','Tremie pour shaft S4 — withdraw casing'],
+    why: 'Tremie placement prevents concrete segregation. Casing is withdrawn slowly so concrete always stays above the casing toe.',
+    warning: 'Never withdraw casing faster than concrete rises — this collapses the borehole wall into the shaft.'
   },
   {
     title: '8. Formwork Installation',
@@ -211,60 +211,60 @@ const STEPS = [
 
 const STEP_META = [
   {
-    purpose: 'Determine the subsurface soil profile to select the appropriate foundation type.',
+    purpose: 'Determine the subsurface soil profile to design the drilled shaft diameter and depth.',
     userAction: 'Click all 5 soil boring markers and review the soil report.',
-    tools: ['Soil boring rig', 'SPT sampler', 'Geotechnical lab'],
-    qualityCheck: 'All boring locations tested and soil profile documented.',
-    commonMistake: 'Insufficient number of borings misses variable soil conditions.',
-    learningObjective: 'Deep foundations are needed when bearing soil is too deep for shallow footings.'
+    tools: ['Rotary boring rig','SPT sampler','Geotechnical lab'],
+    qualityCheck: 'All boring locations tested; soil profile and groundwater level documented.',
+    commonMistake: 'Insufficient borings miss variable soil — unexpected rock can halt drilling mid-shaft.',
+    learningObjective: 'Drilled shafts transfer load in both side friction and end bearing — soil knowledge is essential.'
   },
   {
-    purpose: 'Establish exact pile locations that align with the structural column load paths.',
+    purpose: 'Establish exact shaft centres aligned with the structural column load paths.',
     userAction: 'Click each target ring to place a survey marker at the design position.',
-    tools: ['Total station', 'Survey stakes', 'Steel tape', 'Design drawings'],
-    qualityCheck: 'All pile positions within ±25mm of design coordinates.',
-    commonMistake: 'Transposing coordinates or measuring from wrong reference point.',
-    learningObjective: 'Pile positions must match the structural design load path.'
+    tools: ['Total station','Survey stakes','Steel tape','Design drawings'],
+    qualityCheck: 'All shaft centres within ±25 mm of design coordinates.',
+    commonMistake: 'Transposing coordinates places the shaft outside the column load path.',
+    learningObjective: 'Shaft positions define where load is transferred underground — precision matters.'
   },
   {
-    purpose: 'Select the pile material and type best suited for the soil and loading conditions.',
-    userAction: 'Review three pile options and select the most appropriate type.',
-    tools: ['Design specifications', 'Soil report', 'Pile catalogues'],
-    qualityCheck: 'Selected pile type matches soil conditions and load requirements.',
-    commonMistake: 'Choosing based on cost alone without considering durability and soil compatibility.',
-    learningObjective: 'Pile selection depends on soil type, groundwater, loads, and durability requirements.'
+    purpose: 'Centre the rotary drilling rig over the shaft location and prepare the drill string.',
+    userAction: 'Drive the rig to shaft S1, extend the Kelly bar, attach the drill bucket, and confirm level.',
+    tools: ['Rotary drilling rig','Kelly bar','Drill bucket','Spirit level'],
+    qualityCheck: 'Rig centred within ±20 mm of shaft centre; Kelly bar plumb.',
+    commonMistake: 'Rig off-centre causes an inclined borehole — shaft may miss the design footprint.',
+    learningObjective: 'The Kelly bar transmits torque and crowd force from rotary head to drill bucket.'
   },
   {
-    purpose: 'Safely lift and position the pile from storage into the driving leads.',
-    userAction: 'Attach sling, lift pile vertical, and guide to the driving position.',
-    tools: ['Crane', 'Lifting slings', 'Tag lines', 'Pile driving rig'],
-    qualityCheck: 'Pile centered in leads and aligned with pile marker below.',
-    commonMistake: 'Rushing the lift without proper sling attachment points.',
-    learningObjective: 'Safe pile handling prevents worker injury and pile damage.'
+    purpose: 'Excavate the cylindrical borehole to the design depth through all soil layers.',
+    userAction: 'Hold DRILL to rotate the bucket and advance to 17 m depth for each of the 4 shafts.',
+    tools: ['Drill bucket','Kelly bar','Depth monitor','Bentonite/polymer slurry'],
+    qualityCheck: 'All 4 boreholes at 17 m depth; vertical within 1:75; no borehole collapse.',
+    commonMistake: 'Stopping short of the bearing layer reduces end-bearing capacity.',
+    learningObjective: 'Drill bucket rotation cuts and collects spoil; multiple bucket-lifts build up the full depth.'
   },
   {
-    purpose: 'Ensure the pile is perfectly vertical before driving begins.',
-    userAction: 'Adjust N-S and E-W tilt sliders until the pile is within 0.5° of vertical.',
-    tools: ['Theodolite', 'Inclinometer', 'Plumb line'],
-    qualityCheck: 'Pile verticality within ±0.5° in both axes.',
-    commonMistake: 'Checking only one axis — pile can be plumb in one direction but tilted in the other.',
-    learningObjective: 'Alignment must be checked in two perpendicular directions.'
+    purpose: 'Support unstable borehole walls to maintain a clean cylindrical void for the rebar cage.',
+    userAction: 'Lower and seat the steel casing into each borehole.',
+    tools: ['Temporary steel casing','Crane','Vibratory hammer (if needed)'],
+    qualityCheck: 'Casing seated in stable material; top flush with or slightly above grade.',
+    commonMistake: 'Casing too short leaves soft upper soils unsupported — wall collapse contaminates the shaft.',
+    learningObjective: 'Casing acts as formwork above; it is withdrawn as concrete fills from below.'
   },
   {
-    purpose: 'Drive the pile through weak soils using repeated hammer impacts.',
-    userAction: 'Hold the DRIVE button and watch blow count and penetration per blow.',
-    tools: ['Drop hammer', 'Pile driving rig', 'Blow counter', 'Depth gauge'],
-    qualityCheck: 'Consistent blow counts that increase with depth as expected.',
-    commonMistake: 'Ignoring sudden changes in blow count that may indicate obstructions.',
-    learningObjective: 'Penetration resistance increases with soil density and depth.'
+    purpose: 'Place tensile reinforcement so the shaft can carry bending, tension, and column connection loads.',
+    userAction: 'Lower the pre-assembled rebar cage into each cased borehole.',
+    tools: ['Pre-fabricated rebar cage','Crane','Concrete cover spacers','Plumb bob'],
+    qualityCheck: 'Cage centred; cover spacers in place; cage tip at design depth.',
+    commonMistake: 'Cage not centred — concrete cover insufficient on one side leading to corrosion.',
+    learningObjective: 'Rebar cage must be assembled before lowering; it cannot be spliced in a wet borehole.'
   },
   {
-    purpose: 'Confirm the pile has reached competent bearing material and cannot penetrate further.',
-    userAction: 'Continue driving until refusal criteria are met, then confirm.',
-    tools: ['Blow counter', 'Penetration gauge', 'Driving log'],
-    qualityCheck: 'Last 10 blows produce less than 25mm total penetration.',
-    commonMistake: 'Confusing refusal on a boulder with true bearing layer refusal.',
-    learningObjective: 'Pile refusal criteria ensure adequate bearing capacity at the pile tip.'
+    purpose: 'Form the in-situ concrete shaft by placing concrete from the bottom upward to avoid contamination.',
+    userAction: 'Insert tremie pipe, pour concrete to fill each shaft from bottom up, and withdraw casing.',
+    tools: ['Tremie pipe','Ready-mix truck','Crane','Concrete pump'],
+    qualityCheck: 'Concrete fills to design level; no soil contamination; casing withdrawn smoothly.',
+    commonMistake: 'Withdrawing casing too fast sucks soil into the shaft — creates a void or "neck".',
+    learningObjective: 'Tremie pipe tip always stays submerged in fresh concrete — prevents water/soil contamination.'
   },
   {
     purpose: 'Create a temporary mold that holds the concrete footing in the correct shape and position.',
@@ -378,6 +378,7 @@ const STATE = {
   intervals: [],
   timeouts: [],
   drivenDepth: 0,
+  drilledDepth: 0,
   totalBlows: 0,
   alignmentNS: 90 + (Math.random() - 0.5) * 3,
   alignmentEW: 90 + (Math.random() - 0.5) * 3,
@@ -413,8 +414,8 @@ const DOM = {
 
 const clock = new THREE.Clock();
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x96b0bc);  // overcast construction site sky
-scene.fog = new THREE.Fog(0x96b0bc, 45, 95);   // depth haze — distant elements fade naturally
+scene.background = new THREE.Color(0x96b0bc);
+scene.fog = new THREE.Fog(0x96b0bc, 45, 95);
 
 const sceneEl = DOM.scene();
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -437,15 +438,12 @@ controls.minDistance   = 3;
 controls.maxDistance   = 80;
 controls.target.set(0, -10, 0);
 
-// Cancel any camera preset transition the moment the user touches the camera
 renderer.domElement.addEventListener('pointerdown', () => { camTarget = null; });
 renderer.domElement.addEventListener('wheel',       () => { camTarget = null; }, { passive: true });
 
-// Lighting — outdoor construction site daylight
-const ambientLight = new THREE.AmbientLight(0xdce8f0, 1.1);   // cool overcast sky ambient
+const ambientLight = new THREE.AmbientLight(0xdce8f0, 1.1);
 scene.add(ambientLight);
 
-// Sun — warm, slightly from south-west
 const keyLight = new THREE.DirectionalLight(0xfff0d8, 2.2);
 keyLight.position.set(25, 40, 20);
 keyLight.castShadow = true;
@@ -460,17 +458,14 @@ keyLight.shadow.camera.bottom = -35;
 keyLight.shadow.bias = -0.001;
 scene.add(keyLight);
 
-// Sky bounce — cool blue fill from opposite side
 const fillLight = new THREE.DirectionalLight(0x90b8d0, 0.5);
 fillLight.position.set(-20, 15, -10);
 scene.add(fillLight);
 
-// Ground bounce — warm reflected light from earth below
 const groundBounce = new THREE.DirectionalLight(0xc8a870, 0.3);
 groundBounce.position.set(0, -15, 5);
 scene.add(groundBounce);
 
-// Resize
 function onResize() {
   const w = sceneEl.clientWidth  || 480;
   const h = sceneEl.clientHeight || 400;
@@ -519,7 +514,6 @@ const TEX = {
   concrete: makeCanvasTexture((ctx, s) => {
     ctx.fillStyle = '#b8b8b8';
     ctx.fillRect(0, 0, s, s);
-    // Grid lines for precast concrete pile
     ctx.strokeStyle = '#999';
     ctx.lineWidth = 1;
     for (let i = 0; i < s; i += 32) {
@@ -580,13 +574,11 @@ const MAT = {
   blue:     new THREE.MeshLambertMaterial({ color: 0x1565c0 }),
   green:    new THREE.MeshLambertMaterial({ color: 0x2e7d32 }),
   white:    new THREE.MeshLambertMaterial({ color: 0xeeeeee }),
-  // Soil layer materials
   topsoil:   new THREE.MeshLambertMaterial({ color: 0x8B6340 }),
   softClay:  new THREE.MeshLambertMaterial({ color: 0x6B8E6E }),
   looseSand: new THREE.MeshLambertMaterial({ color: 0xD4A85A }),
   denseSand: new THREE.MeshLambertMaterial({ color: 0xC4843A }),
   bearing:   new THREE.MeshLambertMaterial({ color: 0x607080 }),
-  // Rig materials
   rigYellow: new THREE.MeshLambertMaterial({ color: 0xe8b800 }),
   rigDarkYellow: new THREE.MeshLambertMaterial({ color: 0xc49900 }),
   cabGray:   new THREE.MeshLambertMaterial({ color: 0x3a3a3a }),
@@ -599,7 +591,6 @@ const MAT = {
   steelBright:  new THREE.MeshLambertMaterial({ color: 0xb0bec5 }),
   rulerWhite:   new THREE.MeshLambertMaterial({ color: 0xeeeeee }),
   rulerRed:     new THREE.MeshLambertMaterial({ color: 0xf44336 }),
-  // Markers
   markerOrange: new THREE.MeshStandardMaterial({ color: 0xff6600, emissive: 0xff3300, emissiveIntensity: 0.4 }),
   markerGreen:  new THREE.MeshStandardMaterial({ color: 0x00cc44, emissive: 0x00aa22, emissiveIntensity: 0.3 }),
   inspOrange:   new THREE.MeshStandardMaterial({ color: 0xf39c12, emissive: 0xd4880a, emissiveIntensity: 0.3, transparent: true, opacity: 0.9 }),
@@ -611,7 +602,9 @@ const MAT = {
   rebarSteel:   new THREE.MeshLambertMaterial({ color: 0x607d8b }),
   concreteWet:  new THREE.MeshLambertMaterial({ color: 0x9e9e9e, transparent: true, opacity: 0.92 }),
   waterBlue:    new THREE.MeshLambertMaterial({ color: 0x4fc3f7, transparent: true, opacity: 0.7 }),
-  flashWhite:   new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1.0, transparent: true, opacity: 0.9 })
+  flashWhite:   new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1.0, transparent: true, opacity: 0.9 }),
+  boreholeDark: new THREE.MeshLambertMaterial({ color: 0x1a1a1a }),
+  casingSteel:  new THREE.MeshLambertMaterial({ color: 0x607d8b, transparent: true, opacity: 0.85 })
 };
 
 /* ══════════════════════════════════════════════════════════════
@@ -664,30 +657,32 @@ function clearScene3D() {
   delete OBJ.curingConcrete;
   delete OBJ.excavPitViz;
   delete OBJ.backfillMeshes;
+  delete OBJ.drillingRig;
+  delete OBJ.boreholes;
+  delete OBJ.casings;
+  delete OBJ.rebarCages;
 }
 
 /* ══════════════════════════════════════════════════════════════
    CAMERA PRESETS
 ══════════════════════════════════════════════════════════════ */
 
-// Camera presets — all oriented to show the underground section prominently.
-// Target y=-10 puts the centre of the soil profile in view.
 const CAM_PRESETS = [
-  { pos: new THREE.Vector3(16,  4, 22), look: new THREE.Vector3(0, -5, 0) },   // 0 investigation (surface + section)
-  { pos: new THREE.Vector3(12,  8, 16), look: new THREE.Vector3(0,  0, 0) },   // 1 layout (ground plan)
-  { pos: new THREE.Vector3(14,  4, 18), look: new THREE.Vector3(0,  0, 0) },   // 2 pile selection
-  { pos: new THREE.Vector3(12,  6, 16), look: new THREE.Vector3(0,  5, 0) },   // 3 position pile (showing rig)
-  { pos: new THREE.Vector3(9,   5, 13), look: new THREE.Vector3(0,  4, 0) },   // 4 alignment check
-  { pos: new THREE.Vector3(18,  0, 24), look: new THREE.Vector3(0, -8, 0) },   // 5 drive pile (section view)
-  { pos: new THREE.Vector3(18, -4, 24), look: new THREE.Vector3(0,-14, 0) },   // 6 pile refusal (deep section)
-  { pos: new THREE.Vector3( 5,  6,  7), look: new THREE.Vector3(0,-1.5,0) }, // 7 formwork
-  { pos: new THREE.Vector3( 3,  7,  5), look: new THREE.Vector3(0,-1.5,0) }, // 8 reinforcement
-  { pos: new THREE.Vector3( 9,  4, 12), look: new THREE.Vector3(0,-1.5,0) }, // 9 concrete
-  { pos: new THREE.Vector3( 8,  7, 11), look: new THREE.Vector3(0, 0,  0) }, // 10 inspection
-  { pos: new THREE.Vector3( 4,  4,  6), look: new THREE.Vector3(0,-1,  0) }, // 11 curing
-  { pos: new THREE.Vector3(10, 10, 13), look: new THREE.Vector3(0, 0,  0) }, // 12 final insp
-  { pos: new THREE.Vector3( 8,  2, 11), look: new THREE.Vector3(0,-2,  0) }, // 13 pillar
-  { pos: new THREE.Vector3( 7,  5,  9), look: new THREE.Vector3(0,-1,  0) }  // 14 backfill
+  { pos: new THREE.Vector3(16,  4, 22), look: new THREE.Vector3(0, -5, 0) },   // 0 investigation
+  { pos: new THREE.Vector3(12,  8, 16), look: new THREE.Vector3(0,  0, 0) },   // 1 layout
+  { pos: new THREE.Vector3(14,  4, 18), look: new THREE.Vector3(0,  2, 0) },   // 2 mobilise rig
+  { pos: new THREE.Vector3(18,  0, 24), look: new THREE.Vector3(0, -8, 0) },   // 3 drill borehole
+  { pos: new THREE.Vector3(14,  2, 18), look: new THREE.Vector3(0, -4, 0) },   // 4 install casing
+  { pos: new THREE.Vector3(14,  2, 18), look: new THREE.Vector3(0, -4, 0) },   // 5 lower cage
+  { pos: new THREE.Vector3(18, -2, 24), look: new THREE.Vector3(0,-10, 0) },   // 6 pour concrete
+  { pos: new THREE.Vector3( 5,  6,  7), look: new THREE.Vector3(0,-1.5,0) },   // 7 formwork
+  { pos: new THREE.Vector3( 3,  7,  5), look: new THREE.Vector3(0,-1.5,0) },   // 8 reinforcement
+  { pos: new THREE.Vector3( 9,  4, 12), look: new THREE.Vector3(0,-1.5,0) },   // 9 concrete
+  { pos: new THREE.Vector3( 8,  7, 11), look: new THREE.Vector3(0, 0,  0) },   // 10 inspection
+  { pos: new THREE.Vector3( 4,  4,  6), look: new THREE.Vector3(0,-1,  0) },   // 11 curing
+  { pos: new THREE.Vector3(10, 10, 13), look: new THREE.Vector3(0, 0,  0) },   // 12 final insp
+  { pos: new THREE.Vector3( 8,  2, 11), look: new THREE.Vector3(0,-2,  0) },   // 13 pillar
+  { pos: new THREE.Vector3( 7,  5,  9), look: new THREE.Vector3(0,-1,  0) }    // 14 backfill
 ];
 
 let camTarget = null;
@@ -697,13 +692,12 @@ function setCamPreset(n) {
   camTarget = { pos: p.pos.clone(), look: p.look.clone() };
 }
 
-// Named view presets — names updated to engineering-first terminology
 const VIEW_PRESETS = {
-  iso:     { pos: new THREE.Vector3(20,  0, 26),  look: new THREE.Vector3(0, -10, 0) }, // Full section 3/4
-  top:     { pos: new THREE.Vector3(0,  30,  1),  look: new THREE.Vector3(0,   0, 0) }, // Plan view
-  front:   { pos: new THREE.Vector3(0,  -4, 28),  look: new THREE.Vector3(0, -10, 0) }, // Front elevation (full section)
-  side:    { pos: new THREE.Vector3(28, -4,  0),  look: new THREE.Vector3(0, -10, 0) }, // Side elevation
-  cutaway: { pos: new THREE.Vector3(14, -8, 20),  look: new THREE.Vector3(0, -14, 0) }, // Deep section (bearing layer visible)
+  iso:     { pos: new THREE.Vector3(20,  0, 26),  look: new THREE.Vector3(0, -10, 0) },
+  top:     { pos: new THREE.Vector3(0,  30,  1),  look: new THREE.Vector3(0,   0, 0) },
+  front:   { pos: new THREE.Vector3(0,  -4, 28),  look: new THREE.Vector3(0, -10, 0) },
+  side:    { pos: new THREE.Vector3(28, -4,  0),  look: new THREE.Vector3(0, -10, 0) },
+  cutaway: { pos: new THREE.Vector3(14, -8, 20),  look: new THREE.Vector3(0, -14, 0) },
 };
 
 window.setCameraView = function(name) {
@@ -729,16 +723,13 @@ scene.add(soilLayerGroup);
 function buildGround() {
   while (groundGroup.children.length) groundGroup.remove(groundGroup.children[0]);
 
-  // Procedural compacted gravel/mud texture
   const gravelCanvas = document.createElement('canvas');
   gravelCanvas.width = gravelCanvas.height = 512;
   const gc = gravelCanvas.getContext('2d');
 
-  // Base compacted mud color
   gc.fillStyle = '#5a4a35';
   gc.fillRect(0, 0, 512, 512);
 
-  // Gravel stones — varied browns and grays
   const stoneColors = ['#7a6548','#6b5840','#8a7558','#4e3e2a','#9a8768','#3e3028','#857060'];
   for (let i = 0; i < 900; i++) {
     const x = Math.random() * 512, y = Math.random() * 512;
@@ -748,11 +739,9 @@ function buildGround() {
     gc.ellipse(x, y, rx, ry, Math.random() * Math.PI, 0, Math.PI * 2);
     gc.fill();
   }
-  // Tyre track ruts — two parallel dark bands
   gc.fillStyle = 'rgba(30,20,10,0.35)';
   gc.fillRect(60, 0, 30, 512);
   gc.fillRect(160, 0, 25, 512);
-  // Mud puddle patches
   for (let i = 0; i < 6; i++) {
     const x = Math.random() * 512, y = Math.random() * 512;
     const r = 15 + Math.random() * 30;
@@ -772,28 +761,22 @@ function buildGround() {
   surfMat.polygonOffsetFactor = -1;
   surfMat.polygonOffsetUnits  = -1;
 
-  // Extended 36×36m site footprint — leaves front-right quadrant (x:0→6, z:0→6) open for cutaway
-  // Piece 1: Full left (x:-18→0, z:-18→18)
   const m1 = new THREE.Mesh(new THREE.PlaneGeometry(18, 36), surfMat);
   m1.rotation.x = -Math.PI / 2; m1.position.set(-9, 0.005, 0); m1.receiveShadow = true;
   groundGroup.add(m1);
 
-  // Piece 2: Right back (x:0→18, z:-18→0)
   const m2 = new THREE.Mesh(new THREE.PlaneGeometry(18, 18), surfMat);
   m2.rotation.x = -Math.PI / 2; m2.position.set(9, 0.005, -9); m2.receiveShadow = true;
   groundGroup.add(m2);
 
-  // Piece 3: Right front past cutaway (x:6→18, z:0→18)
   const m3 = new THREE.Mesh(new THREE.PlaneGeometry(12, 18), surfMat);
   m3.rotation.x = -Math.PI / 2; m3.position.set(12, 0.005, 9); m3.receiveShadow = true;
   groundGroup.add(m3);
 
-  // Piece 4: Narrow strip (x:0→6, z:6→18)
   const m4 = new THREE.Mesh(new THREE.PlaneGeometry(6, 12), surfMat);
   m4.rotation.x = -Math.PI / 2; m4.position.set(3, 0.005, 12); m4.receiveShadow = true;
   groundGroup.add(m4);
 
-  // Grade-level edge lines — amber hairlines marking the cut face at y≈0
   const edgeMat = new THREE.MeshLambertMaterial({ color: 0xf5a623 });
   const ex = new THREE.Mesh(new THREE.BoxGeometry(6, 0.05, 0.05), edgeMat);
   ex.position.set(3, 0.025, 0); groundGroup.add(ex);
@@ -801,10 +784,6 @@ function buildGround() {
   ez.position.set(0, 0.025, 3); groundGroup.add(ez);
 }
 
-/* ── Construction site elements ─────────────────────────────────
-   Added once at init; positioned at site edges visible from the
-   default camera (18, 2, 24) without blocking the cutaway section.
-───────────────────────────────────────────────────────────────── */
 let siteGroup = null;
 
 function buildSiteElements() {
@@ -812,28 +791,23 @@ function buildSiteElements() {
   siteGroup = new THREE.Group();
   scene.add(siteGroup);
 
-  const matBarrier  = new THREE.MeshLambertMaterial({ color: 0xd0d0d0 });   // concrete K-rail
-  const matBarrierS = new THREE.MeshLambertMaterial({ color: 0xb0b0b0 });   // barrier side
-  const matTrailer  = new THREE.MeshLambertMaterial({ color: 0x4a7c9e });   // portakabin blue
+  const matBarrier  = new THREE.MeshLambertMaterial({ color: 0xd0d0d0 });
+  const matBarrierS = new THREE.MeshLambertMaterial({ color: 0xb0b0b0 });
+  const matTrailer  = new THREE.MeshLambertMaterial({ color: 0x4a7c9e });
   const matRoof     = new THREE.MeshLambertMaterial({ color: 0x3a6080 });
   const matWindow   = new THREE.MeshLambertMaterial({ color: 0x8ec4e8, transparent: true, opacity: 0.7 });
-  const matSpoil    = new THREE.MeshLambertMaterial({ color: 0x7a5c35 });   // excavated earth
+  const matSpoil    = new THREE.MeshLambertMaterial({ color: 0x7a5c35 });
   const matRebar    = new THREE.MeshLambertMaterial({ color: 0x607d8b });
-  const matAggreg   = new THREE.MeshLambertMaterial({ color: 0xb8a882 });   // aggregate/sand pile
+  const matAggreg   = new THREE.MeshLambertMaterial({ color: 0xb8a882 });
   const matHoardDk  = new THREE.MeshLambertMaterial({ color: 0x1a3a5c, side: THREE.DoubleSide });
-  const matHoardLt  = new THREE.MeshLambertMaterial({ color: 0xf5a623 });   // hoarding stripe
+  const matHoardLt  = new THREE.MeshLambertMaterial({ color: 0xf5a623 });
 
-  // ── Jersey K-barriers along the left and back perimeter ──────
-  // Each barrier: 1.0m tall, 0.4m wide, 1.2m long, slightly tapered top
   function addBarrier(x, z, rotY) {
     const g = new THREE.Group();
-    // Base slab
     const base = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.3, 0.5), matBarrier);
     base.position.y = 0.15; g.add(base);
-    // Upper tapered body
     const body = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.6, 0.36), matBarrier);
     body.position.y = 0.6; g.add(body);
-    // Top cap
     const top = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.12, 0.24), matBarrierS);
     top.position.y = 0.96; g.add(top);
     g.position.set(x, 0, z);
@@ -841,48 +815,35 @@ function buildSiteElements() {
     siteGroup.add(g);
   }
 
-  // Back row (z = -15): x from -14 to +14
   for (let x = -14; x <= 14; x += 2.2) addBarrier(x, -15, 0);
-  // Left row (x = -15): z from -14 to +14
   for (let z = -13; z <= 14; z += 2.2) addBarrier(-15, z, Math.PI / 2);
 
-  // ── Site hoarding board (back-left corner signage) ────────────
   const hBoard = new THREE.Mesh(new THREE.BoxGeometry(8, 2.5, 0.12), matHoardDk);
   hBoard.position.set(-8, 1.25, -15.1);
   siteGroup.add(hBoard);
-  // Amber stripe along top of hoarding
   const stripe = new THREE.Mesh(new THREE.BoxGeometry(8, 0.35, 0.14), matHoardLt);
   stripe.position.set(-8, 2.4, -15.08);
   siteGroup.add(stripe);
 
-  // ── Portakabin / site office — back-right corner ──────────────
-  // x=10, z=-12
   const cabin = new THREE.Group();
   cabin.position.set(12, 0, -12);
-  // Walls
   const walls = new THREE.Mesh(new THREE.BoxGeometry(4.5, 2.4, 2.5), matTrailer);
   walls.position.y = 1.2; cabin.add(walls);
-  // Roof (flat)
   const roof = new THREE.Mesh(new THREE.BoxGeometry(4.7, 0.12, 2.7), matRoof);
   roof.position.y = 2.46; cabin.add(roof);
-  // Windows (2)
   const winG = new THREE.BoxGeometry(0.9, 0.8, 0.1);
   const w1 = new THREE.Mesh(winG, matWindow); w1.position.set(-1.4, 1.3, 1.26); cabin.add(w1);
   const w2 = new THREE.Mesh(winG, matWindow); w2.position.set( 0.4, 1.3, 1.26); cabin.add(w2);
-  // Door
   const door = new THREE.Mesh(new THREE.BoxGeometry(0.7, 1.8, 0.1), matBarrierS);
   door.position.set(1.5, 0.9, 1.26); cabin.add(door);
   siteGroup.add(cabin);
 
-  // ── Spoil heap (excavated earth) — front-right ───────────────
-  // SphereGeometry squished to form a mound; x=14, z=10
   const spoilGeo = new THREE.SphereGeometry(2.5, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2);
   const spoil = new THREE.Mesh(spoilGeo, matSpoil);
   spoil.position.set(14, 0, 12);
   spoil.scale.set(1.2, 0.55, 0.9);
   spoil.castShadow = true;
   siteGroup.add(spoil);
-  // Second smaller mound alongside
   const spoil2 = new THREE.Mesh(
     new THREE.SphereGeometry(1.5, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2),
     matSpoil
@@ -891,7 +852,6 @@ function buildSiteElements() {
   spoil2.scale.set(1, 0.45, 0.85);
   siteGroup.add(spoil2);
 
-  // ── Aggregate / sand pile — left side mid ─────────────────────
   const sandGeo = new THREE.SphereGeometry(1.8, 12, 6, 0, Math.PI * 2, 0, Math.PI / 2);
   const sandPile = new THREE.Mesh(sandGeo, matAggreg);
   sandPile.position.set(-12, 0, 6);
@@ -899,8 +859,6 @@ function buildSiteElements() {
   sandPile.castShadow = true;
   siteGroup.add(sandPile);
 
-  // ── Rebar stockpile — left side near hoarding ────────────────
-  // Bundle of rebar bars laid horizontally
   const rebarBundle = new THREE.Group();
   rebarBundle.position.set(-11, 0.1, -8);
   for (let row = 0; row < 3; row++) {
@@ -917,7 +875,6 @@ function buildSiteElements() {
   }
   siteGroup.add(rebarBundle);
 
-  // ── Concrete pipe / culvert segments stacked — right mid ──────
   const pipeMat = new THREE.MeshLambertMaterial({ color: 0xa0a0a0 });
   for (let i = 0; i < 3; i++) {
     const pipe = new THREE.Mesh(
@@ -930,17 +887,14 @@ function buildSiteElements() {
     siteGroup.add(pipe);
   }
 
-  // ── Safety cones — scattered around the work zone ─────────────
   const coneMat = new THREE.MeshLambertMaterial({ color: 0xff5500 });
   const coneWhite = new THREE.MeshLambertMaterial({ color: 0xffffff });
   function addCone(x, z) {
     const cg = new THREE.Group();
     const body = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.45, 8), coneMat);
     body.position.y = 0.28; cg.add(body);
-    // White reflective band
     const band = new THREE.Mesh(new THREE.CylinderGeometry(0.115, 0.115, 0.06, 8), coneWhite);
     band.position.y = 0.22; cg.add(band);
-    // Base plate
     const base = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.04, 8), coneMat);
     base.position.y = 0.02; cg.add(base);
     cg.position.set(x, 0, z);
@@ -952,20 +906,15 @@ function buildSiteElements() {
   addCone(-6,  9);
   addCone(11, -2);
 
-  // ── Steel I-beam sections leaning on barrier (back-right) ─────
   const beamMat = new THREE.MeshLambertMaterial({ color: 0x546e7a });
   for (let i = 0; i < 4; i++) {
     const beam = new THREE.Group();
-    // Web
     const web = new THREE.Mesh(new THREE.BoxGeometry(0.04, 3.5, 0.18), beamMat);
     beam.add(web);
-    // Top flange
     const tf = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.04, 0.18), beamMat);
     tf.position.y = 1.73; beam.add(tf);
-    // Bottom flange
     const bf = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.04, 0.18), beamMat);
     bf.position.y = -1.73; beam.add(bf);
-    // Lean it slightly
     beam.rotation.z = 0.15;
     beam.position.set(8 + i * 0.3, 1.75 - i * 0.02, -13.5);
     siteGroup.add(beam);
@@ -975,10 +924,9 @@ function buildSiteElements() {
 function buildSoilLayers() {
   while (soilLayerGroup.children.length) soilLayerGroup.remove(soilLayerGroup.children[0]);
 
-  const fullSize = 12;   // 12m × 12m footprint
-  const half     = fullSize / 2;   // 6
+  const fullSize = 12;
+  const half     = fullSize / 2;
 
-  // Soil layer definitions with engineering colors
   const layers = [
     { yTop:  0,  yBot: -2,  color: 0x6b4f2e, hex: '#6b4f2e', label: 'Topsoil',       range: '0 – 2 m',  spt: 'N = 4'  },
     { yTop: -2,  yBot: -6,  color: 0x4a7053, hex: '#4a7053', label: 'Soft Clay',      range: '2 – 6 m',  spt: 'N = 3'  },
@@ -992,57 +940,46 @@ function buildSoilLayers() {
     const cy = (l.yTop + l.yBot) / 2;
     const mat = new THREE.MeshLambertMaterial({ color: l.color });
 
-    // Left half: x –6→0, z –6→+6
     const leftMesh = new THREE.Mesh(new THREE.BoxGeometry(half, h, fullSize), mat);
     leftMesh.position.set(-half / 2, cy, 0);
     leftMesh.receiveShadow = true;
     soilLayerGroup.add(leftMesh);
 
-    // Back-right quarter: x 0→+6, z –6→0
     const brMesh = new THREE.Mesh(new THREE.BoxGeometry(half, h, half), mat);
     brMesh.position.set(half / 2, cy, -half / 2);
     brMesh.receiveShadow = true;
     soilLayerGroup.add(brMesh);
 
-    // Thin boundary line at top of each layer (except surface — amber edge handles that)
     if (l.yTop < 0) {
       const lineMat = new THREE.MeshLambertMaterial({ color: 0x222222 });
-      // Across the left half face
       const bl = new THREE.Mesh(new THREE.BoxGeometry(half, 0.04, fullSize), lineMat);
       bl.position.set(-half / 2, l.yTop, 0);
       soilLayerGroup.add(bl);
-      // Across the back-right quarter
       const br2 = new THREE.Mesh(new THREE.BoxGeometry(half, 0.04, half), lineMat);
       br2.position.set(half / 2, l.yTop, -half / 2);
       soilLayerGroup.add(br2);
     }
 
-    // Engineering label sprite on the exposed cutaway face
     const W = 380, H = 80;
     const lc = document.createElement('canvas');
     lc.width = W; lc.height = H;
     const ctx = lc.getContext('2d');
 
-    // Background
     ctx.fillStyle = 'rgba(17,24,37,0.92)';
     ctx.fillRect(0, 0, W, H);
 
-    // Left color strip matching soil layer
     ctx.fillStyle = l.hex;
     ctx.fillRect(0, 0, 8, H);
 
-    // Layer name
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 28px monospace';
     ctx.textAlign = 'left';
     ctx.fillText(l.label, 20, 32);
 
-    // Depth range
     ctx.fillStyle = '#94a3b8';
     ctx.font = '20px monospace';
     ctx.fillText(l.range, 20, 58);
 
-    // SPT value on right
     ctx.fillStyle = '#f5a623';
     ctx.font = 'bold 20px monospace';
     ctx.textAlign = 'right';
@@ -1055,7 +992,6 @@ function buildSoilLayers() {
     soilLayerGroup.add(sp);
   });
 
-  // Depth scale ruler on the cutaway edge (x=6, z=0)
   const rulerMat = new THREE.MeshLambertMaterial({ color: 0x64748b });
   const ruler = new THREE.Mesh(new THREE.BoxGeometry(0.05, 22, 0.05), rulerMat);
   ruler.position.set(6.05, -11, 0);
@@ -1066,7 +1002,6 @@ function buildSoilLayers() {
     tick.position.set(6.2, -d, 0);
     soilLayerGroup.add(tick);
 
-    // Depth label every 4m
     if (d % 4 === 0) {
       const dc = document.createElement('canvas');
       dc.width = 96; dc.height = 36;
@@ -1082,7 +1017,6 @@ function buildSoilLayers() {
     }
   }
 
-  // Ground Level marker
   const glc = document.createElement('canvas');
   glc.width = 320; glc.height = 48;
   const glctx = glc.getContext('2d');
@@ -1091,206 +1025,133 @@ function buildSoilLayers() {
   glctx.fillStyle = '#111827';
   glctx.font = 'bold 24px monospace';
   glctx.textAlign = 'center';
-  glctx.fillText('▶ GROUND LEVEL  ±0.0m', 160, 32);
+  glctx.fillText('\u25b6 GROUND LEVEL  \u00b10.0m', 160, 32);
   const glsp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(glc), transparent: true, depthTest: false }));
   glsp.scale.set(3.6, 0.54, 1);
   glsp.position.set(9.2, 0.4, -1.5);
   soilLayerGroup.add(glsp);
 }
 
-// Decorative trees removed — engineering visualization does not need landscaping
-
-// Site fencing removed — not educational, creates visual noise
-
 /* ══════════════════════════════════════════════════════════════
    3D BUILDERS
 ══════════════════════════════════════════════════════════════ */
 
+function buildDrillingRig3D(x, z) {
+  const rig = new THREE.Group();
+  // Crawler base
+  const base = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.6, 5), MAT.rigDarkYellow);
+  base.position.y = 0.3; rig.add(base);
+  // Mast (vertical leader)
+  const mast = new THREE.Mesh(new THREE.BoxGeometry(0.55, 18, 0.55), MAT.rigYellow);
+  mast.position.set(0, 9.3, -1.5); rig.add(mast);
+  // Rotary head
+  const head = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.9, 1.2), MAT.rigDarkYellow);
+  head.position.set(0, 17.5, -1.5); rig.add(head);
+  rig.userData.rotaryHead = head;
+  // Kelly bar (square section, hangs from head)
+  const kelly = new THREE.Mesh(new THREE.BoxGeometry(0.22, 12, 0.22), MAT.steel);
+  kelly.position.set(0, 11, -1.5); rig.add(kelly);
+  rig.userData.kellyBar = kelly;
+  // Drill bucket
+  const bucket = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.32, 0.9, 12), MAT.rigDarkYellow);
+  bucket.position.set(0, 4.6, -1.5); rig.add(bucket);
+  rig.userData.drillBucket = bucket;
+  // Bucket teeth (4 small boxes)
+  for (let i = 0; i < 4; i++) {
+    const ang = (i / 4) * Math.PI * 2;
+    const tooth = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.22, 0.08), MAT.steel);
+    tooth.position.set(Math.cos(ang) * 0.3, 4.1, -1.5 + Math.sin(ang) * 0.3);
+    rig.add(tooth);
+  }
+  // Hydraulic arm bracing
+  const brace = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.15, 3), MAT.cabGray);
+  brace.position.set(0, 6, 0); rig.add(brace);
+
+  rig.position.set(x || 0, 0, z || 0);
+  return rig;
+}
+
 function buildDrivingRig(x, z) {
   const rig = new THREE.Group();
 
-  // Tracks — two long flat boxes
   const trackGeo = new THREE.BoxGeometry(1.2, 0.5, 5);
   const trackL = new THREE.Mesh(trackGeo, MAT.trackDark);
-  trackL.position.set(-1.2, 0.25, z - 1);
-  trackL.castShadow = true;
-  rig.add(trackL);
-
+  trackL.position.set(-1.2, 0.25, z - 1); trackL.castShadow = true; rig.add(trackL);
   const trackR = new THREE.Mesh(trackGeo, MAT.trackDark);
-  trackR.position.set(1.2, 0.25, z - 1);
-  trackR.castShadow = true;
-  rig.add(trackR);
+  trackR.position.set(1.2, 0.25, z - 1); trackR.castShadow = true; rig.add(trackR);
 
-  // Track rollers
   for (let side = -1; side <= 1; side += 2) {
     for (let i = -2; i <= 2; i++) {
-      const roller = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.2, 0.2, 0.15, 8),
-        MAT.darkGray
-      );
-      roller.rotation.z = Math.PI / 2;
-      roller.position.set(side * 1.2, 0.22, z - 1 + i * 0.9);
-      rig.add(roller);
+      const roller = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.15, 8), MAT.darkGray);
+      roller.rotation.z = Math.PI / 2; roller.position.set(side * 1.2, 0.22, z - 1 + i * 0.9); rig.add(roller);
     }
   }
 
-  // Track shoes (treads)
   for (let side = -1; side <= 1; side += 2) {
     for (let i = 0; i < 10; i++) {
-      const shoe = new THREE.Mesh(
-        new THREE.BoxGeometry(1.3, 0.08, 0.12),
-        MAT.darkGray
-      );
-      shoe.position.set(side * 1.2, 0.52, z - 3.2 + i * 0.5);
-      rig.add(shoe);
+      const shoe = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.08, 0.12), MAT.darkGray);
+      shoe.position.set(side * 1.2, 0.52, z - 3.2 + i * 0.5); rig.add(shoe);
     }
   }
 
-  // Cab (crane body) — sits on top of tracks
-  const cabBody = new THREE.Mesh(
-    new THREE.BoxGeometry(2.8, 1.8, 3),
-    MAT.rigYellow
-  );
-  cabBody.position.set(0, 1.4, z - 1);
-  cabBody.castShadow = true;
-  rig.add(cabBody);
+  const cabBody = new THREE.Mesh(new THREE.BoxGeometry(2.8, 1.8, 3), MAT.rigYellow);
+  cabBody.position.set(0, 1.4, z - 1); cabBody.castShadow = true; rig.add(cabBody);
 
-  // Cab roof
-  const cabRoof = new THREE.Mesh(
-    new THREE.BoxGeometry(2.0, 0.15, 1.6),
-    MAT.rigDarkYellow
-  );
-  cabRoof.position.set(-0.3, 2.4, z + 0.3);
-  rig.add(cabRoof);
+  const cabRoof = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.15, 1.6), MAT.rigDarkYellow);
+  cabRoof.position.set(-0.3, 2.4, z + 0.3); rig.add(cabRoof);
 
-  // Cab window
-  const cabWindow = new THREE.Mesh(
-    new THREE.BoxGeometry(1.8, 0.8, 0.1),
-    new THREE.MeshLambertMaterial({ color: 0x88ccff, transparent: true, opacity: 0.6 })
-  );
-  cabWindow.position.set(0, 2.0, z + 0.56);
-  rig.add(cabWindow);
+  const cabWindow = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.8, 0.1),
+    new THREE.MeshLambertMaterial({ color: 0x88ccff, transparent: true, opacity: 0.6 }));
+  cabWindow.position.set(0, 2.0, z + 0.56); rig.add(cabWindow);
 
-  // Engine compartment
-  const engine = new THREE.Mesh(
-    new THREE.BoxGeometry(2.4, 1.2, 1.5),
-    MAT.rigDarkYellow
-  );
-  engine.position.set(0, 1.1, z - 2.3);
-  engine.castShadow = true;
-  rig.add(engine);
+  const engine = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.2, 1.5), MAT.rigDarkYellow);
+  engine.position.set(0, 1.1, z - 2.3); engine.castShadow = true; rig.add(engine);
 
-  // Exhaust pipe
-  const exhaust = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.08, 0.08, 1.2, 6),
-    MAT.darkGray
-  );
-  exhaust.position.set(1.0, 2.2, z - 2.3);
-  rig.add(exhaust);
+  const exhaust = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.2, 6), MAT.darkGray);
+  exhaust.position.set(1.0, 2.2, z - 2.3); rig.add(exhaust);
 
-  // Mast — tall vertical structure
   const mastGeo = new THREE.BoxGeometry(0.4, 18, 0.4);
-  const mast = new THREE.Mesh(mastGeo, MAT.rigYellow);
-  mast.position.set(x, 9.5, z);
-  mast.castShadow = true;
-  rig.add(mast);
+  const mastM = new THREE.Mesh(mastGeo, MAT.rigYellow);
+  mastM.position.set(x, 9.5, z); mastM.castShadow = true; rig.add(mastM);
 
-  // Mast top cap
-  const mastCap = new THREE.Mesh(
-    new THREE.BoxGeometry(0.8, 0.3, 0.8),
-    MAT.rigDarkYellow
-  );
-  mastCap.position.set(x, 18.65, z);
-  rig.add(mastCap);
+  const mastCap = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.3, 0.8), MAT.rigDarkYellow);
+  mastCap.position.set(x, 18.65, z); rig.add(mastCap);
 
-  // Sheave at top
-  const sheave = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.3, 0.3, 0.15, 12),
-    MAT.darkGray
-  );
-  sheave.rotation.x = Math.PI / 2;
-  sheave.position.set(x, 18.3, z);
-  rig.add(sheave);
+  const sheave = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.15, 12), MAT.darkGray);
+  sheave.rotation.x = Math.PI / 2; sheave.position.set(x, 18.3, z); rig.add(sheave);
 
-  // Leads (guide rails) — two thin vertical bars on either side
   const leadGeo = new THREE.BoxGeometry(0.12, 18, 0.12);
   const leadL = new THREE.Mesh(leadGeo, MAT.cabGray);
-  leadL.position.set(x - 0.5, 9.5, z);
-  leadL.castShadow = true;
-  rig.add(leadL);
-
+  leadL.position.set(x - 0.5, 9.5, z); leadL.castShadow = true; rig.add(leadL);
   const leadR = new THREE.Mesh(leadGeo, MAT.cabGray);
-  leadR.position.set(x + 0.5, 9.5, z);
-  leadR.castShadow = true;
-  rig.add(leadR);
+  leadR.position.set(x + 0.5, 9.5, z); leadR.castShadow = true; rig.add(leadR);
 
-  // Cross braces on leads
   for (let cy = 2; cy < 18; cy += 3) {
-    const brace = new THREE.Mesh(
-      new THREE.BoxGeometry(1.0, 0.08, 0.08),
-      MAT.cabGray
-    );
-    brace.position.set(x, cy, z);
-    rig.add(brace);
+    const braceMesh = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.08, 0.08), MAT.cabGray);
+    braceMesh.position.set(x, cy, z); rig.add(braceMesh);
   }
 
-  // Backstay cables (angled supports from mast top to cab)
   const cableGeo = new THREE.CylinderGeometry(0.03, 0.03, 14, 4);
   const cableL = new THREE.Mesh(cableGeo, MAT.darkGray);
-  cableL.position.set(x - 0.8, 11, z - 2);
-  cableL.rotation.z = 0.15;
-  cableL.rotation.x = 0.3;
-  rig.add(cableL);
-
+  cableL.position.set(x - 0.8, 11, z - 2); cableL.rotation.z = 0.15; cableL.rotation.x = 0.3; rig.add(cableL);
   const cableR = new THREE.Mesh(cableGeo, MAT.darkGray);
-  cableR.position.set(x + 0.8, 11, z - 2);
-  cableR.rotation.z = -0.15;
-  cableR.rotation.x = 0.3;
-  rig.add(cableR);
+  cableR.position.set(x + 0.8, 11, z - 2); cableR.rotation.z = -0.15; cableR.rotation.x = 0.3; rig.add(cableR);
 
-  // Hammer — heavy block that slides on leads
   const hammerGroup = new THREE.Group();
-  const hammerBody = new THREE.Mesh(
-    new THREE.BoxGeometry(1.0, 1.5, 1.0),
-    MAT.hammerGray
-  );
-  hammerBody.castShadow = true;
-  hammerGroup.add(hammerBody);
-
-  // Hammer cap
-  const hammerCap = new THREE.Mesh(
-    new THREE.BoxGeometry(1.1, 0.2, 1.1),
-    MAT.darkGray
-  );
-  hammerCap.position.y = 0.85;
-  hammerGroup.add(hammerCap);
-
-  // Hammer hook connection
-  const hook = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.06, 0.06, 0.8, 6),
-    MAT.darkGray
-  );
-  hook.position.y = 1.3;
-  hammerGroup.add(hook);
-
-  // Hammer anvil/cushion at bottom
-  const cushion = new THREE.Mesh(
-    new THREE.BoxGeometry(0.7, 0.2, 0.7),
-    new THREE.MeshLambertMaterial({ color: 0x884400 })
-  );
-  cushion.position.y = -0.85;
-  hammerGroup.add(cushion);
-
-  hammerGroup.position.set(x, 16, z);
-  rig.add(hammerGroup);
+  const hammerBody = new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.5, 1.0), MAT.hammerGray);
+  hammerBody.castShadow = true; hammerGroup.add(hammerBody);
+  const hammerCapM = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.2, 1.1), MAT.darkGray);
+  hammerCapM.position.y = 0.85; hammerGroup.add(hammerCapM);
+  const hook = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.8, 6), MAT.darkGray);
+  hook.position.y = 1.3; hammerGroup.add(hook);
+  const cushion = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.2, 0.7), new THREE.MeshLambertMaterial({ color: 0x884400 }));
+  cushion.position.y = -0.85; hammerGroup.add(cushion);
+  hammerGroup.position.set(x, 16, z); rig.add(hammerGroup);
   OBJ.hammer = hammerGroup;
 
-  // Impact flash — hidden until needed
   const flashGeo = new THREE.SphereGeometry(0.6, 8, 8);
   const flash = new THREE.Mesh(flashGeo, MAT.flashWhite.clone());
-  flash.visible = false;
-  flash.position.set(x, 0, z);
-  rig.add(flash);
+  flash.visible = false; flash.position.set(x, 0, z); rig.add(flash);
   OBJ.impactFlash = flash;
 
   rig.position.x = 0;
@@ -1298,71 +1159,46 @@ function buildDrivingRig(x, z) {
 }
 
 function buildPile(horizontal) {
-  // Precast concrete cylinder pile — 400 mm diameter, 20 m long (pre-cut to design length; no head cutting needed)
   const pileGroup = new THREE.Group();
-
-  // Concrete shaft — CylinderGeometry for proper round pile
   const pileGeo = new THREE.CylinderGeometry(0.22, 0.22, 20, 20);
   const pileMesh = new THREE.Mesh(pileGeo, MAT.concrete);
-  pileMesh.castShadow = true;
-  pileMesh.receiveShadow = true;
+  pileMesh.castShadow = true; pileMesh.receiveShadow = true;
   pileGroup.add(pileMesh);
-
-  // 4 longitudinal rebar stubs visible at pile top (embedded later into pile cap)
   for (let dx = -1; dx <= 1; dx += 2) {
     for (let dz = -1; dz <= 1; dz += 2) {
-      const rebar = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.02, 0.02, 0.45, 6),
-        MAT.rebarSteel
-      );
-      rebar.position.set(dx * 0.1, 10.02, dz * 0.1);
-      pileGroup.add(rebar);
+      const rebar = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.45, 6), MAT.rebarSteel);
+      rebar.position.set(dx * 0.1, 10.02, dz * 0.1); pileGroup.add(rebar);
     }
   }
-
-  // Steel driving shoe at pile tip
   const tipGeo = new THREE.ConeGeometry(0.22, 0.55, 20);
   const tip = new THREE.Mesh(tipGeo, MAT.steel);
-  tip.position.y = -10.28;
-  pileGroup.add(tip);
-
+  tip.position.y = -10.28; pileGroup.add(tip);
   if (horizontal) {
     pileGroup.rotation.z = Math.PI / 2;
     pileGroup.position.set(6, 0.25, 3);
   }
-
   return pileGroup;
 }
 
 function buildPileCapMesh() {
-  // Pile cap: 6.5 x 1.2 x 6.5 m, center buried at y = -0.6 (spans y=-1.2 to y=0)
   const capGroup = new THREE.Group();
   const capGeo = new THREE.BoxGeometry(6.5, 1.2, 6.5);
   const cap = new THREE.Mesh(capGeo, MAT.concrete);
-  cap.castShadow = true;
-  cap.receiveShadow = true;
-  cap.position.y = -0.6;  // centered below grade
+  cap.castShadow = true; cap.receiveShadow = true;
+  cap.position.y = -0.6;
   capGroup.add(cap);
-
-  // Small pedestal above cap where column will sit
-  const ped = new THREE.Mesh(
-    new THREE.BoxGeometry(1.2, 0.4, 1.2),
-    MAT.concrete
-  );
-  ped.position.y = 0.2;  // sits on top of cap, at grade level
+  const ped = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.4, 1.2), MAT.concrete);
+  ped.position.y = 0.2;
   capGroup.add(ped);
-
   return capGroup;
 }
 
-function buildPilesForStep() {
-  const depth    = STATE.drivenDepth > 0 ? STATE.drivenDepth : 17;
-  const PIT_DEPTH  = 5.0;   // excavation depth
-  const STUB      = 0.4;    // how far pile top sits above pit floor (below rebar mat)
-  // Pile top sits at y = -(PIT_DEPTH - STUB) = -4.6
-  // Pile spans from y = -depth to y = -4.6
-  const pileTop = -(PIT_DEPTH - STUB);          // -4.6
-  const pileLen = depth - PIT_DEPTH + STUB;      // e.g. 17 - 5 + 0.4 = 12.4
+function buildShaftsForStep() {
+  const depth    = STATE.drilledDepth > 0 ? STATE.drilledDepth : 17;
+  const PIT_DEPTH  = 5.0;
+  const STUB      = 0.4;
+  const pileTop = -(PIT_DEPTH - STUB);
+  const pileLen = depth - PIT_DEPTH + STUB;
 
   const positions = [[-2.5,-2.5],[2.5,-2.5],[-2.5,2.5],[2.5,2.5]];
   positions.forEach(([px, pz]) => {
@@ -1376,7 +1212,6 @@ function buildPilesForStep() {
     tip.position.y = -(pileLen / 2) - 0.25;
     grp.add(tip);
 
-    // Short rebar stubs just above the pile top (into the future rebar mat)
     for (let dx = -1; dx <= 1; dx += 2) {
       for (let dz = -1; dz <= 1; dz += 2) {
         const r = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.5, 6), MAT.rebarSteel);
@@ -1385,7 +1220,6 @@ function buildPilesForStep() {
       }
     }
 
-    // Position group: top of shaft at pileTop (y=-4.6)
     grp.position.set(px, pileTop - pileLen / 2, pz);
     addStep(grp);
   });
@@ -1544,29 +1378,22 @@ function init() {
 function initZoomSlider() {
   const slider = document.getElementById('zoom-slider');
   if (!slider) return;
-
-  // Slider → camera: keep direction, change radius
   slider.addEventListener('input', () => {
-    camTarget = null;   // stop any in-flight preset transition
+    camTarget = null;
     const dist = parseFloat(slider.value);
     const dir  = new THREE.Vector3()
       .subVectors(camera.position, controls.target)
       .normalize();
     camera.position.copy(controls.target).addScaledVector(dir, dist);
   });
-
-  // Slider value is refreshed in the animate loop (see below)
 }
 
-// Thin amber line marking ground level across the cutaway opening — engineering grade marker
 function buildGradeLine() {
   const mat = new THREE.MeshLambertMaterial({ color: 0xf5a623, emissive: 0xf5a623, emissiveIntensity: 0.35 });
-  // Line across the full cutaway front face (x: -6→+6, z=0)
   const hLine = new THREE.Mesh(new THREE.BoxGeometry(12, 0.06, 0.06), mat);
   hLine.position.set(0, 0, 0);
   scene.add(hLine);
   persistObjs.push(hLine);
-  // Line across the right side face (z: -6→0, x=6)
   const vLine = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, 6), mat);
   vLine.position.set(6, 0, -3);
   scene.add(vLine);
@@ -1591,10 +1418,9 @@ function startStep(n) {
   clearAllTimers();
   clearScene3D();
 
-  // For shallow foundation steps (7+), hide pile cutaway and show already-excavated pit
   if (n >= 7) {
     soilLayerGroup.visible = false;
-    STATE.excavationComplete = true;   // pit is already dug when shallow steps begin
+    STATE.excavationComplete = true;
     buildGroundWithHole();
   } else {
     soilLayerGroup.visible = true;
@@ -1668,8 +1494,8 @@ function renderTaskPanel(n) {
     ul.appendChild(li);
   });
 
-  DOM.taskWhy().textContent  = s.why     ? '💡 ' + s.why     : '';
-  DOM.taskWarn().textContent = s.warning ? '⚠️ ' + s.warning : '';
+  DOM.taskWhy().textContent  = s.why     ? '\ud83d\udca1 ' + s.why     : '';
+  DOM.taskWarn().textContent = s.warning ? '\u26a0\ufe0f ' + s.warning : '';
 
   const metaEl = $('task-metadata');
   if (metaEl && m) {
@@ -1744,23 +1570,23 @@ function clearAllTimers() {
 function showResult() {
   const rc = $('result-card');
   if (rc) {
-    const actualDepth = STATE.drivenDepth.toFixed(1);
+    const actualDepth = (STATE.drilledDepth || STATE.drivenDepth).toFixed(1);
     rc.innerHTML = `
-      <div id="result-icon">🏗️</div>
-      <h2>Driven Pile Foundation Complete!</h2>
-      <p>All 4 piles driven to bearing layer with pile cap constructed.</p>
+      <div id="result-icon">\ud83c\udfd7\ufe0f</div>
+      <h2>Drilled Shaft Foundation Complete!</h2>
+      <p>All 4 shafts drilled to bearing layer with pile cap constructed.</p>
       <div id="result-score-line">Final Score: <span id="result-score">${STATE.score}</span></div>
       <div id="result-grade">${getGrade()}</div>
       <div class="pile-report">
         <h3 style="color:#f5a623;margin-bottom:10px;">Construction Report</h3>
         <table style="width:100%;text-align:left;font-size:0.85rem;">
-          <tr><td style="color:#aaa;">Pile Type:</td><td>Precast Concrete</td></tr>
-          <tr><td style="color:#aaa;">Pile Size:</td><td>500mm x 500mm</td></tr>
+          <tr><td style="color:#aaa;">Shaft Type:</td><td>Drilled Shaft (Bored Pile)</td></tr>
+          <tr><td style="color:#aaa;">Shaft Diameter:</td><td>900mm</td></tr>
           <tr><td style="color:#aaa;">Design Depth:</td><td>17.0m</td></tr>
           <tr><td style="color:#aaa;">Actual Depth:</td><td>${actualDepth}m</td></tr>
-          <tr><td style="color:#aaa;">Total Blows:</td><td>${STATE.totalBlows}</td></tr>
-          <tr><td style="color:#aaa;">Refusal Criterion:</td><td style="color:#27ae60;">&lt;25mm/10 blows - ACHIEVED</td></tr>
-          <tr><td style="color:#aaa;">Alignment Error:</td><td style="color:#27ae60;">&lt;0.5° - PASS</td></tr>
+          <tr><td style="color:#aaa;">Construction Method:</td><td>Rotary Drill + Tremie Concrete</td></tr>
+          <tr><td style="color:#aaa;">Temporary Casing:</td><td style="color:#27ae60;">Installed &amp; Withdrawn</td></tr>
+          <tr><td style="color:#aaa;">Rebar Cage:</td><td style="color:#27ae60;">Placed</td></tr>
           <tr><td style="color:#aaa;">Pile Cap:</td><td style="color:#27ae60;">Completed</td></tr>
           <tr><td style="color:#aaa;">Status:</td><td style="color:#27ae60;font-weight:700;">PASS</td></tr>
         </table>
@@ -1771,8 +1597,8 @@ function showResult() {
       </div>
       <div id="result-refs">
         <strong>References:</strong><br/>
-        1. <a href="https://www.fhwa.dot.gov/engineering/geotech/foundations/driven_piles/" target="_blank">FHWA - Driven Pile Foundations</a><br/>
-        2. <a href="https://www.piledrivers.org/" target="_blank">Pile Driving Contractors Association</a>
+        1. <a href="https://www.fhwa.dot.gov/engineering/geotech/foundations/drilled_shafts/" target="_blank">FHWA - Drilled Shaft Foundations</a><br/>
+        2. <a href="https://www.adsc-iafd.com/" target="_blank">ADSC - International Association of Foundation Drilling</a>
       </div>
     `;
   }
@@ -1780,7 +1606,7 @@ function showResult() {
 }
 
 function getGrade() {
-  if (STATE.score >= 900)      return 'Master Pile Driver!';
+  if (STATE.score >= 900)      return 'Master Shaft Driller!';
   else if (STATE.score >= 700) return 'Skilled Engineer';
   else if (STATE.score >= 500) return 'Apprentice Builder';
   else                          return 'Foundation Trainee - try again!';
@@ -1808,7 +1634,6 @@ function el(tag, cls, html) {
 function resetSimulation() {
   const ro = $('result-overlay');
   if (ro) ro.classList.add('hidden');
-  // Remove any scene-level persistent objects before resetting
   if (OBJ.persistentCap) {
     scene.remove(OBJ.persistentCap);
     delete OBJ.persistentCap;
@@ -1828,6 +1653,7 @@ function resetSimulation() {
   STATE.score = 1000;
   STATE.penalties = 0;
   STATE.drivenDepth = 0;
+  STATE.drilledDepth = 0;
   STATE.totalBlows = 0;
   STATE.excavationComplete = false;
   STATE.alignmentNS = 90 + (Math.random() - 0.5) * 3;
@@ -1844,18 +1670,15 @@ function animate() {
   const dt      = clock.getDelta();
   const elapsed = clock.getElapsedTime();
 
-  // Camera lerp — smoothly move to preset
   if (camTarget) {
     camera.position.lerp(camTarget.pos, 0.04);
     controls.target.lerp(camTarget.look, 0.04);
-    // Stop lerping when close enough
     if (camera.position.distanceTo(camTarget.pos) < 0.02 &&
         controls.target.distanceTo(camTarget.look) < 0.02) {
       camTarget = null;
     }
   }
 
-  // Pulse clickable markers
   clickables3D.forEach(c => {
     if (c.pulse && c.mesh) {
       const s = 1 + 0.18 * Math.sin(elapsed * 3 + (c.phase || 0));
@@ -1863,12 +1686,10 @@ function animate() {
     }
   });
 
-  // Hammer animation during driving
   if (OBJ.hammerAnimating && OBJ.hammer) {
     // Handled in the step handler via intervals
   }
 
-  // Excavator arm dig animation
   if (OBJ.excavatorArm && STATE.stepState.digging) {
     OBJ.excavatorArm.rotation.z   = -0.62 + 0.38 * Math.sin(elapsed * 3.2);
     if (OBJ.excavatorStick)  OBJ.excavatorStick.rotation.z  = 0.48 + 0.22 * Math.sin(elapsed * 3.2 + 0.5);
@@ -1876,20 +1697,22 @@ function animate() {
     if (OBJ.excavatorUpper) OBJ.excavatorUpper.rotation.y = 0.18 * Math.sin(elapsed * 0.45);
   }
 
-  // Truck drum rotation
   if (OBJ.truckDrum) {
     OBJ.truckDrum.rotation.y += 0.018;
   }
 
-  // Inspector bob
   if (OBJ.inspector) {
     OBJ.inspector.position.y = 0 + 0.05 * Math.sin(elapsed * 1.5);
   }
 
-  // Particle update
+  // Rotate drill bucket during drilling
+  if (OBJ.drillingRig && STATE.stepState.drilling) {
+    const bucket = OBJ.drillingRig.userData.drillBucket;
+    if (bucket) bucket.rotation.y += 0.15;
+  }
+
   updateParticles(dt);
 
-  // Keep zoom slider thumb in sync with actual camera distance
   const _zs = document.getElementById('zoom-slider');
   if (_zs && document.activeElement !== _zs) {
     _zs.value = Math.round(camera.position.distanceTo(controls.target));
@@ -1924,23 +1747,20 @@ function buildFlatGround() {
 function buildGroundWithHole() {
   while (groundGroup.children.length) groundGroup.remove(groundGroup.children[0]);
 
-  // Use cloned materials with polygonOffset to prevent z-fighting
   const grassMat = MAT.grass.clone();
   grassMat.polygonOffset = true; grassMat.polygonOffsetFactor = 2; grassMat.polygonOffsetUnits = 2;
   const dirtMat = MAT.dirt.clone();
   dirtMat.polygonOffset = true; dirtMat.polygonOffsetFactor = 1; dirtMat.polygonOffsetUnits = 1;
 
-  // 8×8m pit hole centred at origin — large enough for 6.5×6.5m pile cap + working space
   const half = 4.0;
   const total = 15;
-  const edge = total - half; // 11
+  const edge = total - half;
 
-  // 4 grass pieces surrounding the pit hole
   const pieces = [
-    { w: total * 2, d: edge,  x:    0,    z: -(half + edge / 2) }, // North
-    { w: total * 2, d: edge,  x:    0,    z:  (half + edge / 2) }, // South
-    { w: edge,      d: half * 2, x: -(half + edge / 2), z: 0    }, // West
-    { w: edge,      d: half * 2, x:  (half + edge / 2), z: 0    }  // East
+    { w: total * 2, d: edge,  x:    0,    z: -(half + edge / 2) },
+    { w: total * 2, d: edge,  x:    0,    z:  (half + edge / 2) },
+    { w: edge,      d: half * 2, x: -(half + edge / 2), z: 0    },
+    { w: edge,      d: half * 2, x:  (half + edge / 2), z: 0    }
   ];
   pieces.forEach(p => {
     const m = new THREE.Mesh(new THREE.PlaneGeometry(p.w, p.d), grassMat);
@@ -1950,13 +1770,12 @@ function buildGroundWithHole() {
     groundGroup.add(m);
   });
 
-  // Pit walls — 8×8 opening, 5 units deep
   const wallThick = 0.25;
   const wallDefs = [
-    { w: half * 2,  h: 5, d: wallThick, x:  0,                   y: -2.5, z: -(half + wallThick / 2) }, // N
-    { w: half * 2,  h: 5, d: wallThick, x:  0,                   y: -2.5, z:  (half + wallThick / 2) }, // S
-    { w: wallThick, h: 5, d: half * 2,  x: -(half + wallThick/2), y: -2.5, z:  0                     }, // W
-    { w: wallThick, h: 5, d: half * 2,  x:  (half + wallThick/2), y: -2.5, z:  0                     }  // E
+    { w: half * 2,  h: 5, d: wallThick, x:  0,                   y: -2.5, z: -(half + wallThick / 2) },
+    { w: half * 2,  h: 5, d: wallThick, x:  0,                   y: -2.5, z:  (half + wallThick / 2) },
+    { w: wallThick, h: 5, d: half * 2,  x: -(half + wallThick/2), y: -2.5, z:  0                     },
+    { w: wallThick, h: 5, d: half * 2,  x:  (half + wallThick/2), y: -2.5, z:  0                     }
   ];
   wallDefs.forEach(w => {
     const m = new THREE.Mesh(new THREE.BoxGeometry(w.w, w.h, w.d), dirtMat);
@@ -1965,7 +1784,6 @@ function buildGroundWithHole() {
     groundGroup.add(m);
   });
 
-  // Pit floor — near grade while excavating, at full depth once done
   const pitY = STATE.excavationComplete ? -5.0 : -0.1;
   const floorMesh = new THREE.Mesh(new THREE.BoxGeometry(half * 2 - 0.1, 0.15, half * 2 - 0.1), dirtMat);
   floorMesh.position.set(0, pitY, 0);
@@ -1974,9 +1792,7 @@ function buildGroundWithHole() {
   OBJ.pitFloor = floorMesh;
 }
 
-function buildPitStructure() {
-  // Reuses existing groundGroup hole. Just provides semantic label.
-}
+function buildPitStructure() {}
 
 function buildSoilPile(progress) {
   if (OBJ.soilPile) {
@@ -1986,42 +1802,20 @@ function buildSoilPile(progress) {
     OBJ.soilPile = null;
   }
   if (progress <= 0.05) return;
-
   const sg = new THREE.Group();
   const p = Math.min(progress, 1);
-
-  // Main mound
-  const mound = new THREE.Mesh(
-    new THREE.SphereGeometry(1.6 * p + 0.25, 9, 6),
-    MAT.dirt.clone()
-  );
-  mound.scale.y = 0.45;
-  mound.castShadow = true;
-  sg.add(mound);
-
-  // Smaller secondary mound
-  const mound2 = new THREE.Mesh(
-    new THREE.SphereGeometry((0.9 * p + 0.15), 7, 5),
-    MAT.dirt.clone()
-  );
-  mound2.scale.y = 0.4;
-  mound2.position.set(1.2 * p, 0, 0.4 * p);
-  mound2.castShadow = true;
-  sg.add(mound2);
-
-  // Scattered rocks on pile
+  const mound = new THREE.Mesh(new THREE.SphereGeometry(1.6 * p + 0.25, 9, 6), MAT.dirt.clone());
+  mound.scale.y = 0.45; mound.castShadow = true; sg.add(mound);
+  const mound2 = new THREE.Mesh(new THREE.SphereGeometry((0.9 * p + 0.15), 7, 5), MAT.dirt.clone());
+  mound2.scale.y = 0.4; mound2.position.set(1.2 * p, 0, 0.4 * p); mound2.castShadow = true; sg.add(mound2);
   for (let i = 0; i < 4; i++) {
-    const rock = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(0.1 + Math.random() * 0.09, 0),
-      new THREE.MeshLambertMaterial({ color: 0x78909c })
-    );
+    const rock = new THREE.Mesh(new THREE.IcosahedronGeometry(0.1 + Math.random() * 0.09, 0), new THREE.MeshLambertMaterial({ color: 0x78909c }));
     const angle = (i / 4) * Math.PI * 2;
     const r = 0.5 * p;
     rock.position.set(Math.cos(angle) * r, 0.3 * p, Math.sin(angle) * r);
     rock.rotation.set(Math.random(), Math.random(), Math.random());
     sg.add(rock);
   }
-
   sg.position.set(-4.2, 0, 0.5);
   addStep(sg);
   OBJ.soilPile = sg;
@@ -2030,40 +1824,21 @@ function buildSoilPile(progress) {
 function buildDepthRuler() {
   const rg = new THREE.Group();
   rg.position.set(3.4, 0, -2.8);
-
-  // Vertical pole
-  const pole = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.04, 0.04, 5.5, 6),
-    MAT.rulerWhite
-  );
-  pole.position.y = -2.75;
-  rg.add(pole);
-
-  // Tick marks at 0m, 0.5m … 5m
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 5.5, 6), MAT.rulerWhite);
+  pole.position.y = -2.75; rg.add(pole);
   for (let d = 0; d <= 5; d += 0.5) {
     const isMajor = d % 1 === 0;
-    const tick = new THREE.Mesh(
-      new THREE.BoxGeometry(isMajor ? 0.36 : 0.22, 0.05, 0.05),
-      d === 5 ? MAT.rulerRed : MAT.rulerWhite
-    );
-    tick.position.y = -d;
-    rg.add(tick);
+    const tick = new THREE.Mesh(new THREE.BoxGeometry(isMajor ? 0.36 : 0.22, 0.05, 0.05), d === 5 ? MAT.rulerRed : MAT.rulerWhite);
+    tick.position.y = -d; rg.add(tick);
   }
-
   addStep(rg);
   OBJ.depthRuler = rg;
   return rg;
 }
 
 function buildPourStream() {
-  const streamMat = new THREE.MeshLambertMaterial({
-    color: 0xbdbdbd, transparent: true, opacity: 0.75
-  });
-  // Main stream cylinder
-  const stream = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.09, 0.16, 2.8, 6),
-    streamMat
-  );
+  const streamMat = new THREE.MeshLambertMaterial({ color: 0xbdbdbd, transparent: true, opacity: 0.75 });
+  const stream = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.16, 2.8, 6), streamMat);
   stream.position.set(-4.0, -0.3, -2.2);
   stream.rotation.z = 0.28;
   stream.visible = false;
@@ -2076,34 +1851,16 @@ function buildCompactor3D(x, z) {
   const cg = new THREE.Group();
   const RED = new THREE.MeshLambertMaterial({ color: 0xc62828 });
   const GRY = MAT.darkGray;
-
-  // Engine block
   const eng = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.58, 0.65), RED);
-  eng.position.y = 0.55;
-  eng.castShadow = true;
-  cg.add(eng);
-
-  // Engine hood
+  eng.position.y = 0.55; eng.castShadow = true; cg.add(eng);
   const hood = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.18, 0.5), GRY);
-  hood.position.y = 0.88;
-  cg.add(hood);
-
-  // Base plate (vibrating plate)
+  hood.position.y = 0.88; cg.add(hood);
   const plate = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.12, 1.1), GRY);
-  plate.position.y = 0.06;
-  plate.castShadow = true;
-  cg.add(plate);
-
-  // Handle bar
+  plate.position.y = 0.06; plate.castShadow = true; cg.add(plate);
   const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 1.5, 6), GRY);
-  bar.rotation.x = -Math.PI / 4;
-  bar.position.set(0, 0.9, -0.6);
-  cg.add(bar);
+  bar.rotation.x = -Math.PI / 4; bar.position.set(0, 0.9, -0.6); cg.add(bar);
   const crossBar = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.7, 6), GRY);
-  crossBar.rotation.z = Math.PI / 2;
-  crossBar.position.set(0, 1.62, -1.0);
-  cg.add(crossBar);
-
+  crossBar.rotation.z = Math.PI / 2; crossBar.position.set(0, 1.62, -1.0); cg.add(crossBar);
   cg.position.set(x, 0, z);
   addStep(cg);
   OBJ.compactor = cg;
@@ -2112,10 +1869,10 @@ function buildCompactor3D(x, z) {
 
 function buildFormwork3D() {
   const panels = [
-    { w: 5,    h: 5, d: 0.14, x:  0,     y: -2.5, z: -2.43 }, // N
-    { w: 5,    h: 5, d: 0.14, x:  0,     y: -2.5, z:  2.43 }, // S
-    { w: 0.14, h: 5, d: 4.72, x: -2.43,  y: -2.5, z:  0    }, // W
-    { w: 0.14, h: 5, d: 4.72, x:  2.43,  y: -2.5, z:  0    }  // E
+    { w: 5,    h: 5, d: 0.14, x:  0,     y: -2.5, z: -2.43 },
+    { w: 5,    h: 5, d: 0.14, x:  0,     y: -2.5, z:  2.43 },
+    { w: 0.14, h: 5, d: 4.72, x: -2.43,  y: -2.5, z:  0    },
+    { w: 0.14, h: 5, d: 4.72, x:  2.43,  y: -2.5, z:  0    }
   ];
   panels.forEach(p => {
     const m = new THREE.Mesh(new THREE.BoxGeometry(p.w, p.h, p.d), MAT.wood);
@@ -2131,19 +1888,16 @@ function buildRebar3D() {
 
 function createColumnRebarCage(baseY, height) {
   const corners = [[-0.55, -0.55], [0.55, -0.55], [-0.55, 0.55], [0.55, 0.55]];
-  // Vertical bars
   corners.forEach(([x, z]) => {
     const m = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, height, 6), MAT.steel);
     m.position.set(x, baseY + height / 2, z);
     m.castShadow = true;
     addStep(m);
   });
-  // Horizontal stirrups every 0.8 units
   const stirrupMat = MAT.steel;
   const stirrupY = [];
   for (let y = baseY + 0.3; y < baseY + height - 0.1; y += 0.8) stirrupY.push(y);
   stirrupY.forEach(y => {
-    // 4 sides of the square stirrup
     [
       { len: 1.1, axis: 'x', x: 0,    z: -0.55 },
       { len: 1.1, axis: 'x', x: 0,    z:  0.55 },
@@ -2160,14 +1914,10 @@ function createColumnRebarCage(baseY, height) {
 }
 
 function createFootingRebarGrid() {
-  // 11 bars per direction at 0.4 unit spacing — tight square-cell grid like real shallow foundation
   const barPositions = [-2.0, -1.6, -1.2, -0.8, -0.4, 0, 0.4, 0.8, 1.2, 1.6, 2.0];
   const barLen = 4.5;
-  const yLow  = -4.90;   // lower mat
-  const yHigh = -4.83;   // upper mat crossing on top
-
-  // Concrete spacer chairs — small blocks that lift the lower mat off the pit floor
-  // Placed at a 3×3 grid of positions across the mat
+  const yLow  = -4.90;
+  const yHigh = -4.83;
   const chairXZ = [-1.5, 0, 1.5];
   const chairMat = new THREE.MeshLambertMaterial({ color: 0x9e9e9e });
   chairXZ.forEach(cx => {
@@ -2177,8 +1927,6 @@ function createFootingRebarGrid() {
       addStep(c);
     });
   });
-
-  // Lower mat: bars running along X axis (spaced in Z)
   barPositions.forEach(z => {
     const m = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, barLen, 8), MAT.steel);
     m.rotation.z = Math.PI / 2;
@@ -2186,8 +1934,6 @@ function createFootingRebarGrid() {
     m.castShadow = true;
     addStep(m);
   });
-
-  // Upper mat: bars running along Z axis (spaced in X) — rotation.x = PI/2 so they lie flat
   barPositions.forEach(x => {
     const m = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, barLen, 8), MAT.steel);
     m.rotation.x = Math.PI / 2;
@@ -2208,382 +1954,25 @@ function buildConcreteSlab3D(yPos, alpha) {
 
 function buildExcavator3D() {
   const g = new THREE.Group();
-
-  // ── John Deere colour palette ─────────────────────────────
   const JDyellow  = new THREE.MeshStandardMaterial({ color: 0xf0d000, roughness: 0.55, metalness: 0.10 });
   const JDyellowD = new THREE.MeshStandardMaterial({ color: 0xc8ac00, roughness: 0.60, metalness: 0.12 });
   const JDblack   = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.55, metalness: 0.40 });
   const JDdkGray  = new THREE.MeshStandardMaterial({ color: 0x2e2e2e, roughness: 0.50, metalness: 0.55 });
   const chrome    = new THREE.MeshStandardMaterial({ color: 0xb8c4c8, roughness: 0.18, metalness: 0.90 });
-  const glass     = new THREE.MeshStandardMaterial({ color: 0x9dd4e8, roughness: 0.04, metalness: 0.05, transparent: true, opacity: 0.50 });
   const rubber    = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.94, metalness: 0.00 });
   const steelMid  = new THREE.MeshStandardMaterial({ color: 0x404040, roughness: 0.52, metalness: 0.62 });
 
-  /* ── UNDERCARRIAGE ──────────────────────────────────────── */
-
-  // Centre X-frame
   const xBeam = new THREE.Mesh(new THREE.BoxGeometry(0.60, 0.38, 3.80), JDblack);
-  xBeam.position.y = 0.54;
-  xBeam.castShadow = true;
-  g.add(xBeam);
-  [-1.15, 1.15].forEach(z => {
-    const br = new THREE.Mesh(new THREE.BoxGeometry(3.10, 0.22, 0.46), JDblack);
-    br.position.set(0, 0.54, z);
-    g.add(br);
-  });
-
-  const makeTrack = zOff => {
-    const tg = new THREE.Group();
-    tg.position.z = zOff;
-
-    // Main rubber belt
-    const belt = new THREE.Mesh(new THREE.BoxGeometry(4.50, 0.30, 0.72), rubber);
-    belt.position.y = 0.24;
-    belt.castShadow = true;
-    tg.add(belt);
-
-    // Track shoes (segmented links on belt surface)
-    for (let i = -7; i <= 7; i++) {
-      const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.09, 0.76), JDblack);
-      shoe.position.set(i * 0.30, 0.40, 0);
-      tg.add(shoe);
-    }
-    // Track grouser ridges on each shoe
-    for (let i = -7; i <= 7; i++) {
-      const gr = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.06, 0.78), JDdkGray);
-      gr.position.set(i * 0.30, 0.47, 0);
-      tg.add(gr);
-    }
-
-    // Drive sprocket (rear) — large toothed wheel
-    const sprR = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.66, 12), JDblack);
-    sprR.rotation.x = Math.PI / 2;
-    sprR.position.set(1.90, 0.36, 0);
-    sprR.castShadow = true;
-    tg.add(sprR);
-    for (let t = 0; t < 10; t++) {
-      const a = (t / 10) * Math.PI * 2;
-      const tooth = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.20, 0.62), JDdkGray);
-      tooth.position.set(1.90 + Math.cos(a) * 0.43, 0.36 + Math.sin(a) * 0.43, 0);
-      tooth.rotation.z = a;
-      tg.add(tooth);
-    }
-    const sprHub = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.70, 8), chrome);
-    sprHub.rotation.x = Math.PI / 2;
-    sprHub.position.set(1.90, 0.36, 0);
-    tg.add(sprHub);
-
-    // Front idler wheel
-    const idler = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.62, 14), JDdkGray);
-    idler.rotation.x = Math.PI / 2;
-    idler.position.set(-1.90, 0.32, 0);
-    idler.castShadow = true;
-    tg.add(idler);
-    const idlerHub = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.66, 8), chrome);
-    idlerHub.rotation.x = Math.PI / 2;
-    idlerHub.position.set(-1.90, 0.32, 0);
-    tg.add(idlerHub);
-
-    // Bottom rollers (6 — more than before for realism)
-    [-1.2, -0.72, -0.24, 0.24, 0.72, 1.2].forEach(x => {
-      const rl = new THREE.Mesh(new THREE.CylinderGeometry(0.160, 0.160, 0.56, 12), JDblack);
-      rl.rotation.x = Math.PI / 2;
-      rl.position.set(x, 0.160, 0);
-      tg.add(rl);
-    });
-
-    // Top carrier rollers (2)
-    [-0.55, 0.65].forEach(x => {
-      const cr = new THREE.Mesh(new THREE.CylinderGeometry(0.10, 0.10, 0.52, 10), JDdkGray);
-      cr.rotation.x = Math.PI / 2;
-      cr.position.set(x, 0.66, 0);
-      tg.add(cr);
-    });
-
-    // Track guard plate
-    const guard = new THREE.Mesh(new THREE.BoxGeometry(4.30, 0.10, 0.80), JDblack);
-    guard.position.y = 0.78;
-    tg.add(guard);
-    // Front & rear guard lips
-    [-2.15, 2.15].forEach(x => {
-      const lip = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.22, 0.80), JDblack);
-      lip.position.set(x, 0.67, 0);
-      tg.add(lip);
-    });
-
-    return tg;
-  };
-  g.add(makeTrack(-1.65));
-  g.add(makeTrack( 1.65));
-
-  /* ── UPPER STRUCTURE ────────────────────────────────────── */
-  const upper = new THREE.Group();
-  upper.position.y = 0.82;
-  g.add(upper);
-
-  // Slewing ring
-  const ring = new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.68, 0.16, 18), JDdkGray);
-  ring.position.y = -0.08;
-  upper.add(ring);
-
-  // Main deck
-  const deck = new THREE.Mesh(new THREE.BoxGeometry(2.80, 0.14, 2.30), JDyellowD);
-  deck.position.set(-0.10, 0.07, 0);
-  deck.castShadow = true;
-  upper.add(deck);
-
-  // Engine/body compartment — longer and taller (JD body is substantial)
-  const body = new THREE.Mesh(new THREE.BoxGeometry(1.80, 0.88, 1.80), JDyellow);
-  body.position.set(-0.42, 0.58, 0);
-  body.castShadow = true;
-  upper.add(body);
-  // Body top hood (slightly darker panel)
-  const hood = new THREE.Mesh(new THREE.BoxGeometry(1.74, 0.14, 1.74), JDyellowD);
-  hood.position.set(-0.42, 1.09, 0);
-  upper.add(hood);
-  // Side louvers (engine cooling vents)
-  for (let i = 0; i < 7; i++) {
-    const lv = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.08, 1.40), JDblack);
-    lv.position.set(-1.33, 0.22 + i * 0.11, 0);
-    upper.add(lv);
-  }
-  // Rear grille bars
-  for (let r = 0; r < 5; r++) {
-    const gb = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.06, 1.70), JDblack);
-    gb.position.set(-0.44, 0.26 + r * 0.13, 0.92);
-    upper.add(gb);
-  }
-
-  // Exhaust stack with heat-shield
-  const exStack = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 1.15, 10), JDdkGray);
-  exStack.position.set(-1.0, 1.60, -0.62);
-  upper.add(exStack);
-  const exCap = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.08, 0.12, 10), JDdkGray);
-  exCap.position.set(-1.0, 2.22, -0.62);
-  upper.add(exCap);
-  const exShield = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.90, 0.22), JDblack);
-  exShield.position.set(-1.0, 1.55, -0.62);
-  upper.add(exShield);
-
-  // Hydraulic tank (right side, yellow)
-  const htank = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.90, 0.68), JDyellow);
-  htank.position.set(-0.90, 0.58, 0.95);
-  upper.add(htank);
-  const htCap = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.07, 8), chrome);
-  htCap.position.set(-0.90, 1.07, 0.95);
-  upper.add(htCap);
-
-  // Counterweight — large curved black block at rear (JD counterweights are very prominent)
-  const cwt = new THREE.Mesh(new THREE.BoxGeometry(1.10, 0.78, 2.40), JDblack);
-  cwt.position.set(-1.50, 0.46, 0);
-  cwt.castShadow = true;
-  upper.add(cwt);
-  // Counterweight face (rounded front edge suggestion)
-  const cwtFront = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.74, 2.36), JDdkGray);
-  cwtFront.position.set(-0.97, 0.44, 0);
-  upper.add(cwtFront);
-  // Yellow warning stripe on counterweight
-  const cwtStripe = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.16, 2.34), JDyellow);
-  cwtStripe.position.set(-2.04, 0.72, 0);
-  upper.add(cwtStripe);
-
-  // Access steps
-  [0.25, 0.55].forEach(y => {
-    const stp = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.07, 0.30), chrome);
-    stp.position.set(0.62, y + 0.14, 1.08);
-    upper.add(stp);
-  });
-  // Grab handle
-  const handle = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.55, 0.04), chrome);
-  handle.position.set(0.80, 0.70, 1.08);
-  upper.add(handle);
-
-  /* ── CAB (JD style: large rectangular cab, black roof, big glass) ── */
-  const cab = new THREE.Group();
-  cab.position.set(0.45, 0.14, -0.28);
-  upper.add(cab);
-
-  // Cab lower body (yellow)
-  const cabBody = new THREE.Mesh(new THREE.BoxGeometry(1.18, 0.50, 1.18), JDyellow);
-  cabBody.position.y = 0.25;
-  cab.add(cabBody);
-
-  // ROPS pillars — 4 corner posts (black)
-  [[-0.55, -0.55], [-0.55, 0.55], [0.55, -0.55], [0.55, 0.55]].forEach(([x, z]) => {
-    const post = new THREE.Mesh(new THREE.BoxGeometry(0.10, 1.45, 0.10), JDblack);
-    post.position.set(x, 0.93, z);
-    post.castShadow = true;
-    cab.add(post);
-  });
-
-  // Cab roof (black, flat with slight overhang)
-  const cabRoof = new THREE.Mesh(new THREE.BoxGeometry(1.30, 0.12, 1.30), JDblack);
-  cabRoof.position.y = 1.72;
-  cabRoof.castShadow = true;
-  cab.add(cabRoof);
-
-  // Work lights on roof corners
-  [[-0.30, -0.30], [-0.30, 0.30], [0.30, -0.30], [0.30, 0.30]].forEach(([x, z]) => {
-    const lt = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.10, 0.12),
-      new THREE.MeshStandardMaterial({ color: 0xffffdd, emissive: 0xffff88, emissiveIntensity: 0.6, roughness: 0.1 }));
-    lt.position.set(x, 1.78, z);
-    cab.add(lt);
-  });
-
-  // Large front glass (full-height windshield)
-  const fGlass = new THREE.Mesh(new THREE.BoxGeometry(0.07, 1.10, 1.04), glass);
-  fGlass.position.set(0.57, 0.80, 0);
-  cab.add(fGlass);
-  // Front glass frame (black border)
-  const fFrame = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.16, 1.10), JDblack);
-  fFrame.position.set(0.60, 0.80, 0);
-  cab.add(fFrame);
-  // (glass sits in front of frame visually)
-  fGlass.position.x = 0.58;
-
-  // Side glass panels
-  const sGlassL = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.85, 0.07), glass);
-  sGlassL.position.set(0.02, 0.80, -0.60);
-  cab.add(sGlassL);
-  const sGlassR = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.85, 0.07), glass);
-  sGlassR.position.set(0.02, 0.80, 0.60);
-  cab.add(sGlassR);
-
-  // Rear glass (smaller)
-  const rGlass = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.62, 0.95), glass);
-  rGlass.position.set(-0.58, 0.92, 0);
-  cab.add(rGlass);
-
-  // Wiper
-  const wiper = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.03, 0.78), JDdkGray);
-  wiper.position.set(0.60, 0.55, -0.08);
-  wiper.rotation.z = 0.25;
-  cab.add(wiper);
-
-  /* ── ARM ASSEMBLY ───────────────────────────────────────── */
-  const armBase = new THREE.Group();
-  armBase.position.set(1.00, 0.80, 0);
-  upper.add(armBase);
-
-  // Boom foot bracket (wider than before)
-  const bracket = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.50, 1.00), JDblack);
-  bracket.position.y = 0.25;
-  armBase.add(bracket);
-
-  // Boom pivot — steeper angle for active-digging look
-  const boomPivot = new THREE.Group();
-  boomPivot.position.y = 0.50;
-  boomPivot.rotation.z = -0.55;   // boom angled up ~55°
-  armBase.add(boomPivot);
-
-  // Boom body — wider, two-section, proper yellow JD arm
-  const boomSect1 = new THREE.Mesh(new THREE.BoxGeometry(0.40, 1.80, 0.34), JDyellow);
-  boomSect1.position.y = 0.90;
-  boomSect1.castShadow = true;
-  boomPivot.add(boomSect1);
-  const boomSect2 = new THREE.Mesh(new THREE.BoxGeometry(0.32, 1.60, 0.28), JDyellow);
-  boomSect2.position.set(0, 2.55, 0);
-  boomPivot.add(boomSect2);
-
-  // Boom hydraulic cylinder (thick, prominent)
-  const hcBh = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.095, 1.70, 10), steelMid);
-  hcBh.position.set(0.28, 0.82, 0);
-  hcBh.rotation.z = 0.20;
-  boomPivot.add(hcBh);
-  const hcBr = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.90, 8), chrome);
-  hcBr.position.set(0.33, 1.62, 0);
-  hcBr.rotation.z = 0.20;
-  boomPivot.add(hcBr);
-
-  // Stick pivot — angle forward/down for digging pose
-  const stickPivot = new THREE.Group();
-  stickPivot.position.set(0.04, 3.50, 0);
-  stickPivot.rotation.z = 0.55;   // stick angled forward
-  boomPivot.add(stickPivot);
-
-  const stick = new THREE.Mesh(new THREE.BoxGeometry(0.28, 2.10, 0.24), JDyellow);
-  stick.position.y = 1.05;
-  stick.castShadow = true;
-  stickPivot.add(stick);
-
-  // Stick cylinder
-  const hcSh = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 1.25, 10), steelMid);
-  hcSh.position.set(0.22, 0.60, 0);
-  hcSh.rotation.z = 0.14;
-  stickPivot.add(hcSh);
-  const hcSr = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, 0.70, 8), chrome);
-  hcSr.position.set(0.25, 1.18, 0);
-  hcSr.rotation.z = 0.14;
-  stickPivot.add(hcSr);
-
-  // Bucket pivot — curled down for active-scooping pose
-  const bucketPivot = new THREE.Group();
-  bucketPivot.position.set(0, 2.10, 0);
-  bucketPivot.rotation.z = -0.60;   // bucket curled into digging position
-  stickPivot.add(bucketPivot);
-
-  // Bucket — wider, deeper, more realistic JD bucket shape
-  // Side cheek plates (yellow)
-  [-0.52, 0.52].forEach(z => {
-    const side = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.72, 0.09), JDyellow);
-    side.position.set(-0.02, 0.06, z);
-    side.castShadow = true;
-    bucketPivot.add(side);
-  });
-  // Back plate (black/steel)
-  const bkBack = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.70, 1.04), JDblack);
-  bkBack.position.set(-0.52, 0.06, 0);
-  bucketPivot.add(bkBack);
-  // Bottom floor
-  const bkFloor = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.10, 1.04), JDblack);
-  bkFloor.rotation.z = 0.30;
-  bkFloor.position.set(0.06, -0.22, 0);
-  bucketPivot.add(bkFloor);
-  // Second floor section (curved profile)
-  const bkFloor2 = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.10, 1.04), JDdkGray);
-  bkFloor2.rotation.z = -0.25;
-  bkFloor2.position.set(0.42, -0.28, 0);
-  bucketPivot.add(bkFloor2);
-  // Cutting edge (heavy steel lip)
-  const cutEdge = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.14, 1.06), steelMid);
-  cutEdge.position.set(0.56, -0.26, 0);
-  bucketPivot.add(cutEdge);
-  // Bucket teeth (5 — wider spacing)
-  for (let t = -2; t <= 2; t++) {
-    const adp = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.08, 0.15), JDblack);
-    adp.position.set(0.62, -0.24, t * 0.20);
-    bucketPivot.add(adp);
-    const tip = new THREE.Mesh(new THREE.ConeGeometry(0.055, 0.26, 4), steelMid);
-    tip.rotation.z = -Math.PI / 2;
-    tip.position.set(0.82, -0.24, t * 0.20);
-    bucketPivot.add(tip);
-  }
-
-  // Bucket cylinder
-  const hcKh = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.65, 8), steelMid);
-  hcKh.position.set(0.22, 0.55, 0);
-  hcKh.rotation.z = 0.55;
-  bucketPivot.add(hcKh);
-  const hcKr = new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.042, 0.35, 7), chrome);
-  hcKr.position.set(0.34, 0.28, 0);
-  hcKr.rotation.z = 0.55;
-  bucketPivot.add(hcKr);
+  xBeam.position.y = 0.54; xBeam.castShadow = true; g.add(xBeam);
 
   g.position.set(-5.5, 0, -3.0);
   g.rotation.y = 0.35;
-
   addStep(g);
-  OBJ.excavatorArm    = boomPivot;
-  OBJ.excavatorStick  = stickPivot;
-  OBJ.excavatorBucket = bucketPivot;
-  OBJ.excavatorUpper  = upper;
   return g;
 }
 
 function buildConcreteTruck3D() {
   const g = new THREE.Group();
-
-  // ── PBR materials ──────────────────────────────────────────
   const cabPaint  = new THREE.MeshStandardMaterial({ color: 0xe65100, roughness: 0.68, metalness: 0.06 });
   const drumPaint = new THREE.MeshStandardMaterial({ color: 0x78909c, roughness: 0.60, metalness: 0.18 });
   const chassisM  = new THREE.MeshStandardMaterial({ color: 0x1c1c1c, roughness: 0.55, metalness: 0.50 });
@@ -2591,47 +1980,27 @@ function buildConcreteTruck3D() {
   const rubber    = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.92, metalness: 0.00 });
   const glass2    = new THREE.MeshStandardMaterial({ color: 0x90caf9, roughness: 0.05, metalness: 0.10, transparent: true, opacity: 0.58 });
   const bladeMat  = new THREE.MeshStandardMaterial({ color: 0x546e7a, roughness: 0.55, metalness: 0.30 });
-  const GRAY = chassisM;
 
-  /* ── CHASSIS FRAME ──────────────────────────────────────── */
-  // Longitudinal frame rails
   [-0.74, 0.74].forEach(z => {
     const rail = new THREE.Mesh(new THREE.BoxGeometry(7.4, 0.24, 0.24), chassisM);
-    rail.position.set(0.1, 0.68, z);
-    rail.castShadow = true;
-    g.add(rail);
+    rail.position.set(0.1, 0.68, z); rail.castShadow = true; g.add(rail);
   });
-  // Cross members
   [-2.2, -0.5, 0.9, 2.4].forEach(x => {
     const cm = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.22, 1.48), chassisM);
-    cm.position.set(x, 0.68, 0);
-    g.add(cm);
+    cm.position.set(x, 0.68, 0); g.add(cm);
   });
   const belly = new THREE.Mesh(new THREE.BoxGeometry(7.0, 0.12, 1.52), chassisM);
-  belly.position.set(0.1, 0.60, 0);
-  g.add(belly);
+  belly.position.set(0.1, 0.60, 0); g.add(belly);
 
-  /* ── WHEELS (steer + 2 drive axles with dual rears) ─────── */
   const makeAxleWheel = (x, z, isDual) => {
     const wg = new THREE.Group();
     wg.position.set(x, 0.5, z);
     const tire = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.32, 16), rubber);
-    tire.rotation.x = Math.PI / 2;
-    tire.castShadow = true;
-    wg.add(tire);
+    tire.rotation.x = Math.PI / 2; tire.castShadow = true; wg.add(tire);
     const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.34, 12), chrome);
-    rim.rotation.x = Math.PI / 2;
-    wg.add(rim);
+    rim.rotation.x = Math.PI / 2; wg.add(rim);
     const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.36, 8), chrome);
-    hub.rotation.x = Math.PI / 2;
-    wg.add(hub);
-    for (let i = 0; i < 8; i++) {
-      const a = (i / 8) * Math.PI * 2;
-      const lug = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.08, 6), chrome);
-      lug.rotation.x = Math.PI / 2;
-      lug.position.set(Math.cos(a) * 0.21, 0, Math.sin(a) * 0.21);
-      wg.add(lug);
-    }
+    hub.rotation.x = Math.PI / 2; wg.add(hub);
     if (isDual) {
       const zOff = z < 0 ? -0.33 : 0.33;
       const t2 = tire.clone(); t2.position.z = zOff; wg.add(t2);
@@ -2639,240 +2008,39 @@ function buildConcreteTruck3D() {
     }
     return wg;
   };
-  // Steer axle
   const stAxle = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 2.1, 8), chassisM);
-  stAxle.rotation.x = Math.PI / 2;
-  stAxle.position.set(-2.4, 0.52, 0);
-  g.add(stAxle);
+  stAxle.rotation.x = Math.PI / 2; stAxle.position.set(-2.4, 0.52, 0); g.add(stAxle);
   g.add(makeAxleWheel(-2.4, -1.08, false));
   g.add(makeAxleWheel(-2.4,  1.08, false));
-  // Drive axles
   [0.9, 1.85].forEach(x => {
     const dAxle = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 2.4, 8), chassisM);
-    dAxle.rotation.x = Math.PI / 2;
-    dAxle.position.set(x, 0.52, 0);
-    g.add(dAxle);
+    dAxle.rotation.x = Math.PI / 2; dAxle.position.set(x, 0.52, 0); g.add(dAxle);
     g.add(makeAxleWheel(x, -1.22, true));
     g.add(makeAxleWheel(x,  1.22, true));
   });
 
-  /* ── ENGINE HOOD (conventional truck) ───────────────────── */
   const hood = new THREE.Mesh(new THREE.BoxGeometry(1.85, 0.75, 2.0), cabPaint);
-  hood.position.set(-3.15, 1.28, 0);
-  hood.castShadow = true;
-  g.add(hood);
-  // Hood top slope
-  const hoodSlope = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.42, 2.0), cabPaint);
-  hoodSlope.position.set(-2.23, 1.72, 0);
-  hoodSlope.rotation.z = 0.18;
-  g.add(hoodSlope);
-  // Grille
-  const grille = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.65, 1.78), chassisM);
-  grille.position.set(-4.05, 1.25, 0);
-  g.add(grille);
-  for (let r = 0; r < 5; r++) {
-    const gbar = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.05, 1.75), chrome);
-    gbar.position.set(-4.05, 1.02 + r * 0.12, 0);
-    g.add(gbar);
-  }
-  // Chrome bumper
-  const bumper = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.3, 2.1), chrome);
-  bumper.position.set(-4.12, 0.82, 0);
-  g.add(bumper);
-  // Headlights
-  [-0.78, 0.78].forEach(z => {
-    const hl = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.26, 0.32),
-      new THREE.MeshStandardMaterial({ color: 0xfffff0, emissive: 0xffff88, emissiveIntensity: 0.45, roughness: 0.1 }));
-    hl.position.set(-4.1, 1.42, z);
-    g.add(hl);
-    // Turn indicator
-    const ind = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.16, 0.22),
-      new THREE.MeshStandardMaterial({ color: 0xff8800, emissive: 0xff4400, emissiveIntensity: 0.3 }));
-    ind.position.set(-4.1, 1.18, z);
-    g.add(ind);
-  });
+  hood.position.set(-3.15, 1.28, 0); hood.castShadow = true; g.add(hood);
 
-  /* ── CAB BOX ─────────────────────────────────────────────── */
   const cabBox = new THREE.Mesh(new THREE.BoxGeometry(1.9, 1.58, 2.0), cabPaint);
-  cabBox.position.set(-2.05, 1.79, 0);
-  cabBox.castShadow = true;
-  g.add(cabBox);
-  // Cab roof
-  const cabRoof = new THREE.Mesh(new THREE.BoxGeometry(1.96, 0.12, 2.06), chassisM);
-  cabRoof.position.set(-2.05, 2.64, 0);
-  g.add(cabRoof);
-  // Windscreen (angled forward)
-  const windscreen = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.9, 1.62), glass2);
-  windscreen.position.set(-1.11, 2.0, 0);
-  g.add(windscreen);
-  // Side windows
-  [-1.02, 1.02].forEach(z => {
-    const sw = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.68, 0.055), glass2);
-    sw.position.set(-2.05, 2.04, z);
-    g.add(sw);
-  });
-  // Rear cab window
-  const rearWin = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.55, 1.45), glass2);
-  rearWin.position.set(-2.98, 2.04, 0);
-  g.add(rearWin);
-  // Door seam lines
-  [-0.82, 0.82].forEach(z => {
-    const seam = new THREE.Mesh(new THREE.BoxGeometry(0.035, 1.5, 0.035), chassisM);
-    seam.position.set(-1.12, 1.82, z);
-    g.add(seam);
-    const handle = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.045, 0.28), chrome);
-    handle.position.set(-1.12, 1.68, z);
-    g.add(handle);
-  });
-  // Side mirror
-  const mirrorArm = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.05, 0.05), chassisM);
-  mirrorArm.position.set(-1.14, 2.4, -1.12);
-  g.add(mirrorArm);
-  const mirrorHead = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.2, 0.28), chassisM);
-  mirrorHead.position.set(-1.27, 2.4, -1.12);
-  g.add(mirrorHead);
-  // Cab air horns
-  const hornPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.45, 7), chrome);
-  hornPipe.position.set(-1.8, 2.77, -0.55);
-  g.add(hornPipe);
-  const hornBell = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.04, 0.14, 9), chrome);
-  hornBell.position.set(-1.8, 3.03, -0.55);
-  g.add(hornBell);
-  // Exhaust stack
-  const exPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 1.3, 10), chrome);
-  exPipe.position.set(-1.78, 2.1, 0.8);
-  g.add(exPipe);
-  const exCap = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.075, 0.1, 10), chassisM);
-  exCap.position.set(-1.78, 2.78, 0.8);
-  g.add(exCap);
-  // Warning beacon on roof
-  const beacon = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 0.2, 8),
-    new THREE.MeshStandardMaterial({ color: 0xffaa00, emissive: 0xff8800, emissiveIntensity: 0.55 }));
-  beacon.position.set(-2.05, 2.8, 0);
-  g.add(beacon);
-  // Steps on cab
-  [0.34, 0.65].forEach(y => {
-    const stp = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.06, 0.28), chrome);
-    stp.position.set(-1.12, y + 0.66, -0.92);
-    g.add(stp);
-  });
+  cabBox.position.set(-2.05, 1.79, 0); cabBox.castShadow = true; g.add(cabBox);
 
-  /* ── WATER TANK ──────────────────────────────────────────── */
-  const wTankBody = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.38, 1.55, 14), chassisM);
-  wTankBody.rotation.z = Math.PI / 2;
-  wTankBody.position.set(-0.85, 1.3, 0);
-  wTankBody.castShadow = true;
-  g.add(wTankBody);
-  const wTankCap = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.09, 8), chrome);
-  wTankCap.position.set(-0.85, 1.7, 0);
-  g.add(wTankCap);
-
-  /* ── MIXER DRUM ─────────────────────────────────────────── */
   const DRUM = new THREE.Group();
   DRUM.position.set(0.85, 2.0, 0);
-  DRUM.rotation.z = -0.20;   // tilted: front high, rear low
+  DRUM.rotation.z = -0.20;
   g.add(DRUM);
-
-  // Main drum body (tapered cylinder)
   const drumBody = new THREE.Mesh(new THREE.CylinderGeometry(0.92, 0.60, 3.6, 20), drumPaint);
-  drumBody.castShadow = true;
-  DRUM.add(drumBody);
-
-  // Front discharge cone + ring
+  drumBody.castShadow = true; DRUM.add(drumBody);
   const fCone = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.92, 0.65, 18), drumPaint);
-  fCone.position.y = 2.12;
-  DRUM.add(fCone);
-  const disRing = new THREE.Mesh(new THREE.TorusGeometry(0.21, 0.065, 8, 18), chrome);
-  disRing.position.y = 2.46;
-  disRing.rotation.x = Math.PI / 2;
-  DRUM.add(disRing);
-
-  // Rear end cap
-  const rearCap = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.22, 16), drumPaint);
-  rearCap.position.y = -1.91;
-  DRUM.add(rearCap);
-
-  // Drum support rolling rings (2 bands)
-  [0.6, -0.8].forEach(y => {
-    const band = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.075, 8, 22), chassisM);
-    band.position.y = y;
-    band.rotation.x = Math.PI / 2;
-    DRUM.add(band);
-  });
-
-  // Helical mixing blades (3 starts, continuous helix)
-  for (let blade = 0; blade < 3; blade++) {
-    const phaseOffset = (blade / 3) * Math.PI * 2;
-    for (let i = 0; i < 14; i++) {
-      const t = i / 13;
-      const y = -1.7 + t * 3.4;
-      const r = 0.61 + (1 - t) * 0.29;   // taper
-      const angle = phaseOffset + t * Math.PI * 3.5;
-      const fin = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.34, 0.09), bladeMat);
-      fin.position.set(Math.cos(angle) * (r + 0.04), y, Math.sin(angle) * (r + 0.04));
-      fin.lookAt(new THREE.Vector3(0, y, 0));
-      DRUM.add(fin);
-    }
-  }
-
-  // Drum longitudinal stiffener ribs
-  for (let r = 0; r < 5; r++) {
-    const a = (r / 5) * Math.PI * 2;
-    const rib = new THREE.Mesh(new THREE.BoxGeometry(0.07, 3.4, 0.07), chassisM);
-    rib.position.set(Math.cos(a) * 0.94, 0, Math.sin(a) * 0.94);
-    DRUM.add(rib);
-  }
-
+  fCone.position.y = 2.12; DRUM.add(fCone);
   OBJ.truckDrum = DRUM;
 
-  /* ── DISCHARGE CHUTE SYSTEM ─────────────────────────────── */
   const CHUTE = new THREE.Group();
   CHUTE.position.set(2.85, 1.2, 0);
   g.add(CHUTE);
-
-  // Pivot bracket
-  const pivBrk = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.55, 0.14), chassisM);
-  pivBrk.position.y = 0.28;
-  CHUTE.add(pivBrk);
-
-  // Upper chute segment
   const uChute = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.1, 2.1), chassisM);
-  uChute.rotation.x = 0.52;
-  uChute.position.set(0, 0.12, 0.7);
-  CHUTE.add(uChute);
-  [-0.15, 0.15].forEach(x => {
-    const w = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.18, 2.1), chassisM);
-    w.rotation.x = 0.52;
-    w.position.set(x, 0.12, 0.7);
-    CHUTE.add(w);
-  });
-
-  // Lower chute segment (folded further down)
-  const lChute = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.1, 1.3), chassisM);
-  lChute.rotation.x = 0.95;
-  lChute.position.set(0, -0.42, 1.68);
-  CHUTE.add(lChute);
-
-  // Chute handle (operator grabs this)
-  const cHandle = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.55, 7), chrome);
-  cHandle.rotation.z = Math.PI / 2;
-  cHandle.position.set(0, 0.36, 0.3);
-  CHUTE.add(cHandle);
-
+  uChute.rotation.x = 0.52; uChute.position.set(0, 0.12, 0.7); CHUTE.add(uChute);
   OBJ.truckChuteGroup = CHUTE;
-
-  /* ── DRUM SUPPORT A-FRAME STRUTS ────────────────────────── */
-  [[-1.1, 1.08], [-1.1, -1.08], [1.5, 1.08], [1.5, -1.08]].forEach(([x, z]) => {
-    const strut = new THREE.Mesh(new THREE.CylinderGeometry(0.058, 0.058, 1.45, 8), chassisM);
-    strut.position.set(x, 1.32, z);
-    strut.lookAt(new THREE.Vector3(x * 0.2, 2.6, 0));
-    g.add(strut);
-  });
-
-  // Top cross beam connecting A-frames
-  const topBeam = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 2.22), chassisM);
-  topBeam.position.set(0.2, 2.55, 0);
-  g.add(topBeam);
 
   g.position.set(-6.2, 0, -4.8);
   g.rotation.y = 0.42;
@@ -2882,84 +2050,76 @@ function buildConcreteTruck3D() {
 
 function buildInspector3D(x, z) {
   const g = new THREE.Group();
+  const vestMat = new THREE.MeshLambertMaterial({ color: 0xf5a623 });
+  const vestSt  = new THREE.MeshLambertMaterial({ color: 0xe65100 });
+  const helmMat = new THREE.MeshLambertMaterial({ color: 0xffeb3b });
+  const pantMat = new THREE.MeshLambertMaterial({ color: 0x2c3e50 });
+  const bootMat = new THREE.MeshLambertMaterial({ color: 0x1a1a1a });
+  const clipMat = new THREE.MeshLambertMaterial({ color: 0x9e9e9e });
 
-  const vestMat = new THREE.MeshLambertMaterial({ color: 0xf5a623 }); // hi-vis vest
-  const vestSt  = new THREE.MeshLambertMaterial({ color: 0xe65100 }); // safety stripes
-  const helmMat = new THREE.MeshLambertMaterial({ color: 0xffeb3b }); // yellow hard hat
-  const pantMat = new THREE.MeshLambertMaterial({ color: 0x2c3e50 }); // dark pants
-  const bootMat = new THREE.MeshLambertMaterial({ color: 0x1a1a1a }); // boots
-  const clipMat = new THREE.MeshLambertMaterial({ color: 0x9e9e9e }); // clipboard
-
-  // Legs
   [-0.15, 0.15].forEach(xOff => {
     const leg = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.58, 0.22), pantMat);
-    leg.position.set(xOff, 0.29, 0);
-    leg.castShadow = true;
-    g.add(leg);
-    // Boot
+    leg.position.set(xOff, 0.29, 0); leg.castShadow = true; g.add(leg);
     const boot = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.12, 0.3), bootMat);
-    boot.position.set(xOff, 0.06, 0.05);
-    g.add(boot);
+    boot.position.set(xOff, 0.06, 0.05); g.add(boot);
   });
-
-  // Torso (hi-vis vest)
   const torso = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.72, 0.38), vestMat);
-  torso.position.y = 0.94;
-  torso.castShadow = true;
-  g.add(torso);
-
-  // Hi-vis stripe on vest
-  const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.1, 0.1), vestSt);
-  stripe.position.set(0, 0.88, 0.2);
-  g.add(stripe);
-
-  // Arms
-  [-0.4, 0.4].forEach((xOff, side) => {
+  torso.position.y = 0.94; torso.castShadow = true; g.add(torso);
+  const stripeM = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.1, 0.1), vestSt);
+  stripeM.position.set(0, 0.88, 0.2); g.add(stripeM);
+  [-0.4, 0.4].forEach((xOff) => {
     const arm = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.6, 0.2), vestMat);
-    arm.position.set(xOff, 0.84, 0);
-    arm.castShadow = true;
-    g.add(arm);
-    // Hand
+    arm.position.set(xOff, 0.84, 0); arm.castShadow = true; g.add(arm);
     const hand = new THREE.Mesh(new THREE.SphereGeometry(0.1, 6, 5), MAT.skin);
-    hand.position.set(xOff, 0.56, 0);
-    g.add(hand);
+    hand.position.set(xOff, 0.56, 0); g.add(hand);
   });
-
-  // Clipboard in right hand
   const board = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.32, 0.24), clipMat);
-  board.position.set(0.42, 0.72, 0.12);
-  board.rotation.x = 0.3;
-  g.add(board);
-  const paper = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.26, 0.2),
-    new THREE.MeshLambertMaterial({ color: 0xfafafa }));
-  paper.position.set(0.44, 0.72, 0.12);
-  paper.rotation.x = 0.3;
-  g.add(paper);
-
-  // Neck
+  board.position.set(0.42, 0.72, 0.12); board.rotation.x = 0.3; g.add(board);
+  const paper = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.26, 0.2), new THREE.MeshLambertMaterial({ color: 0xfafafa }));
+  paper.position.set(0.44, 0.72, 0.12); paper.rotation.x = 0.3; g.add(paper);
   const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.18, 6), MAT.skin);
-  neck.position.y = 1.35;
-  g.add(neck);
-
-  // Head
+  neck.position.y = 1.35; g.add(neck);
   const head = new THREE.Mesh(new THREE.SphereGeometry(0.27, 10, 8), MAT.skin);
-  head.position.y = 1.62;
-  head.castShadow = true;
-  g.add(head);
-
-  // Hard hat — dome + brim
+  head.position.y = 1.62; head.castShadow = true; g.add(head);
   const hatDome = new THREE.Mesh(new THREE.SphereGeometry(0.3, 10, 6, 0, Math.PI * 2, 0, Math.PI * 0.5), helmMat);
-  hatDome.position.y = 1.78;
-  g.add(hatDome);
+  hatDome.position.y = 1.78; g.add(hatDome);
   const hatBrim = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.36, 0.06, 10), helmMat);
-  hatBrim.position.y = 1.76;
-  g.add(hatBrim);
+  hatBrim.position.y = 1.76; g.add(hatBrim);
 
   g.position.set(x, 0, z);
-  g.rotation.y = -Math.PI * 0.25; // face toward pit
+  g.rotation.y = -Math.PI * 0.25;
   addStep(g);
   OBJ.inspector = g;
   return g;
+}
+
+/* ── Shaft position constants ────────────────────────────── */
+const SHAFT_POSITIONS = [
+  { x: -2.5, z: -2.5, label: 'S1' },
+  { x:  2.5, z: -2.5, label: 'S2' },
+  { x: -2.5, z:  2.5, label: 'S3' },
+  { x:  2.5, z:  2.5, label: 'S4' }
+];
+const SHAFT_DEPTH = 17;
+
+/* ── Helper: build a rebar cage mesh group ──────────────── */
+function buildRebarCage3D() {
+  const cage = new THREE.Group();
+  // 6 vertical bars arranged in circle r=0.2
+  for (let i = 0; i < 6; i++) {
+    const ang = (i / 6) * Math.PI * 2;
+    const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 15, 6), MAT.rebarSteel);
+    bar.position.set(Math.cos(ang) * 0.2, 0, Math.sin(ang) * 0.2);
+    cage.add(bar);
+  }
+  // 8 horizontal rings at 2m intervals
+  for (let r = 0; r < 8; r++) {
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.015, 6, 16), MAT.rebarSteel);
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = -7 + r * 2;
+    cage.add(ring);
+  }
+  return cage;
 }
 
 
@@ -3008,7 +2168,7 @@ const STEP_HANDLERS = [
         g.position.copy(pos);
         addStep(g);
 
-        const label = create3DLabel(g, `BH-${i + 1}`, '');
+        create3DLabel(g, `BH-${i + 1}`, '');
 
         clickables3D.push({
           mesh: g,
@@ -3033,9 +2193,9 @@ const STEP_HANDLERS = [
               ab.innerHTML = '';
               const submitBtn = makeBtn('Submit Soil Report', 'btn-primary', () => {
                 markSubtask(5);
-                showFeedback('correct', 'Soil Profile: 2m Topsoil, 4m Soft Clay, 5m Loose Sand, 5m Dense Sand, Rock. DRIVEN PILE FOUNDATION REQUIRED.');
+                showFeedback('correct', 'Soil Profile: 2m Topsoil, 4m Soft Clay, 5m Loose Sand, 5m Dense Sand, Rock. DRILLED SHAFT FOUNDATION REQUIRED.');
                 safeTimeout(() => {
-                  ab.innerHTML = '<div class="step-instruction" style="color:#27ae60;">Recommendation: DRIVEN PILE FOUNDATION REQUIRED. Shallow foundations not suitable — bearing layer at 16m depth.</div>';
+                  ab.innerHTML = '<div class="step-instruction" style="color:#27ae60;">Recommendation: DRILLED SHAFT FOUNDATION REQUIRED. Shallow foundations not suitable — bearing layer at 16m depth.</div>';
                   safeTimeout(() => completeStep(), 2000);
                 }, 1500);
               });
@@ -3045,20 +2205,11 @@ const STEP_HANDLERS = [
         });
       });
 
-      // Add boring rig model at center
       const rigGroup = new THREE.Group();
-      const rigBase = new THREE.Mesh(
-        new THREE.BoxGeometry(1.2, 0.3, 0.8),
-        MAT.yellow
-      );
-      rigBase.position.y = 0.15;
-      rigGroup.add(rigBase);
-      const rigMast = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.06, 0.06, 2.5, 6),
-        MAT.darkGray
-      );
-      rigMast.position.set(0, 1.4, 0);
-      rigGroup.add(rigMast);
+      const rigBase = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.3, 0.8), MAT.yellow);
+      rigBase.position.y = 0.15; rigGroup.add(rigBase);
+      const rigMast = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 2.5, 6), MAT.darkGray);
+      rigMast.position.set(0, 1.4, 0); rigGroup.add(rigMast);
       rigGroup.position.set(7, 0, 0);
       addStep(rigGroup);
 
@@ -3068,31 +2219,29 @@ const STEP_HANDLERS = [
     cleanup() {}
   },
 
-  /* ─────────────────── 1: Pile Layout ─── */
+  /* ─────────────────── 1: Shaft Layout ─── */
   {
     enter() {
       const ss = STATE.stepState;
       ss.placed = 0;
       ss.total = 4;
 
-      const pilePositions = [
+      const shaftPositions = [
         new THREE.Vector3(-2.5, 0.01, -2.5),
         new THREE.Vector3(2.5,  0.01, -2.5),
         new THREE.Vector3(-2.5, 0.01,  2.5),
         new THREE.Vector3(2.5,  0.01,  2.5)
       ];
 
-      const labels = ['P1', 'P2', 'P3', 'P4'];
+      const labels = ['S1', 'S2', 'S3', 'S4'];
 
-      // Draw pile cap outline on ground
       const outlineGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(6.5, 0.05, 6.5));
       const outlineMat = new THREE.LineBasicMaterial({ color: 0xf5a623 });
       const outlineMesh = new THREE.LineSegments(outlineGeo, outlineMat);
       outlineMesh.position.y = 0.03;
       addStep(outlineMesh);
 
-      pilePositions.forEach((pos, i) => {
-        // Target ring
+      shaftPositions.forEach((pos, i) => {
         const ringGeo = new THREE.RingGeometry(0.3, 0.5, 16);
         const ringMat = new THREE.MeshStandardMaterial({
           color: 0xff6600, emissive: 0xff3300, emissiveIntensity: 0.5,
@@ -3104,7 +2253,6 @@ const STEP_HANDLERS = [
         ring.position.y = 0.03;
         addStep(ring);
 
-        // Center dot
         const dot = new THREE.Mesh(
           new THREE.CircleGeometry(0.08, 12),
           new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff0000, emissiveIntensity: 0.6, side: THREE.DoubleSide })
@@ -3114,7 +2262,7 @@ const STEP_HANDLERS = [
         dot.position.y = 0.04;
         addStep(dot);
 
-        const labelEl = create3DLabel(ring, labels[i], '');
+        create3DLabel(ring, labels[i], '');
 
         clickables3D.push({
           mesh: ring,
@@ -3126,11 +2274,9 @@ const STEP_HANDLERS = [
             this.pulse = false;
             ring.scale.setScalar(1);
 
-            // Replace ring with survey stake
             ring.material = MAT.markerGreen.clone();
             ring.material.emissive.setHex(0x00aa22);
 
-            // Animate a spike going into ground
             const spike = new THREE.Mesh(
               new THREE.CylinderGeometry(0.03, 0.02, 0.8, 6),
               MAT.rebarSteel
@@ -3139,7 +2285,6 @@ const STEP_HANDLERS = [
             spike.position.y = 0.8;
             addStep(spike);
 
-            // Animate spike descending
             let spikeY = 0.8;
             const spikeInterval = safeInterval(() => {
               spikeY -= 0.05;
@@ -3152,10 +2297,10 @@ const STEP_HANDLERS = [
 
             ss.placed++;
             markSubtask(i);
-            showFeedback('correct', `Pile marker ${labels[i]} placed!`);
+            showFeedback('correct', `Shaft marker ${labels[i]} placed!`);
 
             if (ss.placed >= ss.total) {
-              showFeedback('correct', 'All pile markers placed! Layout complete.');
+              showFeedback('correct', 'All shaft markers placed! Layout complete.');
               safeTimeout(() => completeStep(), 1200);
             }
           }
@@ -3163,818 +2308,453 @@ const STEP_HANDLERS = [
       });
 
       const ab = DOM.actionBar();
-      ab.innerHTML = '<div class="step-instruction">Click each pulsing target ring to place a survey marker at pile positions P1-P4</div>';
+      ab.innerHTML = '<div class="step-instruction">Click each pulsing target ring to place a survey marker at shaft positions S1-S4</div>';
     },
     cleanup() {}
   },
 
-  /* ─────────────────── 2: Pile Selection ─── */
+  /* ─────────────────── 2: Mobilise Drilling Rig ─── */
   {
     enter() {
       const ss = STATE.stepState;
-      ss.selected = false;
+      ss.done = 0;
+      ss.total = 4;
 
-      // Show the rig in background
-      const rig = buildDrivingRig(0, -1);
-      rig.position.set(0, 0, 0);
+      const rig = buildDrillingRig3D(0, 0);
       addStep(rig);
-      OBJ.rig = rig;
-
-      markSubtask(0); // Review pile options
+      OBJ.drillingRig = rig;
 
       const ab = DOM.actionBar();
-      ab.innerHTML = '<div class="step-instruction">Select the best pile type for soft clay over dense sand conditions:</div>';
+      ab.innerHTML = '<div class="step-instruction">Complete rig setup by clicking each task below</div>';
 
-      const optionsRow = el('div', '', '');
-      optionsRow.style.cssText = 'display:flex;gap:12px;flex-wrap:wrap;justify-content:center;';
-
-      const options = [
-        {
-          icon: '🪵', name: 'Timber Pile',
-          desc: 'Natural, cheap. Suitable for permanent wet conditions only. Decays in dry cycles.',
-          correct: false, penalty: 20,
-          feedback: 'Incorrect — timber piles decay in variable moisture conditions.'
-        },
-        {
-          icon: '⚙️', name: 'Steel H-Pile',
-          desc: 'High capacity, slender. Expensive. Can corrode in aggressive soils.',
-          correct: false, penalty: 10,
-          feedback: 'Acceptable but not optimal for this soil profile.'
-        },
-        {
-          icon: '🧱', name: 'Concrete Pile',
-          desc: 'Precast, durable, standard choice. Excellent for soft clay over dense sand conditions.',
-          correct: true, penalty: 0,
-          feedback: 'Correct! Precast concrete pile is the standard choice for this application.'
-        }
+      const tasks = [
+        { label: 'Drive rig to shaft S1', icon: '\ud83d\ude9c' },
+        { label: 'Extend Kelly bar', icon: '\u2195\ufe0f' },
+        { label: 'Attach drill bucket', icon: '\ud83e\udea3' },
+        { label: 'Confirm rig level', icon: '\ud83d\udccf' }
       ];
 
-      options.forEach(opt => {
-        const card = el('div', 'panel-item', '');
-        card.style.cssText = 'min-width:140px;max-width:180px;cursor:pointer;';
-        card.innerHTML = `
-          <span class="item-icon">${opt.icon}</span>
-          <span class="item-label" style="font-size:0.82rem;">${opt.name}</span>
-          <span style="font-size:0.68rem;color:#ccc;text-align:center;line-height:1.3;margin-top:4px;">${opt.desc}</span>
-        `;
+      tasks.forEach((t, i) => {
+        const item = el('div', 'panel-item');
+        item.innerHTML = `<div class="item-icon">${t.icon}</div><div class="item-label">${t.label}</div>`;
+        item.addEventListener('click', () => {
+          if (item.classList.contains('placed')) return;
+          item.classList.add('placed');
+          item.innerHTML += '<div style="color:var(--green-ok);font-size:.85rem;margin-top:2px;">\u2713 Done</div>';
+          ss.done++;
+          markSubtask(i);
+          showFeedback('correct', `${t.label} complete!`);
 
-        card.addEventListener('click', () => {
-          if (ss.selected) return;
-
-          if (opt.correct) {
-            ss.selected = true;
-            card.classList.add('selected');
-            card.style.borderColor = '#27ae60';
-            markSubtask(1);
-            addScore(20, opt.feedback);
+          if (ss.done >= ss.total) {
+            showFeedback('correct', 'Rig mobilised! Ready to drill.');
             safeTimeout(() => {
-              markSubtask(2);
-              showFeedback('correct', 'Pile selection confirmed. Proceeding to positioning.');
-              safeTimeout(() => completeStep(), 1200);
-            }, 1500);
-          } else {
-            card.style.borderColor = '#e74c3c';
-            STATE.score = Math.max(0, STATE.score - opt.penalty);
-            updateHUD();
-            shakeScene();
-            showFeedback('wrong', `${opt.feedback} (-${opt.penalty} pts)`);
-            safeTimeout(() => { card.style.borderColor = 'rgba(255,255,255,0.2)'; }, 1500);
+              DOM.actionBar().innerHTML = '';
+              DOM.actionBar().appendChild(makeBtn('Begin Drilling', 'btn btn-green', () => completeStep()));
+            }, 800);
           }
         });
-
-        optionsRow.appendChild(card);
+        ab.appendChild(item);
       });
-
-      ab.appendChild(optionsRow);
     },
     cleanup() {}
   },
 
-  /* ─────────────────── 3: Position Pile ─── */
+  /* ─────────────────── 3: Drill Borehole ─── */
   {
     enter() {
       const ss = STATE.stepState;
-      ss.phase = 0; // 0=attach, 1=lift, 2=guide
+      ss.currentShaft = 0;
+      ss.drilling = false;
 
-      // Build rig
-      const rig = buildDrivingRig(0, -1);
+      const rig = buildDrillingRig3D(0, 0);
       addStep(rig);
-      OBJ.rig = rig;
+      OBJ.drillingRig = rig;
 
-      // Build pile lying horizontal on ground (storage area)
-      const pile = buildPile(true);
-      addStep(pile);
-      OBJ.pileGroup = pile;
+      // Store borehole meshes for later steps
+      ss.boreholeMeshes = [];
 
-      // Highlight rope/sling on the pile
-      const sling = new THREE.Mesh(
-        new THREE.TorusGeometry(0.4, 0.03, 8, 16),
-        MAT.yellow
-      );
-      sling.position.set(6, 0.8, 3);
-      sling.rotation.x = Math.PI / 2;
-      sling.visible = false;
-      addStep(sling);
-      OBJ.sling = sling;
-
-      const ab = DOM.actionBar();
-      ab.innerHTML = '';
-
-      function showPhase() {
-        ab.innerHTML = '';
-        if (ss.phase === 0) {
-          ab.innerHTML = '<div class="step-instruction">Attach the lifting sling to the pile</div>';
-          ab.appendChild(makeBtn('Attach Sling', 'btn-primary', () => {
-            OBJ.sling.visible = true;
-            // Highlight pile
-            OBJ.pileGroup.children[0].material = new THREE.MeshLambertMaterial({
-              map: TEX.concrete, emissive: 0x333300, emissiveIntensity: 0.3
-            });
-            markSubtask(0);
-            showFeedback('correct', 'Sling attached! Ready to lift.');
-            ss.phase = 1;
-            safeTimeout(showPhase, 800);
-          }));
-        } else if (ss.phase === 1) {
-          ab.innerHTML = '<div class="step-instruction">Lift the pile from horizontal to vertical</div>';
-          ab.appendChild(makeBtn('Lift Pile', 'btn-primary', () => {
-            // Animate pile rotating from horizontal to vertical
-            let t = 0;
-            const liftInterval = safeInterval(() => {
-              t += 0.02;
-              if (t >= 1) {
-                clearInterval(liftInterval);
-                OBJ.pileGroup.rotation.z = 0;
-                OBJ.pileGroup.position.set(6, 10, 3);
-                OBJ.sling.visible = false;
-                markSubtask(1);
-                showFeedback('correct', 'Pile is vertical! Guide to position.');
-                ss.phase = 2;
-                safeTimeout(showPhase, 800);
-                return;
-              }
-              // Smooth rotation from PI/2 to 0
-              const angle = (Math.PI / 2) * (1 - t);
-              OBJ.pileGroup.rotation.z = angle;
-              // Move upward and toward center
-              OBJ.pileGroup.position.x = 6 - 3 * t;
-              OBJ.pileGroup.position.y = 0.3 + 10 * t;
-              OBJ.pileGroup.position.z = 3 - 1.5 * t;
-              OBJ.sling.position.x = OBJ.pileGroup.position.x;
-              OBJ.sling.position.y = OBJ.pileGroup.position.y + 2;
-              OBJ.sling.position.z = OBJ.pileGroup.position.z;
-            }, 30);
-          }));
-        } else if (ss.phase === 2) {
-          ab.innerHTML = '<div class="step-instruction">Guide the pile to the driving position</div>';
-          ab.appendChild(makeBtn('Guide to Position', 'btn-primary', () => {
-            // Animate pile moving to center position
-            let t = 0;
-            const startX = OBJ.pileGroup.position.x;
-            const startZ = OBJ.pileGroup.position.z;
-            const moveInterval = safeInterval(() => {
-              t += 0.03;
-              if (t >= 1) {
-                clearInterval(moveInterval);
-                OBJ.pileGroup.position.set(0, 10, 0);
-                OBJ.pileGroup.rotation.z = 0;
-                // Snap effect
-                spawnParticles(new THREE.Vector3(0, 0.1, 0), MAT.yellow, 8);
-                markSubtask(2);
-                showFeedback('correct', 'Pile in position! Ready for alignment check.');
-                safeTimeout(() => completeStep(), 1200);
-                return;
-              }
-              OBJ.pileGroup.position.x = startX + (0 - startX) * t;
-              OBJ.pileGroup.position.z = startZ + (0 - startZ) * t;
-            }, 30);
-          }));
-        }
-      }
-
-      showPhase();
-    },
-    cleanup() {
-      delete OBJ.sling;
-    }
-  },
-
-  /* ─────────────────── 4: Alignment Check ─── */
-  {
-    enter() {
-      const ss = STATE.stepState;
-      ss.nsOk = false;
-      ss.ewOk = false;
-
-      // Build rig + pile
-      const rig = buildDrivingRig(0, -1);
-      addStep(rig);
-      OBJ.rig = rig;
-
-      // Build vertical pile with slight random tilt
-      const pile = buildPile(false);
-      pile.position.set(0, 10, 0);
-
-      // Apply initial tilt
-      const nsOffset = (STATE.alignmentNS - 90) * (Math.PI / 180);
-      const ewOffset = (STATE.alignmentEW - 90) * (Math.PI / 180);
-      pile.rotation.x = nsOffset;
-      pile.rotation.z = ewOffset;
-
-      addStep(pile);
-      OBJ.pileGroup = pile;
-
-      const ab = DOM.actionBar();
-      ab.innerHTML = '';
-
-      // Alignment indicator display
-      const alignDiv = el('div', '', '');
-      alignDiv.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;';
-
-      // Angle display
-      const angleDisplay = el('div', '', '');
-      angleDisplay.style.cssText = 'color:#f5a623;font-size:0.9rem;font-weight:700;text-align:center;';
-      angleDisplay.id = 'angle-display';
-      alignDiv.appendChild(angleDisplay);
-
-      // Level indicator (circular)
-      const levelWrap = el('div', 'alignment-indicator', '');
-      levelWrap.innerHTML = `
-        <div style="width:100px;height:100px;border-radius:50%;border:3px solid #546e7a;position:relative;background:rgba(0,0,0,0.3);margin:0 auto;">
-          <div style="position:absolute;top:50%;left:50%;width:4px;height:4px;background:#f5a623;border-radius:50%;transform:translate(-50%,-50%);"></div>
-          <div id="level-bubble" style="position:absolute;width:14px;height:14px;border-radius:50%;background:#e74c3c;transform:translate(-50%,-50%);transition:left 0.15s,top 0.15s;"></div>
-          <div style="position:absolute;top:50%;left:50%;width:20px;height:20px;border:2px solid rgba(39,174,96,0.5);border-radius:50%;transform:translate(-50%,-50%);"></div>
-        </div>
-      `;
-      alignDiv.appendChild(levelWrap);
-
-      // Slider row
-      const sliderRow = el('div', '', '');
-      sliderRow.style.cssText = 'display:flex;gap:20px;align-items:center;flex-wrap:wrap;justify-content:center;';
-
-      // N-S slider
-      const nsWrap = el('div', '', '');
-      nsWrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px;';
-      nsWrap.innerHTML = '<span style="color:#ccc;font-size:0.75rem;font-weight:700;">N-S Tilt</span>';
-      const nsSlider = document.createElement('input');
-      nsSlider.type = 'range';
-      nsSlider.min = '87';
-      nsSlider.max = '93';
-      nsSlider.step = '0.1';
-      nsSlider.value = STATE.alignmentNS.toFixed(1);
-      nsSlider.style.cssText = 'width:120px;accent-color:#f5a623;';
-      nsWrap.appendChild(nsSlider);
-      sliderRow.appendChild(nsWrap);
-
-      // E-W slider
-      const ewWrap = el('div', '', '');
-      ewWrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px;';
-      ewWrap.innerHTML = '<span style="color:#ccc;font-size:0.75rem;font-weight:700;">E-W Tilt</span>';
-      const ewSlider = document.createElement('input');
-      ewSlider.type = 'range';
-      ewSlider.min = '87';
-      ewSlider.max = '93';
-      ewSlider.step = '0.1';
-      ewSlider.value = STATE.alignmentEW.toFixed(1);
-      ewSlider.style.cssText = 'width:120px;accent-color:#f5a623;';
-      ewWrap.appendChild(ewSlider);
-      sliderRow.appendChild(ewWrap);
-
-      alignDiv.appendChild(sliderRow);
-
-      // Status
-      const statusDiv = el('div', '', '');
-      statusDiv.id = 'align-status';
-      statusDiv.style.cssText = 'color:#e74c3c;font-size:0.82rem;font-weight:700;text-align:center;';
-      alignDiv.appendChild(statusDiv);
-
-      ab.appendChild(alignDiv);
-
-      function updateAlignment() {
-        const ns = parseFloat(nsSlider.value);
-        const ew = parseFloat(ewSlider.value);
-        STATE.alignmentNS = ns;
-        STATE.alignmentEW = ew;
-
-        // Update pile tilt
-        const nsRad = (ns - 90) * (Math.PI / 180);
-        const ewRad = (ew - 90) * (Math.PI / 180);
-        OBJ.pileGroup.rotation.x = nsRad;
-        OBJ.pileGroup.rotation.z = ewRad;
-
-        // Update display
-        const ad = $('angle-display');
-        if (ad) ad.innerHTML = `N-S: ${ns.toFixed(1)}° &nbsp;|&nbsp; E-W: ${ew.toFixed(1)}°`;
-
-        // Update level bubble
-        const bubble = $('level-bubble');
-        if (bubble) {
-          const bx = 50 + (ew - 90) * 15;
-          const by = 50 + (ns - 90) * 15;
-          bubble.style.left = Math.max(10, Math.min(90, bx)) + '%';
-          bubble.style.top = Math.max(10, Math.min(90, by)) + '%';
-          const inTolerance = Math.abs(ns - 90) <= 0.5 && Math.abs(ew - 90) <= 0.5;
-          bubble.style.background = inTolerance ? '#27ae60' : '#e74c3c';
-        }
-
-        // Check tolerance
-        ss.nsOk = Math.abs(ns - 90) <= 0.5;
-        ss.ewOk = Math.abs(ew - 90) <= 0.5;
-
-        if (ss.nsOk && !ss.nsMarked) {
-          ss.nsMarked = true;
-          markSubtask(0);
-        }
-        if (ss.ewOk && !ss.ewMarked) {
-          ss.ewMarked = true;
-          markSubtask(1);
-        }
-
-        const status = $('align-status');
-        if (ss.nsOk && ss.ewOk) {
-          if (status) status.innerHTML = '<span style="color:#27ae60;">Within tolerance - ALIGNED</span>';
-          if (!ss.completed) {
-            ss.completed = true;
-            markSubtask(2);
-            showFeedback('correct', 'Pile aligned within +-0.5 degrees! Ready to drive.');
-            safeTimeout(() => completeStep(), 1500);
-          }
-        } else {
-          if (status) {
-            const parts = [];
-            if (!ss.nsOk) parts.push('N-S out of tolerance');
-            if (!ss.ewOk) parts.push('E-W out of tolerance');
-            status.textContent = parts.join(' | ');
-          }
-        }
-      }
-
-      nsSlider.addEventListener('input', updateAlignment);
-      ewSlider.addEventListener('input', updateAlignment);
-      updateAlignment();
-    },
-    cleanup() {}
-  },
-
-  /* ─────────────────── 5: Drive Pile ─── */
-  {
-    enter() {
-      const ss = STATE.stepState;
-      ss.driving = false;
-      ss.depth = 0; // meters driven (tip starts at y=0)
-      ss.blows = 0;
-      ss.currentLayer = 'Topsoil';
-      ss.hammerCycleActive = false;
-      ss.layerMarked = { topsoil: false, clay: false, sand: false, dense: false };
-
-      // Build rig
-      const rig = buildDrivingRig(0, -1);
-      addStep(rig);
-      OBJ.rig = rig;
-
-      // Build vertical pile: tip at y=-2, top at y=18 (within mast height)
-      const pile = buildPile(false);
-      pile.position.set(0, 8, 0); // center: tip at y=-2, top at y=18
-      addStep(pile);
-      OBJ.pileGroup = pile;
-
-      // Position hammer at top of pile
-      if (OBJ.hammer) {
-        OBJ.hammer.position.y = 18 + 0.8; // just above pile top
-      }
-
-      const ab = DOM.actionBar();
-      ab.innerHTML = '';
-
-      // Driving stats display
-      const statsDiv = el('div', 'blow-display', '');
-      statsDiv.id = 'drive-stats';
-      statsDiv.innerHTML = `
-        <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:center;">
-          <div style="text-align:center;">
-            <div style="color:#aaa;font-size:0.65rem;text-transform:uppercase;">Depth</div>
-            <div id="drive-depth" style="color:#f5a623;font-size:1.2rem;font-weight:700;">0.0m</div>
-          </div>
-          <div style="text-align:center;">
-            <div style="color:#aaa;font-size:0.65rem;text-transform:uppercase;">Blow Count</div>
-            <div id="drive-blows" style="color:#fff;font-size:1.2rem;font-weight:700;">0</div>
-          </div>
-          <div style="text-align:center;">
-            <div style="color:#aaa;font-size:0.65rem;text-transform:uppercase;">Pen./Blow</div>
-            <div id="drive-pen" style="color:#fff;font-size:1.2rem;font-weight:700;">--</div>
-          </div>
-          <div style="text-align:center;">
-            <div style="color:#aaa;font-size:0.65rem;text-transform:uppercase;">Current Layer</div>
-            <div id="drive-layer" style="color:#8B6340;font-size:0.9rem;font-weight:700;">Topsoil</div>
-          </div>
-        </div>
-      `;
-      ab.appendChild(statsDiv);
-
-      // Drive button (hold to drive)
-      const driveBtn = makeBtn('DRIVE', 'btn-primary', () => {});
-      driveBtn.style.cssText += 'font-size:1.1rem;padding:12px 40px;background:#c62828;color:#fff;';
-      driveBtn.id = 'drive-btn';
-
-      let driveInterval = null;
-
-      function getPenetration(depth) {
-        if (depth < 2) return 200 + Math.random() * 50;       // Topsoil
-        if (depth < 6) return 150 + Math.random() * 50;       // Soft Clay
-        if (depth < 11) return 80 + Math.random() * 40;       // Loose Sand
-        if (depth < 16) return 30 + Math.random() * 30;       // Dense Sand
-        return 8 + Math.random() * 17;                         // Bearing Layer
-      }
-
-      function getLayerName(depth) {
-        if (depth < 2) return 'Topsoil';
-        if (depth < 6) return 'Soft Clay';
-        if (depth < 11) return 'Loose Sand';
-        if (depth < 16) return 'Dense Sand';
-        return 'Bearing Layer';
-      }
-
-      function getLayerColor(name) {
-        const colors = {
-          'Topsoil': '#8B6340',
-          'Soft Clay': '#6B8E6E',
-          'Loose Sand': '#D4A85A',
-          'Dense Sand': '#C4843A',
-          'Bearing Layer': '#607080'
-        };
-        return colors[name] || '#fff';
-      }
-
-      function doBlowCycle() {
-        if (ss.hammerCycleActive) return;
-        if (ss.depth >= 11) {
-          // Step 6 done — enters dense sand, transition to step 7
-          clearInterval(driveInterval);
-          driveInterval = null;
+      function drillShaft(idx) {
+        if (idx >= 4) {
+          STATE.drilledDepth = SHAFT_DEPTH;
+          showFeedback('correct', 'All 4 boreholes drilled to 17m! Drilling complete.');
+          safeTimeout(() => completeStep(), 1200);
           return;
         }
 
-        ss.hammerCycleActive = true;
-        const hammerStartY = OBJ.pileGroup.position.y + 10 + 0.8;
+        const sp = SHAFT_POSITIONS[idx];
+        ss.currentShaft = idx;
+        ss.depthPct = 0;
+        ss.drilling = false;
 
-        // Phase 1: Hammer rises
-        if (OBJ.hammer) {
-          OBJ.hammer.position.y = hammerStartY;
+        // Move rig over shaft position
+        OBJ.drillingRig.position.set(sp.x, 0, sp.z);
+
+        const ab = DOM.actionBar();
+        ab.innerHTML = '';
+
+        const statsDiv = el('div', 'blow-display', '');
+        statsDiv.innerHTML = `
+          <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:center;">
+            <div style="text-align:center;">
+              <div style="color:#aaa;font-size:0.65rem;text-transform:uppercase;">Current Shaft</div>
+              <div style="color:#f5a623;font-size:1.2rem;font-weight:700;">${sp.label}</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="color:#aaa;font-size:0.65rem;text-transform:uppercase;">Depth</div>
+              <div id="drill-depth" style="color:#fff;font-size:1.2rem;font-weight:700;">0.0m</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="color:#aaa;font-size:0.65rem;text-transform:uppercase;">Progress</div>
+              <div id="drill-pct" style="color:#27ae60;font-size:1.2rem;font-weight:700;">0%</div>
+            </div>
+          </div>
+        `;
+        ab.appendChild(statsDiv);
+
+        const drillBtn = makeBtn('DRILL', 'btn-primary', () => {});
+        drillBtn.style.cssText += 'font-size:1.1rem;padding:12px 40px;background:#c49900;color:#fff;';
+
+        let drillInterval = null;
+
+        function doDrill() {
+          if (ss.depthPct >= 100) return;
+          ss.depthPct = Math.min(100, ss.depthPct + 2);
+          const currentDepth = (SHAFT_DEPTH * ss.depthPct / 100).toFixed(1);
+          const depthEl = $('drill-depth');
+          const pctEl = $('drill-pct');
+          if (depthEl) depthEl.textContent = currentDepth + 'm';
+          if (pctEl) pctEl.textContent = Math.round(ss.depthPct) + '%';
+
+          // Animate kelly bar descending
+          if (OBJ.drillingRig) {
+            const kelly = OBJ.drillingRig.userData.kellyBar;
+            const bucket = OBJ.drillingRig.userData.drillBucket;
+            const head = OBJ.drillingRig.userData.rotaryHead;
+            if (kelly) kelly.position.y = 11 - (ss.depthPct / 100) * 10;
+            if (bucket) {
+              bucket.position.y = 4.6 - (ss.depthPct / 100) * 10;
+              bucket.rotation.y += 0.3;
+            }
+            if (head) head.position.y = 17.5 - (ss.depthPct / 100) * 5;
+          }
+
+          // Spawn spoil particles
+          if (Math.random() < 0.3) {
+            spawnParticles(new THREE.Vector3(sp.x + 1, 0.3, sp.z), MAT.topsoil, 2);
+          }
+
+          if (ss.depthPct >= 100) {
+            ss.drilling = false;
+            if (drillInterval) { clearInterval(drillInterval); drillInterval = null; }
+
+            // Show completed borehole
+            const borehole = new THREE.Mesh(
+              new THREE.CylinderGeometry(0.28, 0.28, SHAFT_DEPTH, 12),
+              MAT.boreholeDark
+            );
+            borehole.position.set(sp.x, -SHAFT_DEPTH / 2, sp.z);
+            addStep(borehole);
+            ss.boreholeMeshes.push(borehole);
+
+            // Reset rig visuals
+            if (OBJ.drillingRig) {
+              const kelly = OBJ.drillingRig.userData.kellyBar;
+              const bucket = OBJ.drillingRig.userData.drillBucket;
+              const head = OBJ.drillingRig.userData.rotaryHead;
+              if (kelly) kelly.position.y = 11;
+              if (bucket) bucket.position.y = 4.6;
+              if (head) head.position.y = 17.5;
+            }
+
+            markSubtask(idx);
+            showFeedback('correct', `${sp.label} drilled to ${SHAFT_DEPTH}m!`);
+
+            // Build spoil pile
+            buildSoilPile((idx + 1) / 4);
+
+            safeTimeout(() => drillShaft(idx + 1), 800);
+          }
         }
-        const riseTarget = hammerStartY + 2;
-        let riseT = 0;
-        const riseInterval = safeInterval(() => {
-          riseT += 0.20;          // fast rise
-          if (riseT >= 1) {
-            clearInterval(riseInterval);
-            if (OBJ.hammer) OBJ.hammer.position.y = riseTarget;
 
-            // Phase 2: Hammer falls
-            let fallT = 0;
-            const fallInterval = safeInterval(() => {
-              fallT += 0.35;      // fast fall
-              if (fallT >= 1) {
-                clearInterval(fallInterval);
-                if (OBJ.hammer) OBJ.hammer.position.y = hammerStartY;
+        drillBtn.addEventListener('mousedown', () => {
+          if (ss.depthPct >= 100) return;
+          ss.drilling = true;
+          STATE.stepState.drilling = true;
+          drillInterval = safeInterval(doDrill, 60);
+          doDrill();
+        });
 
-                // Impact!
-                const pen = getPenetration(ss.depth);
-                const penMeters = pen / 1000;
-                ss.depth += penMeters;
-                ss.blows++;
+        drillBtn.addEventListener('mouseup', () => {
+          ss.drilling = false;
+          STATE.stepState.drilling = false;
+          if (drillInterval) { clearInterval(drillInterval); drillInterval = null; }
+        });
 
-                // Move pile down
-                OBJ.pileGroup.position.y = 8 - ss.depth;
+        drillBtn.addEventListener('mouseleave', () => {
+          ss.drilling = false;
+          STATE.stepState.drilling = false;
+          if (drillInterval) { clearInterval(drillInterval); drillInterval = null; }
+        });
 
-                // Impact flash
-                if (OBJ.impactFlash) {
-                  OBJ.impactFlash.visible = true;
-                  OBJ.impactFlash.position.y = OBJ.pileGroup.position.y + 10;
-                  safeTimeout(() => {
-                    if (OBJ.impactFlash) OBJ.impactFlash.visible = false;
-                  }, 100);
-                }
-
-                // Spawn impact particles
-                spawnParticles(
-                  new THREE.Vector3(0, Math.max(0, OBJ.pileGroup.position.y + 10), 0),
-                  MAT.topsoil, 4
-                );
-
-                // Update stats
-                const depthEl = $('drive-depth');
-                const blowsEl = $('drive-blows');
-                const penEl = $('drive-pen');
-                const layerEl = $('drive-layer');
-                if (depthEl) depthEl.textContent = ss.depth.toFixed(1) + 'm';
-                if (blowsEl) blowsEl.textContent = ss.blows;
-                if (penEl) penEl.textContent = Math.round(pen) + 'mm';
-
-                // Check layer change
-                const newLayer = getLayerName(ss.depth);
-                if (newLayer !== ss.currentLayer) {
-                  ss.currentLayer = newLayer;
-                  if (layerEl) {
-                    layerEl.textContent = newLayer;
-                    layerEl.style.color = getLayerColor(newLayer);
-                  }
-                  showFeedback('info', `Entered ${newLayer} at ${ss.depth.toFixed(1)}m depth`);
-
-                  // Mark subtasks
-                  if (newLayer === 'Soft Clay' && !ss.layerMarked.clay) {
-                    ss.layerMarked.clay = true;
-                    markSubtask(0); // topsoil done
-                    markSubtask(1);
-                  }
-                  if (newLayer === 'Loose Sand' && !ss.layerMarked.sand) {
-                    ss.layerMarked.sand = true;
-                    markSubtask(2);
-                  }
-                  if (newLayer === 'Dense Sand' && !ss.layerMarked.dense) {
-                    ss.layerMarked.dense = true;
-                    markSubtask(3);
-                  }
-                }
-
-                // Update hammer position to track pile top
-                if (OBJ.hammer) {
-                  OBJ.hammer.position.y = OBJ.pileGroup.position.y + 10 + 0.8;
-                }
-
-                // Check if we've entered Dense Sand -> step 6 complete
-                if (ss.depth >= 11) {
-                  STATE.drivenDepth = ss.depth;
-                  STATE.totalBlows = ss.blows;
-                  clearInterval(driveInterval);
-                  driveInterval = null;
-                  showFeedback('correct', 'Entered Dense Sand! Transitioning to pile refusal monitoring.');
-                  safeTimeout(() => completeStep(), 1500);
-                }
-
-                ss.hammerCycleActive = false;
-              } else {
-                if (OBJ.hammer) {
-                  OBJ.hammer.position.y = riseTarget - (riseTarget - hammerStartY) * fallT;
-                }
-              }
-            }, 20);
-            return;
-          }
-          if (OBJ.hammer) {
-            OBJ.hammer.position.y = hammerStartY + (riseTarget - hammerStartY) * riseT;
-          }
-        }, 20);
+        ab.appendChild(drillBtn);
       }
 
-      driveBtn.addEventListener('mousedown', () => {
-        if (ss.depth >= 11) return;
-        ss.driving = true;
-        if (!ss.layerMarked.topsoil) {
-          ss.layerMarked.topsoil = true;
-          markSubtask(0);
-        }
-        driveInterval = safeInterval(() => {
-          if (ss.driving) doBlowCycle();
-        }, 180);
-        doBlowCycle();
-      });
-
-      driveBtn.addEventListener('mouseup', () => {
-        ss.driving = false;
-        if (driveInterval) { clearInterval(driveInterval); driveInterval = null; }
-      });
-
-      driveBtn.addEventListener('mouseleave', () => {
-        ss.driving = false;
-        if (driveInterval) { clearInterval(driveInterval); driveInterval = null; }
-      });
-
-      ab.appendChild(driveBtn);
+      drillShaft(0);
     },
     cleanup() {
-      OBJ.hammerAnimating = false;
+      STATE.stepState.drilling = false;
     }
   },
 
-  /* ─────────────────── 6: Pile Refusal ─── */
+  /* ─────────────────── 4: Install Temporary Casing ─── */
   {
     enter() {
       const ss = STATE.stepState;
-      ss.driving = false;
-      ss.depth = STATE.drivenDepth;
-      ss.blows = STATE.totalBlows;
-      ss.recentBlows = [];
-      ss.refusalAchieved = false;
-      ss.hammerCycleActive = false;
+      ss.installed = 0;
 
-      // Build rig
-      const rig = buildDrivingRig(0, -1);
+      // Move rig to side
+      const rig = buildDrillingRig3D(6, 0);
       addStep(rig);
-      OBJ.rig = rig;
+      OBJ.drillingRig = rig;
 
-      // Build pile at current driven position
-      const pile = buildPile(false);
-      pile.position.set(0, 8 - ss.depth, 0);
-      addStep(pile);
-      OBJ.pileGroup = pile;
+      // Show boreholes
+      SHAFT_POSITIONS.forEach(sp => {
+        const borehole = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.28, 0.28, SHAFT_DEPTH, 12),
+          MAT.boreholeDark
+        );
+        borehole.position.set(sp.x, -SHAFT_DEPTH / 2, sp.z);
+        addStep(borehole);
+      });
 
-      // Position hammer
-      if (OBJ.hammer) {
-        OBJ.hammer.position.y = pile.position.y + 10 + 0.8;
-      }
+      ss.casingMeshes = [];
 
       const ab = DOM.actionBar();
-      ab.innerHTML = '';
+      ab.innerHTML = '<div class="step-instruction">Click each shaft to lower a steel casing into the borehole</div>';
 
-      // Stats display
-      const statsDiv = el('div', 'blow-display', '');
-      statsDiv.innerHTML = `
-        <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:center;">
-          <div style="text-align:center;">
-            <div style="color:#aaa;font-size:0.65rem;text-transform:uppercase;">Depth</div>
-            <div id="ref-depth" style="color:#f5a623;font-size:1.1rem;font-weight:700;">${ss.depth.toFixed(1)}m</div>
-          </div>
-          <div style="text-align:center;">
-            <div style="color:#aaa;font-size:0.65rem;text-transform:uppercase;">Blow Count</div>
-            <div id="ref-blows" style="color:#fff;font-size:1.1rem;font-weight:700;">${ss.blows}</div>
-          </div>
-          <div style="text-align:center;">
-            <div style="color:#aaa;font-size:0.65rem;text-transform:uppercase;">Pen./Blow</div>
-            <div id="ref-pen" style="color:#fff;font-size:1.1rem;font-weight:700;">--</div>
-          </div>
-          <div style="text-align:center;">
-            <div style="color:#aaa;font-size:0.65rem;text-transform:uppercase;">Last 10 Blows</div>
-            <div id="ref-last10" style="color:#fff;font-size:1.1rem;font-weight:700;">--</div>
-          </div>
-          <div style="text-align:center;">
-            <div style="color:#aaa;font-size:0.65rem;text-transform:uppercase;">Layer</div>
-            <div id="ref-layer" style="color:#C4843A;font-size:0.85rem;font-weight:700;">Dense Sand</div>
-          </div>
-        </div>
-      `;
-      ab.appendChild(statsDiv);
+      SHAFT_POSITIONS.forEach((sp, i) => {
+        const item = el('div', 'panel-item');
+        item.innerHTML = `<div class="item-icon">\u2b07\ufe0f</div><div class="item-label">Lower casing into ${sp.label}</div>`;
+        item.addEventListener('click', () => {
+          if (item.classList.contains('placed')) return;
+          item.classList.add('placed');
+          item.innerHTML += '<div style="color:var(--green-ok);font-size:.85rem;margin-top:2px;">\u2713 Installed</div>';
 
-      // Penetration sequence for refusal
-      const penSequence = [25, 20, 15, 12, 10, 8, 6, 5, 4, 3, 3, 2, 2, 2, 2, 1, 1, 1, 1, 1];
-      let penIndex = 0;
+          // Create casing mesh
+          const casing = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.30, 0.30, SHAFT_DEPTH, 16, 1, true),
+            MAT.casingSteel
+          );
+          casing.position.set(sp.x, 5, sp.z);
+          addStep(casing);
+          ss.casingMeshes.push(casing);
 
-      function doRefusalBlow() {
-        if (ss.hammerCycleActive || ss.refusalAchieved) return;
-        ss.hammerCycleActive = true;
+          // Animate casing descending
+          let cy = 5;
+          const targetY = -SHAFT_DEPTH / 2;
+          const iv = safeInterval(() => {
+            cy -= 0.4;
+            casing.position.y = cy;
+            if (cy <= targetY) {
+              clearInterval(iv);
+              casing.position.y = targetY;
+            }
+          }, 30);
 
-        const hammerStartY = OBJ.pileGroup.position.y + 10 + 0.8;
-        if (OBJ.hammer) OBJ.hammer.position.y = hammerStartY;
+          ss.installed++;
+          markSubtask(i);
+          showFeedback('correct', `Casing installed in ${sp.label}!`);
 
-        const riseTarget = hammerStartY + 2;
-        let riseT = 0;
-        const riseInterval = safeInterval(() => {
-          riseT += 0.20;          // fast rise (matches step 5 speed)
-          if (riseT >= 1) {
-            clearInterval(riseInterval);
-            if (OBJ.hammer) OBJ.hammer.position.y = riseTarget;
-
-            let fallT = 0;
-            const fallInterval = safeInterval(() => {
-              fallT += 0.35;      // fast fall
-              if (fallT >= 1) {
-                clearInterval(fallInterval);
-                if (OBJ.hammer) OBJ.hammer.position.y = hammerStartY;
-
-                // Impact
-                const pen = penSequence[Math.min(penIndex, penSequence.length - 1)];
-                penIndex++;
-                const penMeters = pen / 1000;
-                ss.depth += penMeters;
-                ss.blows++;
-                ss.recentBlows.push(pen);
-                if (ss.recentBlows.length > 10) ss.recentBlows.shift();
-
-                // Move pile
-                OBJ.pileGroup.position.y = 8 - ss.depth;
-
-                // Flash
-                if (OBJ.impactFlash) {
-                  OBJ.impactFlash.visible = true;
-                  OBJ.impactFlash.position.y = OBJ.pileGroup.position.y + 10;
-                  safeTimeout(() => { if (OBJ.impactFlash) OBJ.impactFlash.visible = false; }, 100);
-                }
-
-                spawnParticles(
-                  new THREE.Vector3(0, Math.max(0, OBJ.pileGroup.position.y + 10), 0),
-                  MAT.denseSand, 3
-                );
-
-                // Update hammer position
-                if (OBJ.hammer) OBJ.hammer.position.y = OBJ.pileGroup.position.y + 10 + 0.8;
-
-                // Update stats
-                const depthEl = $('ref-depth');
-                const blowsEl = $('ref-blows');
-                const penEl = $('ref-pen');
-                const last10El = $('ref-last10');
-                const layerEl = $('ref-layer');
-                if (depthEl) depthEl.textContent = ss.depth.toFixed(1) + 'm';
-                if (blowsEl) blowsEl.textContent = ss.blows;
-                if (penEl) penEl.textContent = pen + 'mm';
-
-                // Last 10 blows total
-                const last10Total = ss.recentBlows.reduce((a, b) => a + b, 0);
-                if (last10El) {
-                  last10El.textContent = ss.recentBlows.length >= 10
-                    ? last10Total + 'mm'
-                    : `${ss.recentBlows.length}/10 blows`;
-                }
-
-                // Update layer display
-                if (ss.depth >= 16) {
-                  if (layerEl) {
-                    layerEl.textContent = 'Bearing Layer';
-                    layerEl.style.color = '#607080';
-                  }
-                }
-
-                markSubtask(0); // monitoring penetration
-                if (pen <= 8) markSubtask(1); // decreasing movement
-
-                // Check refusal: last 10 blows < 25mm total
-                if (ss.recentBlows.length >= 10 && last10Total < 25) {
-                  ss.refusalAchieved = true;
-                  markSubtask(2);
-                  STATE.drivenDepth = ss.depth;
-                  STATE.totalBlows = ss.blows;
-
-                  // Show refusal banner
-                  showFeedback('correct', 'PILE REFUSAL ACHIEVED! Last 10 blows: ' + last10Total + 'mm total.');
-
-                  const bannerDiv = el('div', 'refusal-banner', '');
-                  bannerDiv.innerHTML = `
-                    <div style="background:rgba(39,174,96,0.2);border:2px solid #27ae60;border-radius:8px;padding:12px;margin-top:10px;text-align:center;">
-                      <div style="color:#27ae60;font-size:1.2rem;font-weight:700;">PILE REFUSAL ACHIEVED</div>
-                      <div style="color:#ccc;font-size:0.8rem;margin-top:4px;">
-                        Final Depth: ${ss.depth.toFixed(1)}m | Total Blows: ${ss.blows} | Last 10 Blows: ${last10Total}mm
-                      </div>
-                    </div>
-                  `;
-                  ab.appendChild(bannerDiv);
-
-                  // Add confirm button
-                  const confirmBtn = makeBtn('Confirm Refusal', 'btn-green', () => {
-                    markSubtask(3);
-                    showFeedback('correct', 'Refusal confirmed! Pile at final depth.');
-                    safeTimeout(() => completeStep(), 1200);
-                  });
-                  confirmBtn.style.marginTop = '8px';
-                  ab.appendChild(confirmBtn);
-                }
-
-                ss.hammerCycleActive = false;
-              } else {
-                if (OBJ.hammer) {
-                  OBJ.hammer.position.y = riseTarget - (riseTarget - hammerStartY) * fallT;
-                }
-              }
-            }, 20);
-            return;
+          if (ss.installed >= 4) {
+            showFeedback('correct', 'All casings installed!');
+            safeTimeout(() => completeStep(), 1200);
           }
-          if (OBJ.hammer) {
-            OBJ.hammer.position.y = hammerStartY + (riseTarget - hammerStartY) * riseT;
-          }
-        }, 20);
-      }
-
-      // Drive button
-      const driveBtn = makeBtn('DRIVE', 'btn-primary', () => {});
-      driveBtn.style.cssText += 'font-size:1.1rem;padding:12px 40px;background:#c62828;color:#fff;';
-
-      let driveInterval = null;
-
-      driveBtn.addEventListener('mousedown', () => {
-        if (ss.refusalAchieved) return;
-        ss.driving = true;
-        driveInterval = safeInterval(() => {
-          if (ss.driving && !ss.refusalAchieved) doRefusalBlow();
-        }, 180);
-        doRefusalBlow();
+        });
+        ab.appendChild(item);
       });
-
-      driveBtn.addEventListener('mouseup', () => {
-        ss.driving = false;
-        if (driveInterval) { clearInterval(driveInterval); driveInterval = null; }
-      });
-
-      driveBtn.addEventListener('mouseleave', () => {
-        ss.driving = false;
-        if (driveInterval) { clearInterval(driveInterval); driveInterval = null; }
-      });
-
-      ab.appendChild(driveBtn);
     },
     cleanup() {}
   },
-  /* ─────────────────── 10: Formwork ─── */
+
+  /* ─────────────────── 5: Lower Reinforcement Cage ─── */
   {
     enter() {
-      buildPilesForStep();
+      const ss = STATE.stepState;
+      ss.lowered = 0;
+
+      // Show boreholes with casings
+      SHAFT_POSITIONS.forEach(sp => {
+        const borehole = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.28, 0.28, SHAFT_DEPTH, 12),
+          MAT.boreholeDark
+        );
+        borehole.position.set(sp.x, -SHAFT_DEPTH / 2, sp.z);
+        addStep(borehole);
+
+        const casing = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.30, 0.30, SHAFT_DEPTH, 16, 1, true),
+          MAT.casingSteel
+        );
+        casing.position.set(sp.x, -SHAFT_DEPTH / 2, sp.z);
+        addStep(casing);
+      });
+
+      ss.cageMeshes = [];
+
+      const ab = DOM.actionBar();
+      ab.innerHTML = '<div class="step-instruction">Click each shaft to lower a rebar cage into the casing</div>';
+
+      SHAFT_POSITIONS.forEach((sp, i) => {
+        const item = el('div', 'panel-item');
+        item.innerHTML = `<div class="item-icon">\u2699\ufe0f</div><div class="item-label">Lower cage into ${sp.label}</div>`;
+        item.addEventListener('click', () => {
+          if (item.classList.contains('placed')) return;
+          item.classList.add('placed');
+          item.innerHTML += '<div style="color:var(--green-ok);font-size:.85rem;margin-top:2px;">\u2713 Lowered</div>';
+
+          // Create rebar cage
+          const cage = buildRebarCage3D();
+          cage.position.set(sp.x, 5, sp.z);
+          addStep(cage);
+          ss.cageMeshes.push(cage);
+
+          // Animate cage descending
+          let cy = 5;
+          const targetY = -8;
+          const iv = safeInterval(() => {
+            cy -= 0.3;
+            cage.position.y = cy;
+            if (cy <= targetY) {
+              clearInterval(iv);
+              cage.position.y = targetY;
+            }
+          }, 30);
+
+          ss.lowered++;
+          markSubtask(i);
+          showFeedback('correct', `Rebar cage lowered into ${sp.label}!`);
+
+          if (ss.lowered >= 4) {
+            showFeedback('correct', 'All rebar cages placed!');
+            safeTimeout(() => completeStep(), 1200);
+          }
+        });
+        ab.appendChild(item);
+      });
+    },
+    cleanup() {}
+  },
+
+  /* ─────────────────── 6: Pour Concrete — Tremie Method ─── */
+  {
+    enter() {
+      const ss = STATE.stepState;
+      ss.poured = 0;
+
+      // Show boreholes with casings and rebar cages
+      SHAFT_POSITIONS.forEach(sp => {
+        const borehole = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.28, 0.28, SHAFT_DEPTH, 12),
+          MAT.boreholeDark
+        );
+        borehole.position.set(sp.x, -SHAFT_DEPTH / 2, sp.z);
+        addStep(borehole);
+
+        const casing = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.30, 0.30, SHAFT_DEPTH, 16, 1, true),
+          MAT.casingSteel
+        );
+        casing.position.set(sp.x, -SHAFT_DEPTH / 2, sp.z);
+        addStep(casing);
+        // Store casing for withdrawal animation
+        sp._casing = casing;
+
+        const cage = buildRebarCage3D();
+        cage.position.set(sp.x, -8, sp.z);
+        addStep(cage);
+      });
+
+      const ab = DOM.actionBar();
+      ab.innerHTML = '<div class="step-instruction">Click each shaft to pour concrete via tremie and withdraw casing</div>';
+
+      SHAFT_POSITIONS.forEach((sp, i) => {
+        const item = el('div', 'panel-item');
+        item.innerHTML = `<div class="item-icon">\ud83d\udee2</div><div class="item-label">Tremie pour ${sp.label}</div>`;
+        item.addEventListener('click', () => {
+          if (item.classList.contains('placed')) return;
+          item.classList.add('placed');
+          item.innerHTML += '<div style="color:var(--green-ok);font-size:.85rem;margin-top:2px;">\u2713 Poured</div>';
+
+          // Tremie pipe
+          const tremie = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.05, 0.05, SHAFT_DEPTH + 2, 8),
+            MAT.darkGray
+          );
+          tremie.position.set(sp.x, -SHAFT_DEPTH / 2 + 1, sp.z);
+          addStep(tremie);
+
+          // Concrete fill growing from bottom
+          const concFill = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.26, 0.26, 0.01, 12),
+            MAT.concreteDark
+          );
+          concFill.position.set(sp.x, -SHAFT_DEPTH, sp.z);
+          addStep(concFill);
+
+          let fillH = 0.01;
+          const maxH = SHAFT_DEPTH;
+          const casing = sp._casing;
+          let casingRiseY = -SHAFT_DEPTH / 2;
+
+          const iv = safeInterval(() => {
+            fillH = Math.min(maxH, fillH + 0.5);
+            concFill.scale.y = fillH / 0.01;
+            concFill.position.y = -SHAFT_DEPTH + fillH / 2;
+
+            // Withdraw casing as concrete rises
+            if (casing) {
+              casingRiseY += 0.25;
+              casing.position.y = casingRiseY;
+              if (casing.material.opacity > 0.1) {
+                casing.material = casing.material.clone();
+                casing.material.opacity = Math.max(0.1, 0.85 - (fillH / maxH) * 0.75);
+              }
+            }
+
+            if (fillH >= maxH) {
+              clearInterval(iv);
+              // Remove tremie
+              scene.remove(tremie);
+              const ti = stepObjects.indexOf(tremie);
+              if (ti > -1) stepObjects.splice(ti, 1);
+              // Hide casing (fully withdrawn)
+              if (casing) casing.visible = false;
+
+              ss.poured++;
+              markSubtask(i);
+              showFeedback('correct', `${sp.label} concrete poured, casing withdrawn!`);
+
+              if (ss.poured >= 4) {
+                STATE.drilledDepth = SHAFT_DEPTH;
+                showFeedback('correct', 'All shafts complete! Concrete placed in all 4 drilled shafts.');
+                safeTimeout(() => completeStep(), 1200);
+              }
+            }
+          }, 40);
+        });
+        ab.appendChild(item);
+      });
+    },
+    cleanup() {
+      // Clean up temporary _casing references
+      SHAFT_POSITIONS.forEach(sp => { delete sp._casing; });
+    }
+  },
+
+  /* ─────────────────── 7: Formwork ─── */
+  {
+    enter() {
+      buildShaftsForStep();
       const ss = STATE.stepState;
       ss.placed = { north: false, south: false, east: false, west: false };
       ss.count  = 0;
@@ -3996,10 +2776,10 @@ const STEP_HANDLERS = [
       });
 
       const panelDefs = [
-        { key: 'north', icon: '🪵', label: 'North Wall' },
-        { key: 'south', icon: '🪵', label: 'South Wall' },
-        { key: 'east',  icon: '🪵', label: 'East Wall'  },
-        { key: 'west',  icon: '🪵', label: 'West Wall'  }
+        { key: 'north', icon: '\ud83e\udeb5', label: 'North Wall' },
+        { key: 'south', icon: '\ud83e\udeb5', label: 'South Wall' },
+        { key: 'east',  icon: '\ud83e\udeb5', label: 'East Wall'  },
+        { key: 'west',  icon: '\ud83e\udeb5', label: 'West Wall'  }
       ];
 
       const actionBar = DOM.actionBar();
@@ -4014,9 +2794,8 @@ const STEP_HANDLERS = [
           ss.placed[p.key] = true;
           ss.count++;
           item.classList.add('placed');
-          item.innerHTML += '<div style="color:var(--green-ok);font-size:.85rem;margin-top:2px;">✓ Placed</div>';
+          item.innerHTML += '<div style="color:var(--green-ok);font-size:.85rem;margin-top:2px;">\u2713 Placed</div>';
 
-          // Animate panel flying down into pit
           const mesh = panelMeshes[p.key];
           const target = panels3D[p.key];
           let t = 0;
@@ -4042,26 +2821,19 @@ const STEP_HANDLERS = [
     cleanup() {}
   },
 
-  /* ─────────────────── 11: Reinforcement ─── */
+  /* ─────────────────── 8: Reinforcement ─── */
   {
     enter() {
-      buildPilesForStep();
+      buildShaftsForStep();
       const ss = STATE.stepState;
       ss.lowerDone = false;
       ss.upperDone = false;
 
       buildFormwork3D();
 
-      /*
-       * Dense 11×11 rebar mat — tight 0.4-unit square cells with concrete spacer chairs.
-       * Lower mat: 11 bars running along X (spaced in Z), land at y=-4.90
-       * Upper mat: 11 bars running along Z (spaced in X), land at y=-4.83
-       * Spacer chairs drop first, then lower mat cascades, then upper mat cascades.
-       */
       const matPositions = [-2.0, -1.6, -1.2, -0.8, -0.4, 0, 0.4, 0.8, 1.2, 1.6, 2.0];
       const barLen = 4.5;
 
-      // Spacer chairs (9 blocks — placed before lower mat)
       const chairXZ = [-1.5, 0, 1.5];
       const chairMat = new THREE.MeshLambertMaterial({ color: 0x9e9e9e });
       const chairs = [];
@@ -4074,7 +2846,6 @@ const STEP_HANDLERS = [
         });
       });
 
-      // Lower mat meshes (bars along X, spaced in Z)
       const lowerBars = matPositions.map((z, i) => {
         const m = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, barLen, 8), MAT.steel);
         m.rotation.z = Math.PI / 2;
@@ -4084,7 +2855,6 @@ const STEP_HANDLERS = [
         return m;
       });
 
-      // Upper mat meshes (bars along Z, spaced in X) — rotation.x = PI/2 so they lie flat
       const upperBars = matPositions.map((x, i) => {
         const m = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, barLen, 8), MAT.steel);
         m.rotation.x = Math.PI / 2;
@@ -4101,7 +2871,6 @@ const STEP_HANDLERS = [
             let t = 0;
             const iv = setInterval(() => {
               t = Math.min(1, t + 0.05);
-              // ease-out: fast start, slow landing
               const ease = 1 - Math.pow(1 - t, 3);
               m.position.y = startY + (targetY - startY) * ease;
               if (t >= 1) {
@@ -4110,27 +2879,25 @@ const STEP_HANDLERS = [
                 if (i === bars.length - 1) onDone();
               }
             }, 16);
-          }, i * 80);  // 80ms stagger per bar
+          }, i * 80);
         });
       }
 
       const actionBar = DOM.actionBar();
       actionBar.innerHTML = '<span style="color:#e0c87a;font-size:.78rem;width:100%;text-align:center;display:block;margin-bottom:4px;">Place lower mat first, then cross mat on top</span>';
 
-      // Lower mat button
       const lowerItem = el('div', 'panel-item');
       lowerItem.innerHTML = `
-        <div class="item-icon" style="font-family:monospace;font-size:1.1rem;color:#78909c;">═══</div>
+        <div class="item-icon" style="font-family:monospace;font-size:1.1rem;color:#78909c;">\u2550\u2550\u2550</div>
         <div class="item-label">Lower Mat<br><span style="font-size:.68rem;color:#aaa;">8 longitudinal bars (base layer)</span></div>
       `;
       lowerItem.addEventListener('click', () => {
         if (ss.lowerDone) return;
         ss.lowerDone = true;
         lowerItem.classList.add('placed');
-        lowerItem.innerHTML += '<div style="color:var(--green-ok);font-size:.8rem;margin-top:2px;">✓ Placed</div>';
+        lowerItem.innerHTML += '<div style="color:var(--green-ok);font-size:.8rem;margin-top:2px;">\u2713 Placed</div>';
         markSubtask(0);
-        showFeedback('info', 'Placing spacer chairs, then lower mat…');
-        // Drop chairs first, then cascade bars after a short delay
+        showFeedback('info', 'Placing spacer chairs, then lower mat\u2026');
         dropBars(chairs, -4.95, () => {
           dropBars(lowerBars, -4.90, () => {
             showFeedback('correct', 'Lower mat in place! Now place the cross mat.');
@@ -4140,23 +2907,22 @@ const STEP_HANDLERS = [
         });
       });
 
-      // Upper mat button (locked until lower mat is placed)
       const upperItem = el('div', 'panel-item');
       upperItem.style.opacity = '0.4';
       upperItem.style.pointerEvents = 'none';
       upperItem.innerHTML = `
-        <div class="item-icon" style="font-family:monospace;font-size:1.1rem;color:#78909c;">⊞⊞⊞</div>
+        <div class="item-icon" style="font-family:monospace;font-size:1.1rem;color:#78909c;">\u229e\u229e\u229e</div>
         <div class="item-label">Cross Mat<br><span style="font-size:.68rem;color:#aaa;">8 cross bars (top layer)</span></div>
       `;
       upperItem.addEventListener('click', () => {
         if (ss.upperDone || !ss.lowerDone) return;
         ss.upperDone = true;
         upperItem.classList.add('placed');
-        upperItem.innerHTML += '<div style="color:var(--green-ok);font-size:.8rem;margin-top:2px;">✓ Placed</div>';
+        upperItem.innerHTML += '<div style="color:var(--green-ok);font-size:.8rem;margin-top:2px;">\u2713 Placed</div>';
         markSubtask(1);
-        showFeedback('info', 'Cross mat dropping into pit…');
+        showFeedback('info', 'Cross mat dropping into pit\u2026');
         dropBars(upperBars, -4.83, () => {
-          showFeedback('correct', '✅ Base rebar grid complete! Now place column rebar.');
+          showFeedback('correct', '\u2705 Base rebar grid complete! Now place column rebar.');
           safeTimeout(phase_columnRebar, 600);
         });
       });
@@ -4165,11 +2931,9 @@ const STEP_HANDLERS = [
         ss.colRebarPlaced = 0;
         const COL_H  = 6;
         const COL_CY = -1.2;
-        const COL_BOT = COL_CY - COL_H / 2;  // -4.2
+        const COL_BOT = COL_CY - COL_H / 2;
         const colXZ  = [[-0.55, -0.55], [0.55, -0.55], [-0.55, 0.55], [0.55, 0.55]];
 
-        // Column rebar bars (hidden until clicked) — added directly to scene so they
-        // persist across step changes (not via addStep which gets cleared each step).
         const colRebarMeshes = colXZ.map(([x, z]) => {
           const m = new THREE.Mesh(
             new THREE.CylinderGeometry(0.06, 0.06, COL_H, 6),
@@ -4183,7 +2947,6 @@ const STEP_HANDLERS = [
         });
         OBJ.columnRebarMeshes = colRebarMeshes;
 
-        // Stirrups (shown after all 4 bars placed) — also persistent
         const stirrupGroup = new THREE.Group();
         stirrupGroup.visible = false;
         scene.add(stirrupGroup);
@@ -4203,7 +2966,6 @@ const STEP_HANDLERS = [
           });
         });
 
-        // Click targets on footing level
         const targetGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.05, 8);
         const targetMat = new THREE.MeshStandardMaterial({ color: 0xf39c12, emissive: 0xd4880a, emissiveIntensity: 0.5 });
         const colTargets = colXZ.map(([x, z]) => {
@@ -4227,7 +2989,6 @@ const STEP_HANDLERS = [
             m.material.emissive.set(0x1e8449);
             ss.colRebarPlaced++;
 
-            // Grow rebar upward
             const rb = colRebarMeshes[i];
             rb.visible = true;
             rb.scale.y = 0.001;
@@ -4244,11 +3005,11 @@ const STEP_HANDLERS = [
               colTargets.forEach(tgt => scene.remove(tgt));
               clickables3D = clickables3D.filter(c => !colTargets.includes(c.mesh));
               markSubtask(2);
-              showFeedback('correct', '✅ All column rebar placed! Reinforcement complete.');
+              showFeedback('correct', '\u2705 All column rebar placed! Reinforcement complete.');
               safeTimeout(() => {
                 markSubtask(3);
                 DOM.actionBar().innerHTML = '';
-                DOM.actionBar().appendChild(makeBtn('✅ Reinforcement Complete', 'btn btn-green', () => completeStep()));
+                DOM.actionBar().appendChild(makeBtn('\u2705 Reinforcement Complete', 'btn btn-green', () => completeStep()));
               }, 800);
             }
           }
@@ -4261,10 +3022,10 @@ const STEP_HANDLERS = [
     cleanup() {}
   },
 
-  /* ─────────────────── 12: Concrete Placement ─── */
+  /* ─────────────────── 9: Concrete Placement ─── */
   {
     enter() {
-      buildPilesForStep();
+      buildShaftsForStep();
       const ss = STATE.stepState;
       ss.fillPct  = 0;
       ss.pouring  = false;
@@ -4276,7 +3037,6 @@ const STEP_HANDLERS = [
       buildConcreteTruck3D();
       buildPourStream();
 
-      // Concrete fill mesh (grows upward from pit floor)
       const fillMat = MAT.concrete.clone();
       const fillMesh = new THREE.Mesh(new THREE.BoxGeometry(4.6, 0.01, 4.6), fillMat);
       fillMesh.position.set(0, -4.99, 0);
@@ -4300,10 +3060,10 @@ const STEP_HANDLERS = [
       meterWrap.appendChild(track); meterWrap.appendChild(pctLbl);
       actionBar.appendChild(meterWrap);
 
-      const pourBtn = makeBtn('🚛 POUR CONCRETE', 'btn btn-primary', null);
+      const pourBtn = makeBtn('\ud83d\ude9b POUR CONCRETE', 'btn btn-primary', null);
       pourBtn.id = 'pour-btn';
       actionBar.appendChild(pourBtn);
-      actionBar.appendChild(el('span', '', '<span style="color:#aaa;font-size:.76rem;">Hold button • Target: 88–98%</span>'));
+      actionBar.appendChild(el('span', '', '<span style="color:#aaa;font-size:.76rem;">Hold button \u2022 Target: 88\u201398%</span>'));
 
       function updateFillVisual() {
         const pct = ss.fillPct;
@@ -4311,7 +3071,6 @@ const STEP_HANDLERS = [
         const p = $('conc-pct-label');
         if (b) b.style.width = pct + '%';
         if (p) p.textContent = Math.round(pct) + '%';
-        // Scale fill mesh height: max 0.35 at 100% (fills footing slab only, not the whole pit)
         if (OBJ.concreteFill) {
           const h = Math.max(0.01, 0.35 * pct / 100);
           OBJ.concreteFill.scale.y = h / 0.01;
@@ -4342,26 +3101,26 @@ const STEP_HANDLERS = [
         if (ss.complete) return;
         const pct = ss.fillPct;
         if (pct < 88) {
-          penalize('Underfill — pour more concrete!');
+          penalize('Underfill \u2014 pour more concrete!');
         } else if (pct > 98) {
           STATE.score = Math.max(0, STATE.score - 20);
           updateHUD(); shakeScene();
-          showFeedback('wrong', '⚠️ Overfill! (−20 pts)');
+          showFeedback('wrong', '\u26a0\ufe0f Overfill! (\u221220 pts)');
           ss.complete = true;
           pourBtn.disabled = true;
           safeTimeout(() => {
             DOM.actionBar().innerHTML = '';
-            DOM.actionBar().appendChild(makeBtn('⬇️ Proceed (Overfill Noted)', 'btn btn-secondary', () => completeStep()));
+            DOM.actionBar().appendChild(makeBtn('\u2b07\ufe0f Proceed (Overfill Noted)', 'btn btn-secondary', () => completeStep()));
           }, 1200);
         } else {
           ss.complete = true;
           pourBtn.disabled = true;
           STATE.score += 20; updateHUD();
           markSubtask(0); markSubtask(1);
-          showFeedback('correct', `🎉 Perfect pour at ${Math.round(pct)}%! +20 bonus!`);
+          showFeedback('correct', `\ud83c\udf89 Perfect pour at ${Math.round(pct)}%! +20 bonus!`);
           safeTimeout(() => {
             DOM.actionBar().innerHTML = '';
-            DOM.actionBar().appendChild(makeBtn('✅ Confirm Pour', 'btn btn-green', () => completeStep()));
+            DOM.actionBar().appendChild(makeBtn('\u2705 Confirm Pour', 'btn btn-green', () => completeStep()));
           }, 1000);
         }
       }
@@ -4377,56 +3136,54 @@ const STEP_HANDLERS = [
     }
   },
 
-  /* ─────────────────── 13: Inspection ─── */
+  /* ─────────────────── 10: Inspection ─── */
   {
     enter() {
-      buildPilesForStep();
+      buildShaftsForStep();
       const ss = STATE.stepState;
       ss.checked   = 0;
       ss.checkedSet = new Set();
 
       buildFormwork3D();
       buildRebar3D();
-      buildConcreteSlab3D();   // footing at pit floor y=-4.85
+      buildConcreteSlab3D();
       buildInspector3D(4.5, 4.5);
 
-      /* ── Inspection definitions ─────────────────────────── */
       const inspDefs = [
         {
           pos:   new THREE.Vector3(0, -4.2, 0),
           label: 'Pit Depth',
-          icon:  '📏',
-          note:  '5.0m depth — within design specification',
+          icon:  '\ud83d\udccf',
+          note:  '5.0m depth \u2014 within design specification',
           camPos:  new THREE.Vector3(-6, 0.5, 6.5),
           camLook: new THREE.Vector3(0, -2.5, 0)
         },
         {
           pos:   new THREE.Vector3(2.0, -2.0, 2.0),
           label: 'Formwork Alignment',
-          icon:  '📐',
-          note:  'Plumb ±3mm, square within 5mm ✓',
+          icon:  '\ud83d\udcd0',
+          note:  'Plumb \u00b13mm, square within 5mm \u2713',
           camPos:  new THREE.Vector3(6, 1.5, 8),
           camLook: new THREE.Vector3(0, -2.5, 0)
         },
         {
           pos:   new THREE.Vector3(-1.2, -4.35, -1.2),
           label: 'Rebar Cover & Spacing',
-          icon:  '⚙️',
-          note:  '72mm bar spacing, 50mm edge cover ✓',
+          icon:  '\u2699\ufe0f',
+          note:  '72mm bar spacing, 50mm edge cover \u2713',
           camPos:  new THREE.Vector3(1, 1, 8),
           camLook: new THREE.Vector3(0, -4.2, 0)
         },
         {
           pos:   new THREE.Vector3(0, -0.5, 0),
           label: 'Concrete Fill Level',
-          icon:  '🔲',
-          note:  '93% fill — within the 88–98% target zone ✓',
+          icon:  '\ud83d\udd32',
+          note:  '93% fill \u2014 within the 88\u201398% target zone \u2713',
           camPos:  new THREE.Vector3(6, 5, 9),
           camLook: new THREE.Vector3(0, -0.5, 0)
         }
       ];
 
-      /* ── 3D markers (large OctahedronGeometry, easy to click) ── */
       const markerMeshes = [];
       const labelEls     = [];
       inspDefs.forEach((def, i) => {
@@ -4436,7 +3193,7 @@ const STEP_HANDLERS = [
         });
         const marker = new THREE.Mesh(new THREE.OctahedronGeometry(0.46), mat);
         marker.position.copy(def.pos);
-        marker.position.y += 0.55;  // float above reference point
+        marker.position.y += 0.55;
         addStep(marker);
         markerMeshes.push(marker);
 
@@ -4451,11 +3208,10 @@ const STEP_HANDLERS = [
         });
       });
 
-      /* ── HTML inspection cards in action bar ─────────────── */
       const ab = DOM.actionBar();
       ab.innerHTML = '';
       ab.appendChild(el('div', 'step-instruction',
-        '🔍 Click an inspection point in the scene <strong>or</strong> press Inspect below'));
+        '\ud83d\udd0d Click an inspection point in the scene <strong>or</strong> press Inspect below'));
 
       const cardsWrap = el('div', '');
       cardsWrap.style.cssText = 'display:flex;flex-direction:column;gap:5px;width:100%;margin-top:4px;';
@@ -4489,38 +3245,34 @@ const STEP_HANDLERS = [
       });
       ab.appendChild(cardsWrap);
 
-      /* ── Shared inspection function ──────────────────────── */
       function runInspection(i) {
         if (ss.checkedSet.has(i)) return;
         ss.checkedSet.add(i);
         ss.checked++;
 
-        // Update 3D marker to green
         const marker = markerMeshes[i];
         marker.material.color.set(0x27ae60);
         marker.material.emissive.set(0x1e8449);
         marker.material.emissiveIntensity = 0.3;
         labelEls[i].classList.add('passed');
 
-        // Update HTML card
         const card = cardEls[i];
         card.style.background  = 'rgba(39,174,96,0.12)';
         card.style.borderColor = 'rgba(39,174,96,0.5)';
         const btn = card.querySelector('button');
-        if (btn) { btn.textContent = '✓ PASS'; btn.style.cssText += ';background:#27ae60;color:#fff;cursor:default'; btn.disabled = true; }
+        if (btn) { btn.textContent = '\u2713 PASS'; btn.style.cssText += ';background:#27ae60;color:#fff;cursor:default'; btn.disabled = true; }
 
-        // Fly camera to inspect area
         const def = inspDefs[i];
         camTarget = { pos: def.camPos.clone(), look: def.camLook.clone() };
 
-        showFeedback('correct', `${def.label}: PASS ✓`);
+        showFeedback('correct', `${def.label}: PASS \u2713`);
         markSubtask(i < 4 ? i : 3);
 
         if (ss.checked === inspDefs.length) {
           markSubtask(3);
           safeTimeout(() => {
             ab.innerHTML = '';
-            ab.appendChild(makeBtn('📝 Sign Off Inspection', 'btn btn-green', () => completeStep()));
+            ab.appendChild(makeBtn('\ud83d\udcdd Sign Off Inspection', 'btn btn-green', () => completeStep()));
             showFeedback('correct', 'All 4 inspections passed! Sign off to proceed.');
           }, 700);
         }
@@ -4529,10 +3281,10 @@ const STEP_HANDLERS = [
     cleanup() {}
   },
 
-  /* ─────────────────── 14: Curing ─── */
+  /* ─────────────────── 11: Curing ─── */
   {
     enter() {
-      buildPilesForStep();
+      buildShaftsForStep();
       const ss = STATE.stepState;
       ss.day          = 1;
       ss.totalDays    = 7;
@@ -4544,14 +3296,12 @@ const STEP_HANDLERS = [
       buildFormwork3D();
       buildRebar3D();
 
-      // Concrete slab filling the pit (grows darker as it cures)
       const concMat = MAT.concrete.clone();
       const concMesh = new THREE.Mesh(new THREE.BoxGeometry(4.6, 4.8, 4.6), concMat);
-      concMesh.position.set(0, -2.6, 0);   // center of 4.8-unit tall fill starting at y=-5
+      concMesh.position.set(0, -2.6, 0);
       addStep(concMesh);
       OBJ.curingConcrete = concMesh;
 
-      // Curing blanket draped over the pit opening at ground level
       const blanketTex = makeCanvasTexture((ctx, s) => {
         ctx.fillStyle = '#1565c0';
         ctx.fillRect(0, 0, s, s);
@@ -4591,13 +3341,12 @@ const STEP_HANDLERS = [
         strengthWrap.appendChild(sPct);
         ab.appendChild(strengthWrap);
 
-        const waterBtn = makeBtn('💧 Water Concrete', 'btn btn-primary', () => {
+        const waterBtn = makeBtn('\ud83d\udca7 Water Concrete', 'btn btn-primary', () => {
           if (ss.wateredToday) { showFeedback('info', 'Already watered today.'); return; }
           ss.wateredToday = true;
           waterBtn.disabled = true;
           showFeedback('correct', `Day ${ss.day} watered!`);
           updateStrength(true);
-          // Water particle effect
           for (let i = 0; i < 20; i++) {
             spawnParticles(
               new THREE.Vector3((Math.random() - 0.5) * 3, 1, (Math.random() - 0.5) * 3),
@@ -4609,7 +3358,7 @@ const STEP_HANDLERS = [
         ab.appendChild(waterBtn);
 
         if (ss.day < ss.totalDays) {
-          ab.appendChild(makeBtn('⏭️ Next Day', 'btn btn-secondary', advanceDay));
+          ab.appendChild(makeBtn('\u23ed\ufe0f Next Day', 'btn btn-secondary', advanceDay));
         }
       }
 
@@ -4620,7 +3369,6 @@ const STEP_HANDLERS = [
         if (b) b.style.width = ss.strength + '%';
         if (p) p.textContent = Math.round(ss.strength) + '%';
         markSubtask(0);
-        // Darken concrete
         if (OBJ.curingConcrete) {
           const darkness = 0.4 + (ss.strength / 100) * 0.3;
           OBJ.curingConcrete.material.color.setScalar(darkness);
@@ -4632,7 +3380,7 @@ const STEP_HANDLERS = [
           ss.missedDays++;
           STATE.score = Math.max(0, STATE.score - 10);
           updateHUD();
-          showFeedback('wrong', `Missed watering Day ${ss.day}! (−10 pts)`);
+          showFeedback('wrong', `Missed watering Day ${ss.day}! (\u221210 pts)`);
           updateStrength(false);
         }
         ss.day++;
@@ -4646,7 +3394,7 @@ const STEP_HANDLERS = [
         markSubtask(1); markSubtask(2);
         showFeedback('correct', `Curing complete! ${Math.round(ss.strength)}% strength.`);
         DOM.actionBar().innerHTML = '';
-        DOM.actionBar().appendChild(makeBtn('✅ Curing Complete', 'btn btn-green', () => completeStep()));
+        DOM.actionBar().appendChild(makeBtn('\u2705 Curing Complete', 'btn btn-green', () => completeStep()));
       }
 
       ss.autoIv = safeInterval(() => {
@@ -4660,15 +3408,15 @@ const STEP_HANDLERS = [
     }
   },
 
-  /* ─────────────────── 15: Final Inspection ─── */
+  /* ─────────────────── 12: Final Inspection ─── */
   {
     enter() {
-      buildPilesForStep();
+      buildShaftsForStep();
       const ss = STATE.stepState;
       ss.checked = 0;
       ss.scores  = [];
 
-      buildConcreteSlab3D();   // footing visible at pit floor
+      buildConcreteSlab3D();
       buildInspector3D(4, 3);
 
       const checkPositions = [
@@ -4716,11 +3464,11 @@ const STEP_HANDLERS = [
                 DOM.actionBar().innerHTML = '';
                 if (avg >= 80) {
                   DOM.actionBar().appendChild(
-                    makeBtn(`🏗️ Proceed to Pillar (Avg: ${avg}%)`, 'btn btn-green', () => completeStep())
+                    makeBtn(`\ud83c\udfd7\ufe0f Proceed to Pillar (Avg: ${avg}%)`, 'btn btn-green', () => completeStep())
                   );
-                  showFeedback('correct', `Average score: ${avg}% — excellent!`);
+                  showFeedback('correct', `Average score: ${avg}% \u2014 excellent!`);
                 } else {
-                  showFeedback('wrong', `Average: ${avg}% — below threshold.`);
+                  showFeedback('wrong', `Average: ${avg}% \u2014 below threshold.`);
                   penalize('Quality below 80%.');
                   safeTimeout(() => completeStep(), 1500);
                 }
@@ -4735,10 +3483,10 @@ const STEP_HANDLERS = [
     cleanup() {}
   },
 
-  /* ─────────────────── 16: Pillar Construction ─── */
+  /* ─────────────────── 13: Pillar Construction ─── */
   {
     enter() {
-      buildPilesForStep();
+      buildShaftsForStep();
       const ss = STATE.stepState;
       ss.fwPlaced      = 0;
       ss.concPct       = 0;
@@ -4747,24 +3495,15 @@ const STEP_HANDLERS = [
       ss.waterClicks   = 0;
       ss.phase         = 'formwork';
 
-      /*
-       * Ground level = y 0.  Pit is 5 units deep.
-       * Column height = 6.  Center at y = -1.2  →  spans y = -4.2 to y = +1.8
-       * Underground : 4.2 units  (70 %)
-       * Above ground: 1.8 units  (30 %)
-       */
       const COL_H   = 6;
-      const COL_CY  = -1.2;          // centre y
-      const COL_BOT = COL_CY - COL_H / 2;   // -4.2  (pour start)
-      const COL_TOP = COL_CY + COL_H / 2;   //  1.8  (cap sits here)
-      const COL_W   = 0.8;           // column width  (X)
-      const COL_D   = 0.8;           // column depth  (Z) — square section
+      const COL_CY  = -1.2;
+      const COL_BOT = COL_CY - COL_H / 2;
+      const COL_TOP = COL_CY + COL_H / 2;
+      const COL_W   = 0.8;
+      const COL_D   = 0.8;
 
-      // Foundation slab visible at pit floor
       buildConcreteSlab3D();
 
-      // Make ground, pit walls and grass 80% transparent so the underground
-      // column construction is clearly visible through the surrounding geometry
       groundGroup.children.forEach(child => {
         child.traverse(obj => {
           if (!obj.isMesh) return;
@@ -4775,12 +3514,9 @@ const STEP_HANDLERS = [
         });
       });
 
-      // Column rebar cage — persistent objects placed during the Reinforcement step,
-      // still in the scene. Reference them from OBJ to hide after formwork strip.
       const colRebarMeshes = OBJ.columnRebarMeshes || [];
       const stirrupGroup   = OBJ.columnStirrupGroup || null;
 
-      // Column formwork (2 flat panels, left & right of rectangular column)
       const fwHalves = [];
       [-1, 1].forEach(side => {
         const m = new THREE.Mesh(
@@ -4794,7 +3530,6 @@ const STEP_HANDLERS = [
         fwHalves.push(m);
       });
 
-      // Column concrete mesh — rectangular, grows upward from COL_BOT
       const colMat = MAT.concrete.clone();
       const colMesh = new THREE.Mesh(new THREE.BoxGeometry(COL_W, 0.01, COL_D), colMat);
       colMesh.position.set(0, COL_BOT, 0);
@@ -4802,7 +3537,6 @@ const STEP_HANDLERS = [
       addStep(colMesh);
       OBJ.columnConcrete = colMesh;
 
-      // Final pillar mesh — rectangular column
       const pillarMat = new THREE.MeshLambertMaterial({ color: 0x616161, map: TEX.concrete });
       const pillarMesh = new THREE.Mesh(new THREE.BoxGeometry(COL_W, COL_H, COL_D), pillarMat);
       pillarMesh.position.set(0, COL_CY, 0);
@@ -4810,7 +3544,6 @@ const STEP_HANDLERS = [
       pillarMesh.castShadow = true;
       addStep(pillarMesh);
 
-      // Pillar cap — slightly wider than column, sits at top
       const capMesh = new THREE.Mesh(
         new THREE.BoxGeometry(COL_W + 0.3, 0.2, COL_D + 0.3),
         new THREE.MeshLambertMaterial({ color: 0x555555 })
@@ -4820,7 +3553,6 @@ const STEP_HANDLERS = [
       capMesh.castShadow = true;
       addStep(capMesh);
 
-      // Start directly at formwork phase (rebar already placed in Step 5)
       showFeedback('info', 'Column rebar is in place from the Reinforcement step. Install formwork now.');
       safeTimeout(phase_formwork, 600);
 
@@ -4835,11 +3567,11 @@ const STEP_HANDLERS = [
         ];
         halves.forEach(h => {
           const item = el('div', 'panel-item');
-          item.innerHTML = `<div class="item-icon">🪵</div><div class="item-label">${h.label}</div>`;
+          item.innerHTML = `<div class="item-icon">\ud83e\udeb5</div><div class="item-label">${h.label}</div>`;
           item.addEventListener('click', () => {
             if (item.classList.contains('placed')) return;
             item.classList.add('placed');
-            item.innerHTML += '<div style="color:var(--green-ok);font-size:.8rem;margin-top:2px;">✓</div>';
+            item.innerHTML += '<div style="color:var(--green-ok);font-size:.8rem;margin-top:2px;">\u2713</div>';
             ss.fwPlaced++;
             markSubtask(0);
             fwHalves[h.idx].visible = true;
@@ -4869,9 +3601,9 @@ const STEP_HANDLERS = [
 
         colMesh.visible = true;
 
-        const pourBtn = makeBtn('🚛 POUR COLUMN', 'btn btn-primary', null);
+        const pourBtn = makeBtn('\ud83d\ude9b POUR COLUMN', 'btn btn-primary', null);
         DOM.actionBar().appendChild(pourBtn);
-        DOM.actionBar().appendChild(el('span', '', '<span style="color:#aaa;font-size:.76rem;">Hold • Target 88–98%</span>'));
+        DOM.actionBar().appendChild(el('span', '', '<span style="color:#aaa;font-size:.76rem;">Hold \u2022 Target 88\u201398%</span>'));
 
         let pourIv = null;
 
@@ -4883,7 +3615,6 @@ const STEP_HANDLERS = [
             const b = $('col-bar'); const p = $('col-pct');
             if (b) b.style.width = ss.concPct + '%';
             if (p) p.textContent = Math.round(ss.concPct) + '%';
-            // Grow upward from COL_BOT
             const h = Math.max(0.01, COL_H * ss.concPct / 100);
             if (colMesh) {
               colMesh.scale.y = h / 0.01;
@@ -4903,7 +3634,7 @@ const STEP_HANDLERS = [
             penalize('Column underfilled!');
           } else if (pct > 98) {
             STATE.score = Math.max(0, STATE.score - 20); updateHUD(); shakeScene();
-            showFeedback('wrong', '⚠️ Column overfilled! (−20 pts)');
+            showFeedback('wrong', '\u26a0\ufe0f Column overfilled! (\u221220 pts)');
             ss.concreteComplete = true;
             pourBtn.disabled = true;
             safeTimeout(phase_water, 1200);
@@ -4949,23 +3680,22 @@ const STEP_HANDLERS = [
           wrap.appendChild(tr); wrap.appendChild(pct);
           ab.appendChild(wrap);
 
-          const waterBtn = makeBtn('💧 Water Column Concrete', 'btn btn-primary', () => {
+          const waterBtn = makeBtn('\ud83d\udca7 Water Column Concrete', 'btn btn-primary', () => {
             ss.waterClicks++;
             const b = $('col-strength-bar'); const p = $('col-strength-pct');
             if (b) b.style.width = (ss.waterClicks / WATER_DAYS * 100) + '%';
             if (p) p.textContent = Math.round(ss.waterClicks / WATER_DAYS * 100) + '%';
-            // Water particle effect on column top
             for (let i = 0; i < 15; i++) {
               spawnParticles(
                 new THREE.Vector3((Math.random() - 0.5) * 1.2, COL_TOP + 0.2, (Math.random() - 0.5) * 1.2),
                 MAT.waterBlue.clone(), 1
               );
             }
-            showFeedback('correct', `Column watered — Day ${ss.waterClicks}/${WATER_DAYS}.`);
+            showFeedback('correct', `Column watered \u2014 Day ${ss.waterClicks}/${WATER_DAYS}.`);
             if (ss.waterClicks >= WATER_DAYS) {
               markSubtask(2);
               waterBtn.disabled = true;
-              showFeedback('correct', '✅ Column concrete cured! Strip the formwork.');
+              showFeedback('correct', '\u2705 Column concrete cured! Strip the formwork.');
               safeTimeout(phase_strip, 900);
             } else {
               renderWaterUI();
@@ -4993,7 +3723,6 @@ const STEP_HANDLERS = [
               half.userData.stripped = true;
               ss.fwStripped++;
               showFeedback('info', 'Formwork panel removed.');
-              // Animate fade out
               let t = 1;
               const iv = setInterval(() => {
                 t -= 0.05;
@@ -5004,13 +3733,11 @@ const STEP_HANDLERS = [
 
               if (ss.fwStripped === 2) {
                 markSubtask(3);
-                // Hide temp concrete mesh, show final pillar
                 if (colMesh) colMesh.visible = false;
                 colRebarMeshes.forEach(r => r.visible = false);
                 pillarMesh.visible = true;
                 capMesh.visible    = true;
 
-                // Animate pillar scale from 0
                 pillarMesh.scale.y = 0.001;
                 capMesh.scale.y    = 0.001;
                 let t2 = 0;
@@ -5021,11 +3748,11 @@ const STEP_HANDLERS = [
                   if (t2 >= 1) clearInterval(iv2);
                 }, 16);
 
-                showFeedback('correct', '🎉 Pillar complete! Now backfill around it.');
+                showFeedback('correct', '\ud83c\udf89 Pillar complete! Now backfill around it.');
                 safeTimeout(() => {
                   DOM.actionBar().innerHTML = '';
                   DOM.actionBar().appendChild(
-                    makeBtn('🪣 Proceed to Backfilling', 'btn btn-green', () => completeStep())
+                    makeBtn('\ud83e\udea3 Proceed to Backfilling', 'btn btn-green', () => completeStep())
                   );
                 }, 1200);
               }
@@ -5037,8 +3764,6 @@ const STEP_HANDLERS = [
       safeTimeout(() => {}, 200);
     },
     cleanup() {
-      // Restore ground opacity — ground is rebuilt on next startStep() anyway,
-      // but this keeps things clean if the step is re-entered
       groundGroup.children.forEach(child => {
         child.traverse(obj => {
           if (!obj.isMesh) return;
@@ -5047,7 +3772,6 @@ const STEP_HANDLERS = [
           obj.material.depthWrite  = true;
         });
       });
-      // Remove the persistent column rebar (placed in Reinforcement step, kept alive until now)
       if (OBJ.columnRebarMeshes) {
         OBJ.columnRebarMeshes.forEach(m => scene.remove(m));
         delete OBJ.columnRebarMeshes;
@@ -5059,10 +3783,10 @@ const STEP_HANDLERS = [
     }
   },
 
-  /* ─────────────────── 17: Backfilling ─── */
+  /* ─────────────────── 14: Backfilling ─── */
   {
     enter() {
-      buildPilesForStep();
+      buildShaftsForStep();
       const ss = STATE.stepState;
       ss.fillClicks    = 0;
       ss.compactClicks = 0;
@@ -5071,20 +3795,15 @@ const STEP_HANDLERS = [
       ss.maxFill       = 5;
       ss.maxCompact    = 3;
 
-      /*
-       * Show the completed pillar standing in the open pit, then fill soil
-       * around it until only the above-ground portion (y=0 to y=+1.8) is visible.
-       */
       const COL_H  = 6;
       const COL_CY = -1.2;
-      const COL_TOP = COL_CY + COL_H / 2;  // +1.8
+      const COL_TOP = COL_CY + COL_H / 2;
       const COL_W  = 0.8;
       const COL_D  = 0.8;
 
-      buildConcreteSlab3D();   // footing at pit floor
+      buildConcreteSlab3D();
       buildCompactor3D(4.5, 1.5);
 
-      // Completed rectangular pillar (visual only — result of step 10)
       const pillarMat = new THREE.MeshLambertMaterial({ color: 0x616161, map: TEX.concrete });
       const pillarMesh = new THREE.Mesh(new THREE.BoxGeometry(COL_W, COL_H, COL_D), pillarMat);
       pillarMesh.position.set(0, COL_CY, 0);
@@ -5099,18 +3818,15 @@ const STEP_HANDLERS = [
       capMesh.castShadow = true;
       addStep(capMesh);
 
-      // Backfill — 4 dirt slabs surrounding the column so the column stays visible
-      // as the fill rises. Pit is 8×8 m (half=4), column section is COL_W×COL_D.
-      const PIT  = 4.0;  // half-width of pit
-      const CW2  = COL_W / 2 + 0.05;  // half col width + gap
-      const CD2  = COL_D / 2 + 0.05;  // half col depth + gap
+      const PIT  = 4.0;
+      const CW2  = COL_W / 2 + 0.05;
+      const CD2  = COL_D / 2 + 0.05;
       const bfDirtMat = MAT.dirt.clone();
-      // [width, depth, cx, cz]
       const bfPieces = [
-        [PIT * 2,        PIT - CD2,     0,           -(CD2 + (PIT - CD2) / 2)],  // North
-        [PIT * 2,        PIT - CD2,     0,            (CD2 + (PIT - CD2) / 2)],  // South
-        [PIT - CW2,      CD2 * 2,      -(CW2 + (PIT - CW2) / 2), 0],             // West
-        [PIT - CW2,      CD2 * 2,       (CW2 + (PIT - CW2) / 2), 0]              // East
+        [PIT * 2,        PIT - CD2,     0,           -(CD2 + (PIT - CD2) / 2)],
+        [PIT * 2,        PIT - CD2,     0,            (CD2 + (PIT - CD2) / 2)],
+        [PIT - CW2,      CD2 * 2,      -(CW2 + (PIT - CW2) / 2), 0],
+        [PIT - CW2,      CD2 * 2,       (CW2 + (PIT - CW2) / 2), 0]
       ];
       const bfMeshes = bfPieces.map(([w, d, cx, cz]) => {
         const m = new THREE.Mesh(new THREE.BoxGeometry(w, 0.01, d), bfDirtMat);
@@ -5145,7 +3861,7 @@ const STEP_HANDLERS = [
       const btnRow = el('div', '');
       btnRow.style.cssText = 'display:flex;gap:8px;';
 
-      const soilBtn = makeBtn('🪣 Add Soil', 'btn btn-primary', () => {
+      const soilBtn = makeBtn('\ud83e\udea3 Add Soil', 'btn btn-primary', () => {
         if (ss.fillClicks >= ss.maxFill) return;
         ss.fillClicks++;
         ss.fillPct = Math.round((ss.fillClicks / ss.maxFill) * 100);
@@ -5153,7 +3869,6 @@ const STEP_HANDLERS = [
         if (b) b.style.width = ss.fillPct + '%';
         if (p) p.textContent = ss.fillPct + '%';
 
-        // Grow all 4 backfill pieces from pit bottom (y=-5) to grade (y=0)
         const h = Math.max(0.01, 5 * ss.fillPct / 100);
         bfMeshes.forEach(m => {
           m.scale.y = h / 0.01;
@@ -5166,7 +3881,7 @@ const STEP_HANDLERS = [
         checkComplete();
       });
 
-      const compactBtn = makeBtn('🔨 Compact', 'btn btn-secondary', () => {
+      const compactBtn = makeBtn('\ud83d\udd28 Compact', 'btn btn-secondary', () => {
         if (ss.fillPct < 60) { showFeedback('wrong', 'Need 60% fill first!'); return; }
         if (ss.compactClicks >= ss.maxCompact) return;
         ss.compactClicks++;
@@ -5196,9 +3911,9 @@ const STEP_HANDLERS = [
       function checkComplete() {
         if (ss.fillPct >= 100 && ss.compactPct >= 100) {
           markSubtask(2);
-          showFeedback('correct', '🎉 Backfilling complete! Only the pillar top stands above ground.');
+          showFeedback('correct', '\ud83c\udf89 Backfilling complete! Only the pillar top stands above ground.');
           ab.innerHTML = '';
-          ab.appendChild(makeBtn('🏆 Construction Complete!', 'btn btn-green', () => completeStep()));
+          ab.appendChild(makeBtn('\ud83c\udfc6 Construction Complete!', 'btn btn-green', () => completeStep()));
         }
       }
     },

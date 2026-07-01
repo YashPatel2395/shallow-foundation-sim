@@ -944,6 +944,11 @@ body {
   color: #546e7a;
   border: 1px solid rgba(84,110,122,0.3);
 }
+.badge-active {
+  background: rgba(39,174,96,0.12);
+  color: #27ae60;
+  border: 1px solid rgba(39,174,96,0.35);
+}
 
 .card-title {
   font-size: 1.1rem;
