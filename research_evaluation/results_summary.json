@@ -1,0 +1,42 @@
+{
+  "total_modules": 3,
+  "total_stages": 41,
+  "total_stage_test_executions": 369,
+  "passes": 0,
+  "partial_passes": 0,
+  "failures": 0,
+  "not_testable": 369,
+  "stage_pass_rate_percent": 0.0,
+  "module_run_attempts": 27,
+  "successful_module_runs": 0,
+  "module_completion_rate_percent": 0.0,
+  "browser_results": {
+    "chromium": {
+      "test_executions": 123,
+      "pass": 0,
+      "partial_pass": 0,
+      "fail": 0,
+      "not_testable_or_not_tested": 123
+    },
+    "firefox": {
+      "test_executions": 123,
+      "pass": 0,
+      "partial_pass": 0,
+      "fail": 0,
+      "not_testable_or_not_tested": 123
+    },
+    "webkit": {
+      "test_executions": 123,
+      "pass": 0,
+      "partial_pass": 0,
+      "fail": 0,
+      "not_testable_or_not_tested": 123
+    }
+  },
+  "console_error_total": 0,
+  "network_error_total": 0,
+  "missing_asset_total": 0,
+  "critical_failure_total": 2,
+  "average_module_completion_time_seconds": null,
+  "_methodology_note": "All values above are computed directly from functional_test_results.csv, module_run_results.csv, error_log.csv, and (if present) the *.executed.csv files produced by an actual Playwright suite run. In this evaluation package as delivered, no browser execution occurred (see test_environment.md), so 'passes', 'partial_passes', and 'failures' are 0, and 'not_testable' equals the full planned test-execution count. This reflects an environment constraint, not an application quality finding \u2014 see functional_evaluation_report.md, Section 11 (Errors and Limitations)."
+}
