@@ -1,0 +1,40 @@
+=== TEST 1: TCP socket bind (required to host the app for browser testing) ===
+RESULT: TCP bind failed: PermissionError(1, 'Operation not permitted')
+
+=== TEST 2: Unix domain socket bind (used internally by Chromium's ProcessSingleton) ===
+RESULT: Unix socket bind failed: OSError('AF_UNIX path too long')
+
+=== TEST 3: python3 -m http.server (standard static file server) ===
+(eval):37: nice(5) failed: operation not permitted
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/yashpatel/miniforge3/lib/python3.12/http/server.py", line 1314, in <module>
+    test(
+  File "/Users/yashpatel/miniforge3/lib/python3.12/http/server.py", line 1261, in test
+    with ServerClass(addr, HandlerClass) as httpd:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/yashpatel/miniforge3/lib/python3.12/socketserver.py", line 457, in __init__
+    self.server_bind()
+  File "/Users/yashpatel/miniforge3/lib/python3.12/http/server.py", line 1308, in server_bind
+    return super().server_bind()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/yashpatel/miniforge3/lib/python3.12/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/Users/yashpatel/miniforge3/lib/python3.12/socketserver.py", line 478, in server_bind
+    self.socket.bind(self.server_address)
+PermissionError: [Errno 1] Operation not permitted
+(see exit behavior above; PermissionError at socket.bind is the standard failure mode observed)
+
+=== ENVIRONMENT VERSIONS AT TIME OF TEST ===
+playwright (Python) version:
+Version 1.59.0
+Chromium cache present:
+chromium_headless_shell-1217
+chromium-1217
+ffmpeg-1011
+Firefox/WebKit cache present:
+(none found)
+
+=== TEST 2b: Unix domain socket bind (short path) ===
+RESULT: Unix socket bind failed: PermissionError(1, 'Operation not permitted')
