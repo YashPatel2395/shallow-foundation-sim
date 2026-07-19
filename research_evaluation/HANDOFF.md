@@ -107,6 +107,7 @@ reproduces the report's grand-total reconciliation table and metrics directly fr
 
 ## Final commit hash
 
-_Filled in after the finalization commit that adds this evidence package — see the
-assistant's final summary for this task for the exact hash, since this file cannot
-self-reference the commit that includes it._
+Final commit on `research-evaluation` containing the complete finalized evaluation package
+(frozen harness, three-engine evidence, checksums, this handoff, and the final report):
+`2d5f83dacaf5920a6b539e54ee961eb56302a042`. This commit itself cannot be referenced from
+within its own tree, so this line was added in a small follow-up commit immediately after.
