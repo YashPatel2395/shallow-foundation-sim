@@ -1,0 +1,15 @@
+# Local tooling/session state — never part of the evaluation evidence.
+.claude/
+node_modules/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Real Playwright execution output (only produced if the suite is actually run;
+# not committed automatically so an accidental local run doesn't silently
+# overwrite the placeholder matrices in a way that's hard to review in a diff).
+functional_test_results.executed.csv
+module_run_results.executed.csv
+performance_results.executed.csv
+functional_test_results.raw.json
+logs/playwright-artifacts/
