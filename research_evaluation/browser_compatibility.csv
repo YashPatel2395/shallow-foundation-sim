@@ -1,0 +1,4 @@
+browser_engine,application_loaded,shallow_module_completed,driven_pile_module_completed,drilled_shaft_module_completed,camera_controls_worked,reset_worked,missing_assets,console_error_count,network_error_count,visual_defects,major_failures,overall_compatibility
+chromium,NO — browser process failed to start,NOT TESTABLE,NOT TESTABLE,NOT TESTABLE,NOT TESTABLE,NOT TESTABLE,NOT TESTABLE,,,NOT TESTABLE,Browser process could not be launched in this execution environment (see logs).,NOT TESTED
+firefox,NOT TESTED,NOT TESTED,NOT TESTED,NOT TESTED,NOT TESTED,NOT TESTED,NOT TESTED,,,NOT TESTED,Not attempted (binary unavailable; identical root cause pre-confirmed on Chromium).,NOT TESTED
+webkit,NOT TESTED,NOT TESTED,NOT TESTED,NOT TESTED,NOT TESTED,NOT TESTED,NOT TESTED,,,NOT TESTED,Not attempted (binary unavailable; identical root cause pre-confirmed on Chromium).,NOT TESTED
