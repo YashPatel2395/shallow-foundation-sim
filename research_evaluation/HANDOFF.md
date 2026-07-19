@@ -14,10 +14,14 @@ environment this package was produced in.
 - Repository: `https://github.com/YashPatel2395/shallow-foundation-sim.git`
 - Branch: `research-evaluation`
 - Branch point (production commit under evaluation): `a2197eaee88f2debdff45799ffd0066cc32ec3a0`
-- Final commit of this evaluation package on `research-evaluation`: **see the line appended
-  by the commit script below** — this file is updated with the final hash immediately
-  before the last commit in the sequence (see "Final commit hash" at the bottom of this
-  file).
+- Final substantive commit of this evaluation package on `research-evaluation`:
+  `ede8c0fb8bf22cbdf076d714a4f0826bcb644b85` ("research: add reproducibility report and
+  handoff") — this commit contains the complete evaluation package (stage inventory,
+  environment record, Playwright suite, all result matrices, the report, and this file).
+  One additional housekeeping commit follows immediately after, whose only change is
+  recording this hash in the two lines above; its own hash is reported in the assistant's
+  final summary for this task rather than self-referenced here, since a commit cannot
+  contain its own hash.
 
 ## Reproducing the static-inspection deliverables (no browser required)
 
@@ -105,4 +109,7 @@ expected to not apply on a typical development machine or CI runner.
 
 ## Final commit hash
 
-Final commit on `research-evaluation`: `PENDING — filled in below immediately before push`
+Final substantive commit on `research-evaluation` containing the complete evaluation
+package: `ede8c0fb8bf22cbdf076d714a4f0826bcb644b85`. See the note under "Repository /
+branch / commit" above for why this is the commit cited here rather than the housekeeping
+commit that records it.
