@@ -2,45 +2,39 @@
 
 ## What this is
 
-An isolated, source-inspection-based functional evaluation of the Foundation Construction
-Simulation, plus a real (author-tested-for-syntax-only, not executed) Playwright suite
-that a researcher with an unrestricted environment can run to obtain genuine live-browser
-results. See `functional_evaluation_report.md` for the full report and
-`test_environment.md` for exactly why live browser execution could not be performed in the
-environment this package was produced in.
+A functional evaluation of the Foundation Construction Simulation combining source-code
+inspection with genuine, executed live-browser testing across all three Playwright-managed
+engines (Chromium, Firefox, Playwright WebKit). See `functional_evaluation_report.md` for
+the full final writeup and `TEST_HARNESS_CHANGELOG.md` for every correction made to the
+test driver before the harness was frozen and this final dataset produced.
+
+**Headline result, all three engines, 369 planned stage-level executions (123 × 3):** 344
+PASS, 2 FAIL (both `AUTOMATION_DRIVER` origin — zero `APPLICATION`-origin failures anywhere
+in the dataset), 23 NOT REACHED, 0 NOT TESTABLE, 0 ENVIRONMENT FAILURE. 25 of 27 full
+continuous-module runs (92.6%) reached genuine completion: Firefox 9/9, WebKit 9/9,
+Chromium 7/9 (both Chromium failures were early-stage driver-attributable flakiness, not
+resource-related — see the report, Section 5.2). A real, cross-engine-consistent
+resource-retention finding (zero `.dispose()` calls in all three simulation files, verified
+via Three.js's own `renderer.info` counters growing 6-32× over a session) is documented
+with carefully hedged language in Section 6 of the report — not claimed as a conclusively
+proven leak, since no direct GPU memory measurement was taken.
 
 ## Repository / branch / commit
 
 - Repository: `https://github.com/YashPatel2395/shallow-foundation-sim.git`
 - Branch: `research-evaluation`
 - Branch point (production commit under evaluation): `a2197eaee88f2debdff45799ffd0066cc32ec3a0`
-- Final substantive commit of this evaluation package on `research-evaluation`:
-  `ede8c0fb8bf22cbdf076d714a4f0826bcb644b85` ("research: add reproducibility report and
-  handoff") — this commit contains the complete evaluation package (stage inventory,
-  environment record, Playwright suite, all result matrices, the report, and this file).
-  One additional housekeeping commit follows immediately after, whose only change is
-  recording this hash in the two lines above; its own hash is reported in the assistant's
-  final summary for this task rather than self-referenced here, since a commit cannot
-  contain its own hash.
+- Final commit hash: see the bottom of this file — filled in after the finalization commit,
+  since a commit cannot self-reference its own hash.
 
 ## Reproducing the static-inspection deliverables (no browser required)
 
-These require only Python 3 and the repository checkout:
-
 ```bash
 git clone https://github.com/YashPatel2395/shallow-foundation-sim.git
-cd shallow-foundation-sim
-git checkout research-evaluation
-cd research_evaluation
-
-# Regenerate stage_inventory.csv / system_inventory.md from source, if desired:
-python3 scripts/build_stage_inventory.py   # written by the original inspection pass
-
-# Regenerate the placeholder NOT TESTABLE / NOT TESTED result matrices from stage_inventory.csv:
-python3 scripts/generate_result_matrices.py
-
-# Regenerate results_summary.json from the CSVs (must be run after the above):
-python3 scripts/generate_results_summary.py
+cd shallow-foundation-sim && git checkout research-evaluation && cd research_evaluation
+python3 scripts/build_stage_inventory.py       # regenerates stage_inventory.csv / system_inventory.md
+python3 scripts/generate_result_matrices.py    # regenerates the placeholder NOT TESTABLE/NOT TESTED CSVs
+python3 scripts/generate_results_summary.py    # regenerates results_summary.json
 ```
 
 Verify no production file was altered by this evaluation:
@@ -51,65 +45,68 @@ git diff origin/master -- script.js driven-pile.js drilled-shaft.js style.css \
 # expected output: nothing (empty diff)
 ```
 
-## Reproducing the live-browser evaluation (requires an unrestricted environment)
-
-The environment this package was authored in denies the OS-level socket/IPC primitives
-any browser needs to start (full evidence in `test_environment.md` and `logs/`). To get
-genuine PASS/FAIL results in place of the `NOT TESTABLE`/`NOT TESTED` placeholders:
+## Reproducing the final live-browser evaluation (all three engines)
 
 ```bash
 cd research_evaluation/playwright-suite
 npm install
 npx playwright install chromium firefox webkit
-npm test
+
+# Run one engine at a time (workers: 1 is required — see TEST_HARNESS_CHANGELOG.md Section 5).
+# Delete the top-level *.executed.csv files between engines for a clean per-engine dataset,
+# then snapshot into the versioned evidence/ directory:
+rm -f ../functional_test_results.executed.csv ../module_run_results.executed.csv \
+      ../performance_results.executed.csv ../functional_test_results.raw.json
+rm -rf ../logs/playwright-artifacts ../logs/cpu-samples
+npx playwright test --project=chromium         # ~25 min
+cd .. && python3 scripts/generate_results_summary.py
+python3 scripts/assemble_evidence.py chromium <run-start-iso> <run-end-iso>
+cd playwright-suite
+
+# repeat the same 5 steps for --project=firefox (~20 min) and --project=webkit (~20 min)
 ```
 
-This produces `functional_test_results.executed.csv`, `module_run_results.executed.csv`,
-and `performance_results.executed.csv` in `research_evaluation/`, plus screenshots under
-`research_evaluation/screenshots/<engine>/` and Playwright's own trace/report artifacts
-under `research_evaluation/logs/playwright-artifacts/`. These are named separately from the
-placeholder CSVs by design (see `playwright-suite/README.md`) so genuine evidence is never
-merged with, or mistaken for, the placeholder rows generated without execution.
+After all three engines: `python3 scripts/compute_grand_total.py` from `research_evaluation/`
+reproduces the report's grand-total reconciliation table and metrics directly from
+`evidence/<engine>/final/*.executed.csv` — every number in the report is traceable this way.
 
-After a real run, re-generate `results_summary.json` (it will automatically pick up the
-`*.executed.csv` files if present):
+## Known blockers / findings encountered while producing this package
 
-```bash
-cd research_evaluation/scripts
-python3 generate_results_summary.py
-```
-
-## Known blockers encountered while producing this package
-
-1. **Local socket binding (TCP and Unix-domain) is denied by the execution sandbox this
-   package was authored in**, which prevents both hosting the application via a local HTTP
-   server and Chromium's own internal process-singleton IPC. Evidence:
-   `logs/environment_blocker_evidence.log`.
-2. **A direct Playwright Chromium launch attempt failed** for the same underlying reason
-   (Mach port bootstrap check-in denied). Evidence: `logs/chromium_launch_attempt.log`.
-3. **Firefox and WebKit browser binaries were not present** and were not installed, since
-   installing them would not have changed the outcome in (1)/(2) — the restriction is
-   engine-independent (OS-level process/IPC denial, not a missing-binary problem).
-4. **Exact CPU model string is unavailable** (`sysctl -n machdep.cpu.brand_string` denied
-   by the same sandbox); architecture and core count were obtained by an alternate command
-   and are reported in `test_environment.md`.
-
-None of these blockers are properties of the application under evaluation — they are
-properties of the specific execution environment this package was produced in, and are
-expected to not apply on a typical development machine or CI runner.
+1. **(Historical, resolved)** The environment this package was originally authored in denied
+   OS-level socket/process primitives any browser needs to start. Evidence:
+   `logs/environment_blocker_evidence.log`, `logs/chromium_launch_attempt.log`. The
+   restriction was later lifted in the same environment; all three engines subsequently
+   launched and ran successfully.
+2. **Nine test-driver bugs/limitations were found and corrected** during the exploratory
+   phase before this final dataset was produced — full list with evidence in
+   `TEST_HARNESS_CHANGELOG.md`. None involved modifying any production file.
+3. **Exact CPU model string is unavailable** (`sysctl -n machdep.cpu.brand_string` denied by
+   the sandbox); architecture and core count were obtained by an alternate command and are
+   reported in `test_environment.md`.
+4. **Chromium renders WebGL in software** in this specific environment (SwiftShader),
+   causing 6-16× higher CPU utilization than Firefox/WebKit for identical work on the same
+   machine. This is a rendering-backend property of this environment, not an application
+   difference — see the report, Section 3 and Section 6, for the full analysis and why it
+   was deliberately excluded from the pass/fail classification method.
+5. **A source-verified, cross-engine-consistent resource-retention pattern**: zero
+   `.dispose()` calls across `script.js`, `driven-pile.js`, `drilled-shaft.js`. Not fixed as
+   part of this evaluation (would require modifying production code, which this evaluation
+   never does). Reported with hedged, non-overclaiming language — see the report, Section 6.
 
 ## What to check on a normal machine to confirm reproducibility
 
 - `stage_inventory.csv` should still have 41 rows after re-running
-  `scripts/build_stage_inventory.py` against the same commit — if the source changes,
-  re-running this script is how the inventory should be kept current, not hand-editing.
-- The Playwright suite should be able to load `index.html`, `driven-pile.html`, and
-  `drilled-shaft.html` via `file://` (no dev server needed — the application makes no
-  `fetch()` calls).
+  `scripts/build_stage_inventory.py` against the same commit.
+- All three engines should reach 100% conditional functional pass rate (Metric C in the
+  report) — i.e. zero `FAIL — APPLICATION` rows — even if a small number of
+  `AUTOMATION_DRIVER`-origin failures occur on a given run (expected, disclosed run-to-run
+  variance, not a reproducibility failure of this package).
+- Firefox and WebKit should reliably complete all 9 continuous-module runs; Chromium may
+  occasionally show 1-2 early-stage driver failures per 9 runs in this specific
+  software-WebGL environment.
 
 ## Final commit hash
 
-Final substantive commit on `research-evaluation` containing the complete evaluation
-package: `ede8c0fb8bf22cbdf076d714a4f0826bcb644b85`. See the note under "Repository /
-branch / commit" above for why this is the commit cited here rather than the housekeeping
-commit that records it.
+_Filled in after the finalization commit that adds this evidence package — see the
+assistant's final summary for this task for the exact hash, since this file cannot
+self-reference the commit that includes it._

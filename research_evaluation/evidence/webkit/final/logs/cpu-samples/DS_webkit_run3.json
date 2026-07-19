@@ -1,0 +1,401 @@
+{
+  "samples": [
+    {
+      "timestampMs": 1784479021327,
+      "totalCpuPercent": 48.5,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479023326,
+      "totalCpuPercent": 35.2,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479025333,
+      "totalCpuPercent": 46.900000000000006,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479027334,
+      "totalCpuPercent": 36.1,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479029331,
+      "totalCpuPercent": 38.4,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479031330,
+      "totalCpuPercent": 36.6,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479033331,
+      "totalCpuPercent": 37.5,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479035334,
+      "totalCpuPercent": 39.3,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479037330,
+      "totalCpuPercent": 36,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479039331,
+      "totalCpuPercent": 31.7,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479041337,
+      "totalCpuPercent": 34.3,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479043337,
+      "totalCpuPercent": 35.599999999999994,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479045339,
+      "totalCpuPercent": 36.2,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479047336,
+      "totalCpuPercent": 30.8,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479049340,
+      "totalCpuPercent": 36.4,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479051339,
+      "totalCpuPercent": 37.8,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479053340,
+      "totalCpuPercent": 38.8,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479055340,
+      "totalCpuPercent": 34,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479057342,
+      "totalCpuPercent": 35,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479059339,
+      "totalCpuPercent": 42.9,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479061341,
+      "totalCpuPercent": 33.6,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479063344,
+      "totalCpuPercent": 39.4,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479065338,
+      "totalCpuPercent": 33.5,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479067346,
+      "totalCpuPercent": 35.2,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479069349,
+      "totalCpuPercent": 33.5,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479071347,
+      "totalCpuPercent": 39.300000000000004,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479073347,
+      "totalCpuPercent": 40.5,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479075346,
+      "totalCpuPercent": 37.4,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479077348,
+      "totalCpuPercent": 43,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479079351,
+      "totalCpuPercent": 37.1,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479081349,
+      "totalCpuPercent": 35.1,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479083354,
+      "totalCpuPercent": 39.3,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479085353,
+      "totalCpuPercent": 40,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479087358,
+      "totalCpuPercent": 32.300000000000004,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479089360,
+      "totalCpuPercent": 29.599999999999998,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479091352,
+      "totalCpuPercent": 33.099999999999994,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479093357,
+      "totalCpuPercent": 35.4,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479095355,
+      "totalCpuPercent": 52.1,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479097360,
+      "totalCpuPercent": 41.4,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479099358,
+      "totalCpuPercent": 42.1,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479101360,
+      "totalCpuPercent": 41.7,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479103361,
+      "totalCpuPercent": 45.2,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479105362,
+      "totalCpuPercent": 43,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479107365,
+      "totalCpuPercent": 43.7,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479109365,
+      "totalCpuPercent": 41.4,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479111368,
+      "totalCpuPercent": 33.2,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479113368,
+      "totalCpuPercent": 32.7,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479115362,
+      "totalCpuPercent": 35.8,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479117366,
+      "totalCpuPercent": 36.5,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479119370,
+      "totalCpuPercent": 32.8,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479121371,
+      "totalCpuPercent": 33.9,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479123372,
+      "totalCpuPercent": 39.7,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479125374,
+      "totalCpuPercent": 33.4,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479127373,
+      "totalCpuPercent": 37.400000000000006,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479129373,
+      "totalCpuPercent": 40.5,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479131372,
+      "totalCpuPercent": 38.1,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479133375,
+      "totalCpuPercent": 40.2,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479135376,
+      "totalCpuPercent": 39.2,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479137374,
+      "totalCpuPercent": 41.800000000000004,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479139375,
+      "totalCpuPercent": 42.4,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479141375,
+      "totalCpuPercent": 31.800000000000004,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479143379,
+      "totalCpuPercent": 32.9,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479145381,
+      "totalCpuPercent": 32.400000000000006,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479147384,
+      "totalCpuPercent": 30.5,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479149384,
+      "totalCpuPercent": 29.7,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479151382,
+      "totalCpuPercent": 31.8,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479153380,
+      "totalCpuPercent": 41.5,
+      "processCount": 5
+    }
+  ],
+  "markers": [
+    {
+      "timestampMs": 1784479019398,
+      "label": "DS-stage0-start"
+    },
+    {
+      "timestampMs": 1784479024978,
+      "label": "DS-stage1-start"
+    },
+    {
+      "timestampMs": 1784479029763,
+      "label": "DS-stage2-start"
+    },
+    {
+      "timestampMs": 1784479032252,
+      "label": "DS-stage3-start"
+    },
+    {
+      "timestampMs": 1784479062970,
+      "label": "DS-stage4-start"
+    },
+    {
+      "timestampMs": 1784479073968,
+      "label": "DS-stage5-start"
+    },
+    {
+      "timestampMs": 1784479077022,
+      "label": "DS-stage6-start"
+    },
+    {
+      "timestampMs": 1784479081698,
+      "label": "DS-stage7-start"
+    },
+    {
+      "timestampMs": 1784479085629,
+      "label": "DS-stage8-start"
+    },
+    {
+      "timestampMs": 1784479095019,
+      "label": "DS-stage9-start"
+    },
+    {
+      "timestampMs": 1784479107371,
+      "label": "DS-stage10-start"
+    },
+    {
+      "timestampMs": 1784479112182,
+      "label": "DS-stage11-start"
+    },
+    {
+      "timestampMs": 1784479121960,
+      "label": "DS-stage12-start"
+    },
+    {
+      "timestampMs": 1784479125855,
+      "label": "DS-stage13-start"
+    },
+    {
+      "timestampMs": 1784479144289,
+      "label": "DS-stage14-start"
+    }
+  ]
+}

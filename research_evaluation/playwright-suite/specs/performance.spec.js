@@ -5,7 +5,7 @@
 // BY BROWSER", not a fabricated number).
 const { test } = require('@playwright/test');
 const { appendPerformanceResult } = require('../lib/resultWriter');
-const { attachDiagnostics } = require('../lib/testUtils');
+const { attachDiagnostics, gotoModuleEntry } = require('../lib/testUtils');
 
 const REPRESENTATIVE_STAGES = [
   { entry: 'index.html', module: 'Shallow Foundation', stageId: 'SF-01', stageTitle: 'First stage (low-complexity: site/soil assessment)' },
@@ -40,7 +40,7 @@ for (const rep of REPRESENTATIVE_STAGES) {
     const diag = attachDiagnostics(page);
 
     const navStart = Date.now();
-    await page.goto(rep.entry);
+    await gotoModuleEntry(page, rep.entry);
     await page.waitForSelector('#task-title', { timeout: 15_000 });
     const pageLoadMs = Date.now() - navStart;
 

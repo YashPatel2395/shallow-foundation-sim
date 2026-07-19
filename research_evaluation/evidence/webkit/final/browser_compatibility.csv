@@ -1,0 +1,2 @@
+browser_engine,application_loaded,shallow_module_completed,driven_pile_module_completed,drilled_shaft_module_completed,camera_controls_worked,reset_worked,missing_assets,console_error_count,network_error_count,visual_defects,major_failures,overall_compatibility
+webkit,YES,3/3 runs PASS,3/3 runs PASS,3/3 runs PASS,YES — see camera-and-reset.spec.js results,NOT MEASURED IN CONTINUOUS RUNS — see camera-and-reset.spec.js,0,0,0,NONE OBSERVED,NONE,COMPATIBLE

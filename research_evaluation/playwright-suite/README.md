@@ -1,12 +1,19 @@
 # Evaluation Suite — Playwright
 
 This suite was written to perform the live functional evaluation described in
-`../functional_evaluation_report.md`. It is a genuine, runnable Playwright test
-suite — it was **not executed** in the environment it was authored in, because
-that environment's sandbox denies the OS-level socket and process primitives
-any browser needs to launch (evidence: `../test_environment.md` and
-`../logs/`). It is provided so a researcher with an unrestricted environment
-can reproduce live results.
+`../functional_evaluation_report.md`. It was originally authored in an
+environment whose sandbox denied the OS-level socket/process primitives any
+browser needs to launch (historical evidence: `../test_environment.md` and
+`../logs/`); that restriction was later lifted in the same environment, and
+this suite has since been **run for real against all three engines**
+(Chromium, Firefox, Playwright WebKit) using a frozen harness — see
+`../functional_evaluation_report.md` for the full final results (344 PASS / 2
+FAIL across 369 genuine stage-level executions across all engines; zero
+`FAIL — APPLICATION` rows anywhere; a documented, cross-engine-consistent
+resource-retention finding) and `../TEST_HARNESS_CHANGELOG.md` for every
+correction made to this driver (navigation gaps, click-targeting bugs, timing
+budgets, a native-slider drag capability, and the failure-classification
+framework) before the harness was frozen.
 
 ## What this suite does
 

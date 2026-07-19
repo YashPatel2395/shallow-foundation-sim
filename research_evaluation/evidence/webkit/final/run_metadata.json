@@ -1,0 +1,7 @@
+{
+  "engine": "webkit",
+  "run_start": "2026-07-19T16:32:09Z",
+  "run_end": "2026-07-19T16:52:02Z",
+  "base_commit_hash": "55174cb56b83e56a5531c9b35faabf8790b807f8",
+  "note": "base_commit_hash is HEAD at the time this evidence was produced, BEFORE the finalization commit that adds this evidence itself (a commit cannot reference its own hash). See HANDOFF.md for the final commit hash."
+}

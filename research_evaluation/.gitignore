@@ -5,11 +5,33 @@ __pycache__/
 *.pyc
 .DS_Store
 
-# Real Playwright execution output (only produced if the suite is actually run;
-# not committed automatically so an accidental local run doesn't silently
-# overwrite the placeholder matrices in a way that's hard to review in a diff).
+# Real Playwright execution output written to the *default* (non-versioned)
+# locations — only produced if the suite is actually run; not committed
+# automatically so an accidental local run doesn't silently overwrite the
+# placeholder matrices in a way that's hard to review in a diff, and so
+# repeated local runs don't churn the working tree. This is deliberately
+# separate from research_evaluation/evidence/**, which IS tracked (see the
+# explicit exception below) — evidence/ holds the finalized, versioned,
+# immutable snapshot; these top-level paths hold whatever the most recent
+# local run happened to produce.
 functional_test_results.executed.csv
 module_run_results.executed.csv
 performance_results.executed.csv
 functional_test_results.raw.json
 logs/playwright-artifacts/
+logs/cpu-samples/
+screenshots/chromium/
+screenshots/firefox/
+screenshots/webkit/
+
+# Exploratory/superseded results from iterating on the harness before it was
+# frozen (see TEST_HARNESS_CHANGELOG.md). Kept locally for traceability, not
+# committed — bulky, and explicitly not part of the final dataset.
+archive/
+
+# Explicit exception: the finalized, versioned evidence package IS tracked,
+# despite the broader patterns above (screenshots/, logs/cpu-samples/, etc.)
+# matching some of its subdirectory names. Nothing under research_evaluation/
+# is ignored by default that would otherwise catch evidence/ — this line
+# exists to make that intent unambiguous, per the evaluation brief.
+!evidence/**

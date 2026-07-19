@@ -1,0 +1,42 @@
+{
+  "total_modules": 3,
+  "total_stages": 41,
+  "total_stage_test_executions": 369,
+  "passes": 123,
+  "partial_passes": 0,
+  "failures": 0,
+  "not_testable": 246,
+  "stage_pass_rate_percent": 33.33,
+  "module_run_attempts": 27,
+  "successful_module_runs": 9,
+  "module_completion_rate_percent": 33.33,
+  "browser_results": {
+    "chromium": {
+      "test_executions": 123,
+      "pass": 0,
+      "partial_pass": 0,
+      "fail": 0,
+      "not_testable_or_not_tested": 123
+    },
+    "firefox": {
+      "test_executions": 123,
+      "pass": 0,
+      "partial_pass": 0,
+      "fail": 0,
+      "not_testable_or_not_tested": 123
+    },
+    "webkit": {
+      "test_executions": 123,
+      "pass": 123,
+      "partial_pass": 0,
+      "fail": 0,
+      "not_testable_or_not_tested": 0
+    }
+  },
+  "console_error_total": 0,
+  "network_error_total": 0,
+  "missing_asset_total": 0,
+  "critical_failure_total": 2,
+  "average_module_completion_time_seconds": 127.7,
+  "_methodology_note": "All values above are computed directly from functional_test_results.csv, module_run_results.csv, error_log.csv, and the *.executed.csv files produced by an actual Playwright suite run. Live-browser results now exist for: webkit. Where a real *.executed.csv row exists for a given test_id/module_run_id, it supersedes (not adds to) the corresponding placeholder row from the original static-inspection pass, so 'pass'/'fail' counts reflect genuine observed behavior for those rows; any browser engine not listed above, and any stage beyond where a given run stopped progressing, remain 'not_testable_or_not_tested' placeholders. See functional_evaluation_report.md for the full writeup, including a documented application-side GPU-resource-leak finding (see lib/walkModule.js in the Playwright suite) that affects run-to-run completion reliability independent of any single stage's own correctness."
+}

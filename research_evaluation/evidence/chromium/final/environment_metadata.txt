@@ -1,0 +1,36 @@
+=== Environment metadata for final Chromium evaluation run ===
+Captured: 2026-07-19T12:51:33Z
+
+OS: macOS 26.3.1
+Kernel: Darwin Mac.home 25.3.0 Darwin Kernel Version 25.3.0: Wed Jan 28 20:56:34 PST 2026; root:xnu-12377.91.3~2/RELEASE_ARM64_T8122 arm64
+Arch: arm64
+CPU cores (logical): 8
+Memory: 16 GB
+Node: v24.18.0
+npm: 11.16.0
+Playwright: Version 1.61.1
+
+Git branch: research-evaluation
+Git HEAD (base, pre-finalization-commit): 55174cb56b83e56a5531c9b35faabf8790b807f8
+Git status (uncommitted changes present at run time):
+ M research_evaluation/HANDOFF.md
+ M research_evaluation/functional_evaluation_report.md
+ M research_evaluation/playwright-suite/README.md
+ M research_evaluation/playwright-suite/lib/resultWriter.js
+ M research_evaluation/playwright-suite/lib/testUtils.js
+ M research_evaluation/playwright-suite/lib/walkModule.js
+ M research_evaluation/playwright-suite/playwright.config.js
+ M research_evaluation/playwright-suite/specs/camera-and-reset.spec.js
+ M research_evaluation/playwright-suite/specs/drilled-shaft.spec.js
+ M research_evaluation/playwright-suite/specs/driven-pile.spec.js
+ M research_evaluation/playwright-suite/specs/performance.spec.js
+ M research_evaluation/playwright-suite/specs/shallow-foundation.spec.js
+ M research_evaluation/results_summary.json
+ M research_evaluation/scripts/generate_results_summary.py
+?? research_evaluation/TEST_HARNESS_CHANGELOG.md
+?? research_evaluation/archive/
+?? research_evaluation/evidence/
+?? research_evaluation/playwright-suite/lib/cpuSampler.js
+?? research_evaluation/playwright-suite/lib/resourceMetrics.js
+?? research_evaluation/playwright-suite/lib/runSummary.js
+?? research_evaluation/playwright-suite/package-lock.json

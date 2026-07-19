@@ -1,0 +1,280 @@
+{
+  "samples": [
+    {
+      "timestampMs": 1784479630730,
+      "totalCpuPercent": 46.3,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479632733,
+      "totalCpuPercent": 34.2,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479634735,
+      "totalCpuPercent": 27.400000000000002,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479636732,
+      "totalCpuPercent": 39.2,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479638743,
+      "totalCpuPercent": 44.4,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479640741,
+      "totalCpuPercent": 41.300000000000004,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479642739,
+      "totalCpuPercent": 36.400000000000006,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479644735,
+      "totalCpuPercent": 30.9,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479646738,
+      "totalCpuPercent": 36.3,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479648743,
+      "totalCpuPercent": 35.9,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479650738,
+      "totalCpuPercent": 26.400000000000002,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479652745,
+      "totalCpuPercent": 32,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479654746,
+      "totalCpuPercent": 33.6,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479656738,
+      "totalCpuPercent": 29.9,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479658746,
+      "totalCpuPercent": 38.5,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479660749,
+      "totalCpuPercent": 37.2,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479662747,
+      "totalCpuPercent": 46.2,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479664751,
+      "totalCpuPercent": 43.4,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479666748,
+      "totalCpuPercent": 45,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479668744,
+      "totalCpuPercent": 53.1,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479670754,
+      "totalCpuPercent": 42.3,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479672759,
+      "totalCpuPercent": 39.1,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479674751,
+      "totalCpuPercent": 53.199999999999996,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479676753,
+      "totalCpuPercent": 36.7,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479678760,
+      "totalCpuPercent": 37,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479680756,
+      "totalCpuPercent": 27.299999999999997,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479682764,
+      "totalCpuPercent": 30.400000000000002,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479684766,
+      "totalCpuPercent": 30.5,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479686764,
+      "totalCpuPercent": 34.1,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479688770,
+      "totalCpuPercent": 35.400000000000006,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479690771,
+      "totalCpuPercent": 35.7,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479692765,
+      "totalCpuPercent": 30.200000000000003,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479694773,
+      "totalCpuPercent": 33.5,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479696773,
+      "totalCpuPercent": 35.3,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479698768,
+      "totalCpuPercent": 35.9,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479700775,
+      "totalCpuPercent": 37.8,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479702803,
+      "totalCpuPercent": 30.799999999999997,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479704779,
+      "totalCpuPercent": 30.300000000000004,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479706783,
+      "totalCpuPercent": 32.6,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479708787,
+      "totalCpuPercent": 30,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479710783,
+      "totalCpuPercent": 38.4,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479712787,
+      "totalCpuPercent": 34.3,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479714780,
+      "totalCpuPercent": 37.8,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479716780,
+      "totalCpuPercent": 30.9,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479718789,
+      "totalCpuPercent": 35.3,
+      "processCount": 5
+    },
+    {
+      "timestampMs": 1784479720793,
+      "totalCpuPercent": 26.9,
+      "processCount": 5
+    }
+  ],
+  "markers": [
+    {
+      "timestampMs": 1784479628868,
+      "label": "SF-stage0-start"
+    },
+    {
+      "timestampMs": 1784479632409,
+      "label": "SF-stage1-start"
+    },
+    {
+      "timestampMs": 1784479636906,
+      "label": "SF-stage2-start"
+    },
+    {
+      "timestampMs": 1784479645897,
+      "label": "SF-stage3-start"
+    },
+    {
+      "timestampMs": 1784479651420,
+      "label": "SF-stage4-start"
+    },
+    {
+      "timestampMs": 1784479660821,
+      "label": "SF-stage5-start"
+    },
+    {
+      "timestampMs": 1784479673303,
+      "label": "SF-stage6-start"
+    },
+    {
+      "timestampMs": 1784479678199,
+      "label": "SF-stage7-start"
+    },
+    {
+      "timestampMs": 1784479687919,
+      "label": "SF-stage8-start"
+    },
+    {
+      "timestampMs": 1784479691839,
+      "label": "SF-stage9-start"
+    },
+    {
+      "timestampMs": 1784479710351,
+      "label": "SF-stage10-start"
+    }
+  ]
+}

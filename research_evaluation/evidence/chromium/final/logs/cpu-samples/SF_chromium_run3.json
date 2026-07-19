@@ -1,0 +1,64 @@
+{
+  "samples": [
+    {
+      "timestampMs": 1784477332045,
+      "totalCpuPercent": 423.8,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784477334043,
+      "totalCpuPercent": 469.40000000000003,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784477336049,
+      "totalCpuPercent": 486.50000000000006,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784477338049,
+      "totalCpuPercent": 507,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784477340050,
+      "totalCpuPercent": 492.6,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784477342046,
+      "totalCpuPercent": 470.70000000000005,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784477344052,
+      "totalCpuPercent": 485.40000000000003,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784477346047,
+      "totalCpuPercent": 489,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784477348049,
+      "totalCpuPercent": 479.59999999999997,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784477350047,
+      "totalCpuPercent": 491.3,
+      "processCount": 4
+    }
+  ],
+  "markers": [
+    {
+      "timestampMs": 1784477330914,
+      "label": "SF-stage0-start"
+    },
+    {
+      "timestampMs": 1784477334130,
+      "label": "SF-stage1-start"
+    }
+  ]
+}

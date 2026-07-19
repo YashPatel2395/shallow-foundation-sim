@@ -1,0 +1,75 @@
+{
+  "samples": [
+    {
+      "timestampMs": 1784476742470,
+      "totalCpuPercent": 559.3000000000001,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784476744469,
+      "totalCpuPercent": 623.8,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784476746469,
+      "totalCpuPercent": 597.6999999999999,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784476748473,
+      "totalCpuPercent": 626.8,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784476750475,
+      "totalCpuPercent": 597.9,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784476752478,
+      "totalCpuPercent": 591.4999999999999,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784476754479,
+      "totalCpuPercent": 600.3999999999999,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784476756478,
+      "totalCpuPercent": 619.1999999999999,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784476758478,
+      "totalCpuPercent": 563.9,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784476760480,
+      "totalCpuPercent": 617.9,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784476762481,
+      "totalCpuPercent": 591,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784476764482,
+      "totalCpuPercent": 623.9,
+      "processCount": 4
+    },
+    {
+      "timestampMs": 1784476766486,
+      "totalCpuPercent": 616.0999999999999,
+      "processCount": 4
+    }
+  ],
+  "markers": [
+    {
+      "timestampMs": 1784476740534,
+      "label": "DP-stage0-start"
+    }
+  ]
+}

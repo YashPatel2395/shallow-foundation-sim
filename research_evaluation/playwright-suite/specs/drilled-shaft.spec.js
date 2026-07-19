@@ -1,10 +1,13 @@
 const { test, expect } = require('@playwright/test');
 const { walkModule } = require('../lib/walkModule');
 const { appendModuleRunResult, appendFunctionalResult } = require('../lib/resultWriter');
+const { startCpuSampling, summarizeWindow } = require('../lib/cpuSampler');
+const { summarizeResourceSamples, lastCompletedStage, runFailureOrigin } = require('../lib/runSummary');
 const path = require('path');
 const fs = require('fs');
 
 const SCREENSHOT_DIR = path.resolve(__dirname, '..', '..', 'screenshots');
+const CPU_LOG_DIR = path.resolve(__dirname, '..', '..', 'logs', 'cpu-samples');
 const RUNS = [1, 2, 3];
 
 for (const runNumber of RUNS) {
@@ -12,21 +15,28 @@ for (const runNumber of RUNS) {
     const browserEngine = testInfo.project.name;
     const shotDir = path.join(SCREENSHOT_DIR, browserEngine);
     fs.mkdirSync(shotDir, { recursive: true });
+    fs.mkdirSync(CPU_LOG_DIR, { recursive: true });
 
+    const cpuSampler = startCpuSampling(2000);
     const result = await walkModule(page, {
       entryUrl: 'drilled-shaft.html',
       moduleName: 'Drilled Shaft Foundation',
       stagePrefix: 'DS',
-    });
+    }, { cpuSampler });
+    const { samples: cpuSamples } = cpuSampler.stop();
+
+    const cpuLogPath = path.join(CPU_LOG_DIR, `DS_${browserEngine}_run${runNumber}.json`);
+    fs.writeFileSync(cpuLogPath, JSON.stringify({ samples: cpuSamples, markers: cpuSampler.markers }, null, 2));
+    const cpuSummary = summarizeWindow(cpuSamples, result.startTime.getTime(), result.endTime.getTime());
+    const resourceSummary = summarizeResourceSamples(result.resourceSamples);
 
     if (result.stageResults.length > 0) {
       await page.screenshot({ path: path.join(shotDir, `DS-01_${browserEngine}_run${runNumber}_first_stage.png`), fullPage: true }).catch(() => {});
     }
-    if (result.finalStateReached) {
-      await page.screenshot({ path: path.join(shotDir, `DS-final_${browserEngine}_run${runNumber}_completed.png`), fullPage: true }).catch(() => {});
-    } else {
-      await page.screenshot({ path: path.join(shotDir, `DS-incomplete_${browserEngine}_run${runNumber}_failure.png`), fullPage: true }).catch(() => {});
-    }
+    const finalShotPath = path.join(shotDir, result.finalStateReached
+      ? `DS-final_${browserEngine}_run${runNumber}_completed.png`
+      : `DS-incomplete_${browserEngine}_run${runNumber}_failure.png`);
+    await page.screenshot({ path: finalShotPath, fullPage: true }).catch(() => {});
 
     appendModuleRunResult({
       module_run_id: `DS_${browserEngine}_run${runNumber}`,
@@ -47,13 +57,24 @@ for (const runNumber of RUNS) {
       reset_success: 'NOT MEASURED IN THIS RUN',
       final_state_reached: result.finalStateReached ? 'YES' : 'NO',
       overall_result: result.finalStateReached ? 'PASS' : (result.completedStages > 0 ? 'PARTIAL PASS' : 'FAIL'),
-      notes: `${result.stageResults.length} stage(s) reached out of ${result.totalStages ?? 'unknown'} declared in STEP_HANDLERS.`,
+      notes: `${result.completedStages} of ${result.totalStages ?? 'unknown'} declared stage(s) PASS in STEP_HANDLERS.`,
+      partial_pass_stages: result.partialStages,
+      not_reached_stages: result.notReachedStages,
+      environment_failure_stages: result.environmentFailureStages,
+      last_completed_stage: lastCompletedStage(result.stageResults),
+      failure_origin: runFailureOrigin(result.stageResults),
+      cpu_avg_percent: cpuSummary.avgCpuPercent,
+      cpu_max_percent: cpuSummary.maxCpuPercent,
+      ...resourceSummary,
+      screenshot_path: path.relative(path.resolve(__dirname, '..', '..'), finalShotPath),
+      cpu_samples_path: path.relative(path.resolve(__dirname, '..', '..'), cpuLogPath),
     });
 
-    result.stageResults.forEach((r, i) => {
+    result.stageResults.forEach((r) => {
+      const n = String(r.stage_number + 1).padStart(2, '0');
       appendFunctionalResult({
-        test_id: `DS-${String(i + 1).padStart(2, '0')}_${browserEngine}_run${runNumber}`,
-        stage_id: `DS-${String(i + 1).padStart(2, '0')}`,
+        test_id: `DS-${n}_${browserEngine}_run${runNumber}`,
+        stage_id: `DS-${n}`,
         module: 'Drilled Shaft Foundation',
         stage_number: r.stage_number,
         stage_title: '',
@@ -76,12 +97,17 @@ for (const runNumber of RUNS) {
         overall_result: r.overall_result,
         observed_behavior: r.observed_behavior,
         expected_behavior: 'Stage completes and STATE.currentStep advances after the correct interaction is performed.',
-        failure_description: r.overall_result === 'FAIL' ? r.observed_behavior : '',
+        failure_description: (r.overall_result === 'FAIL' || r.overall_result === 'PARTIAL PASS') ? r.observed_behavior : '',
         screenshot_path: '',
         console_log_path: '',
+        failure_origin: r.failure_origin,
+        application_behavior: r.application_behavior,
+        driver_behavior: r.driver_behavior,
+        reached_stage: r.reached_stage,
+        classification_reason: r.classification_reason,
       });
     });
 
-    expect(result.stageResults.length, 'at least the first stage should have loaded').toBeGreaterThan(0);
+    expect(result.stageResults.filter((r) => r.overall_result !== 'NOT REACHED').length, 'at least the first stage should have loaded').toBeGreaterThan(0);
   });
 }

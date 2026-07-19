@@ -1,42 +1,78 @@
 {
+  "description": "FINAL combined results summary across all three browser engines (Chromium, Firefox, Playwright WebKit), computed directly from evidence/<engine>/final/*.executed.csv. See functional_evaluation_report.md Sections 4-5 for the full narrative and scripts/compute_grand_total.py to regenerate this independently.",
   "total_modules": 3,
-  "total_stages": 41,
-  "total_stage_test_executions": 369,
-  "passes": 0,
-  "partial_passes": 0,
-  "failures": 0,
-  "not_testable": 369,
-  "stage_pass_rate_percent": 0.0,
-  "module_run_attempts": 27,
-  "successful_module_runs": 0,
-  "module_completion_rate_percent": 0.0,
-  "browser_results": {
+  "total_stages_declared": 41,
+  "engines_tested": [
+    "chromium",
+    "firefox",
+    "webkit"
+  ],
+  "grand_total_stage_executions": 369,
+  "grand_total_stage_reconciliation": {
+    "PASS": 344,
+    "PARTIAL PASS": 0,
+    "FAIL \u2014 APPLICATION": 0,
+    "FAIL \u2014 AUTOMATION DRIVER": 2,
+    "NOT TESTABLE": 0,
+    "NOT REACHED": 23,
+    "ENVIRONMENT FAILURE": 0
+  },
+  "grand_total_module_run_attempts": 27,
+  "grand_total_module_run_successes": 25,
+  "grand_total_module_completion_rate_percent": 92.6,
+  "metrics": {
+    "A_planned_execution_coverage_percent": 100.0,
+    "B_confirmed_pass_rate_percent": 93.2,
+    "C_conditional_functional_pass_rate_percent": 100.0,
+    "D_automation_success_rate_percent": 93.8,
+    "E_continuous_module_completion_rate_percent": 92.6
+  },
+  "per_engine": {
     "chromium": {
-      "test_executions": 123,
-      "pass": 0,
-      "partial_pass": 0,
-      "fail": 0,
-      "not_testable_or_not_tested": 123
+      "stage_reconciliation": {
+        "PASS": 98,
+        "PARTIAL PASS": 0,
+        "FAIL \u2014 APPLICATION": 0,
+        "FAIL \u2014 AUTOMATION DRIVER": 2,
+        "NOT TESTABLE": 0,
+        "NOT REACHED": 23,
+        "ENVIRONMENT FAILURE": 0
+      },
+      "total_stage_executions": 123,
+      "module_run_attempts": 9,
+      "module_run_successes": 7,
+      "module_completion_rate_percent": 77.8
     },
     "firefox": {
-      "test_executions": 123,
-      "pass": 0,
-      "partial_pass": 0,
-      "fail": 0,
-      "not_testable_or_not_tested": 123
+      "stage_reconciliation": {
+        "PASS": 123,
+        "PARTIAL PASS": 0,
+        "FAIL \u2014 APPLICATION": 0,
+        "FAIL \u2014 AUTOMATION DRIVER": 0,
+        "NOT TESTABLE": 0,
+        "NOT REACHED": 0,
+        "ENVIRONMENT FAILURE": 0
+      },
+      "total_stage_executions": 123,
+      "module_run_attempts": 9,
+      "module_run_successes": 9,
+      "module_completion_rate_percent": 100.0
     },
     "webkit": {
-      "test_executions": 123,
-      "pass": 0,
-      "partial_pass": 0,
-      "fail": 0,
-      "not_testable_or_not_tested": 123
+      "stage_reconciliation": {
+        "PASS": 123,
+        "PARTIAL PASS": 0,
+        "FAIL \u2014 APPLICATION": 0,
+        "FAIL \u2014 AUTOMATION DRIVER": 0,
+        "NOT TESTABLE": 0,
+        "NOT REACHED": 0,
+        "ENVIRONMENT FAILURE": 0
+      },
+      "total_stage_executions": 123,
+      "module_run_attempts": 9,
+      "module_run_successes": 9,
+      "module_completion_rate_percent": 100.0
     }
   },
-  "console_error_total": 0,
-  "network_error_total": 0,
-  "missing_asset_total": 0,
-  "critical_failure_total": 2,
-  "average_module_completion_time_seconds": null,
-  "_methodology_note": "All values above are computed directly from functional_test_results.csv, module_run_results.csv, error_log.csv, and (if present) the *.executed.csv files produced by an actual Playwright suite run. In this evaluation package as delivered, no browser execution occurred (see test_environment.md), so 'passes', 'partial_passes', and 'failures' are 0, and 'not_testable' equals the full planned test-execution count. This reflects an environment constraint, not an application quality finding \u2014 see functional_evaluation_report.md, Section 11 (Errors and Limitations)."
+  "_methodology_note": "Every number above is traceable to evidence/<engine>/final/*.executed.csv (raw, per-run Playwright output). failure_origin (APPLICATION / AUTOMATION_DRIVER / TEST_ENVIRONMENT / NONE) is kept strictly separate per the evaluation brief -- zero FAIL rows in this dataset are APPLICATION-origin. See TEST_HARNESS_CHANGELOG.md for the classification methodology and every correction made to the test driver before this dataset was produced."
 }

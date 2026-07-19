@@ -16,6 +16,9 @@ const FUNCTIONAL_COLUMNS = [
   'next_stage_behavior','object_persistence','camera_controls','reset_behavior',
   'console_errors','network_errors','visual_result','overall_result',
   'observed_behavior','expected_behavior','failure_description','screenshot_path','console_log_path',
+  // Added for failure-origin reconciliation (research-evaluation branch,
+  // post-live-execution finalization pass). See TEST_HARNESS_CHANGELOG.md.
+  'failure_origin','application_behavior','driver_behavior','reached_stage','classification_reason',
 ];
 
 const MODULE_RUN_COLUMNS = [
@@ -23,6 +26,13 @@ const MODULE_RUN_COLUMNS = [
   'duration_seconds','total_stages','completed_stages','failed_stages',
   'recoverable_errors','unrecoverable_errors','console_error_count','network_error_count',
   'missing_asset_count','reset_success','final_state_reached','overall_result','notes',
+  // Continuous-session reliability fields (evaluation brief Section 7).
+  'partial_pass_stages','not_reached_stages','environment_failure_stages',
+  'last_completed_stage','failure_origin','cpu_avg_percent','cpu_max_percent',
+  'renderer_geometries_first','renderer_geometries_last',
+  'renderer_textures_first','renderer_textures_last',
+  'renderer_programs_first','renderer_programs_last',
+  'heap_mb_first','heap_mb_last','screenshot_path','cpu_samples_path',
 ];
 
 function csvEscape(v) {

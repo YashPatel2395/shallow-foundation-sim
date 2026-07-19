@@ -4,6 +4,7 @@
 const { test, expect } = require('@playwright/test');
 const path = require('path');
 const fs = require('fs');
+const { gotoModuleEntry } = require('../lib/testUtils');
 
 const SCREENSHOT_DIR = path.resolve(__dirname, '..', '..', 'screenshots');
 
@@ -19,7 +20,7 @@ for (const mod of MODULES) {
     const shotDir = path.join(SCREENSHOT_DIR, browserEngine);
     fs.mkdirSync(shotDir, { recursive: true });
 
-    await page.goto(mod.entry);
+    await gotoModuleEntry(page, mod.entry);
     await page.waitForSelector('#task-title', { timeout: 15_000 });
     await page.screenshot({ path: path.join(shotDir, `${mod.prefix}-dashboard_${browserEngine}_run1.png`), fullPage: true });
 
