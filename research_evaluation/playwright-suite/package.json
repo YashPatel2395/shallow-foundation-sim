@@ -1,0 +1,17 @@
+{
+  "name": "foundation-sim-evaluation-suite",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Independent, isolated Playwright evaluation suite for the Foundation Construction Simulation Lab. Not part of the application build. Lives entirely inside research_evaluation/ and must never be referenced by application source files.",
+  "type": "commonjs",
+  "scripts": {
+    "test": "playwright test",
+    "test:chromium": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
+    "install:browsers": "playwright install chromium firefox webkit"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.47.0"
+  }
+}
