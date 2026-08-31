@@ -614,6 +614,7 @@ const MAT = {
 let stepObjects   = [];
 let persistObjs   = [];
 let clickables3D  = [];
+let stagedRebarCage = null;
 const particlePool = [];
 
 const OBJ = {};
@@ -1307,19 +1308,26 @@ function update3DLabels() {
    3D POPUP
 ══════════════════════════════════════════════════════════════ */
 
+let activePopupTimer = null;
+
 function show3DPopup(mesh, html, duration) {
-  const vec = new THREE.Vector3();
-  mesh.getWorldPosition(vec);
-  vec.project(camera);
-  const canvas = renderer.domElement;
-  const x = (vec.x * 0.5 + 0.5) * canvas.clientWidth  + canvas.getBoundingClientRect().left;
-  const y = (-vec.y * 0.5 + 0.5) * canvas.clientHeight + canvas.getBoundingClientRect().top;
+  const dock = document.getElementById('info-popup-dock');
+  if (!dock) return;
+
+  if (activePopupTimer) clearTimeout(activePopupTimer);
+  dock.innerHTML = '';
+
   const popup = document.createElement('div');
-  popup.className = 'soil-popup fade-in';
-  popup.style.cssText = `left:${x}px;top:${y - 90}px;`;
+  popup.className = 'info-popup-card';
   popup.innerHTML = html;
-  document.body.appendChild(popup);
-  setTimeout(() => popup.remove(), duration || 2500);
+  dock.appendChild(popup);
+  requestAnimationFrame(() => popup.classList.add('show'));
+
+  activePopupTimer = setTimeout(() => {
+    popup.classList.remove('show');
+    setTimeout(() => { if (popup.parentNode) popup.remove(); }, 200);
+    activePopupTimer = null;
+  }, duration || 2500);
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -1369,7 +1377,7 @@ function init() {
   buildGround();
   buildSiteElements();
   buildSoilLayers();
-  buildGradeLine();
+  buildStagedRebarCages();
   initZoomSlider();
   startStep(0);
   animate();
@@ -1386,18 +1394,6 @@ function initZoomSlider() {
       .normalize();
     camera.position.copy(controls.target).addScaledVector(dir, dist);
   });
-}
-
-function buildGradeLine() {
-  const mat = new THREE.MeshLambertMaterial({ color: 0xf5a623, emissive: 0xf5a623, emissiveIntensity: 0.35 });
-  const hLine = new THREE.Mesh(new THREE.BoxGeometry(12, 0.06, 0.06), mat);
-  hLine.position.set(0, 0, 0);
-  scene.add(hLine);
-  persistObjs.push(hLine);
-  const vLine = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, 6), mat);
-  vLine.position.set(6, 0, -3);
-  scene.add(vLine);
-  persistObjs.push(vLine);
 }
 
 function buildChecklist() {
@@ -1429,7 +1425,9 @@ function startStep(n) {
   updateHUD();
   renderChecklist();
   renderTaskPanel(n);
-  DOM.actionBar().innerHTML = '';
+  const ab = DOM.actionBar();
+  ab.innerHTML = '';
+  ab.style.pointerEvents = '';
   setCamPreset(n);
   STEP_HANDLERS[n].enter();
 }
@@ -1649,6 +1647,13 @@ function resetSimulation() {
   if (OBJ.columnStirrupGroup) {
     scene.remove(OBJ.columnStirrupGroup);
     delete OBJ.columnStirrupGroup;
+  }
+  if (stagedRebarCage) {
+    const stg = stagedRebarCage.userData.stagePos;
+    stagedRebarCage.position.set(stg.x, stg.y, stg.z);
+    stagedRebarCage.rotation.z = CAGE_STAGE_ROT;
+    stagedRebarCage.userData.installed = false;
+    stagedRebarCage.visible = true;
   }
   STATE.score = 1000;
   STATE.penalties = 0;
@@ -2102,26 +2107,67 @@ const SHAFT_POSITIONS = [
 ];
 const SHAFT_DEPTH = 17;
 
-/* ── Helper: build a rebar cage mesh group ──────────────── */
+/* ── Helper: build a rebar cage mesh group ──────────────────────────
+   Matches a real drilled-shaft cage: a ring of closely-spaced
+   longitudinal bars wrapped by one continuous tight spiral hoop,
+   giving the dense diamond-mesh look (not sparse discrete rings). */
+class CageHelixCurve extends THREE.Curve {
+  constructor(radius, length, turns) {
+    super();
+    this.radius = radius;
+    this.length = length;
+    this.turns = turns;
+  }
+  getPoint(t, target = new THREE.Vector3()) {
+    const angle = t * this.turns * Math.PI * 2;
+    const y = -this.length / 2 + t * this.length;
+    return target.set(Math.cos(angle) * this.radius, y, Math.sin(angle) * this.radius);
+  }
+}
+
 function buildRebarCage3D() {
   const cage = new THREE.Group();
-  // 6 vertical bars arranged in circle r=0.2
-  for (let i = 0; i < 6; i++) {
-    const ang = (i / 6) * Math.PI * 2;
-    const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 15, 6), MAT.rebarSteel);
-    bar.position.set(Math.cos(ang) * 0.2, 0, Math.sin(ang) * 0.2);
+  const radius = 0.22;
+  const length = 15;
+  const numBars = 14;
+
+  // Longitudinal bars, closely spaced around the perimeter
+  for (let i = 0; i < numBars; i++) {
+    const ang = (i / numBars) * Math.PI * 2;
+    const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, length, 6), MAT.rebarSteel);
+    bar.position.set(Math.cos(ang) * radius, 0, Math.sin(ang) * radius);
     cage.add(bar);
   }
-  // 8 horizontal rings at 2m intervals
-  for (let r = 0; r < 8; r++) {
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.015, 6, 16), MAT.rebarSteel);
-    ring.rotation.x = Math.PI / 2;
-    ring.position.y = -7 + r * 2;
-    cage.add(ring);
-  }
+
+  // Continuous tight spiral hoop wound the full length of the cage
+  const turns = 40;
+  const curve = new CageHelixCurve(radius, length, turns);
+  const spiralGeo = new THREE.TubeGeometry(curve, turns * 10, 0.012, 6, false);
+  const spiral = new THREE.Mesh(spiralGeo, MAT.rebarSteel);
+  cage.add(spiral);
+
   return cage;
 }
 
+/* ── Pre-assembled cage parked on site, visible from Step 1 onward ────
+   Only the shaft at the site intersection (S4 -- the one facing the
+   camera) gets a fully demonstrated install -- the rest complete
+   automatically with no visible process, so only one physical cage is
+   ever needed on the ground. */
+const DEMO_SHAFT_INDEX = 3;
+const CAGE_STAGING = { x: 6, z: 9.5 };
+const CAGE_STAGE_ROT = Math.PI / 2;
+
+function buildStagedRebarCages() {
+  const cage = buildRebarCage3D();
+  cage.rotation.z = CAGE_STAGE_ROT;      // lying flat on the ground
+  cage.position.set(CAGE_STAGING.x, 0.25, CAGE_STAGING.z);
+  cage.userData.stagePos = { x: CAGE_STAGING.x, y: 0.25, z: CAGE_STAGING.z };
+  cage.userData.installed = false;
+  scene.add(cage);
+  persistObjs.push(cage);
+  stagedRebarCage = cage;
+}
 
 const STEP_HANDLERS = [
 
@@ -2149,60 +2195,40 @@ const STEP_HANDLERS = [
         { depth: '16m+', soil: 'Rock/Gravel', spt: 'N>50', note: 'Refusal - bearing layer' }
       ];
 
-      const poleGeo   = new THREE.CylinderGeometry(0.04, 0.04, 0.8, 6);
-      const sphereGeo = new THREE.SphereGeometry(0.22, 8, 8);
+      const markerGeo   = new THREE.BoxGeometry(1.0, 0.06, 1.0);
+      const markerEdges = new THREE.EdgesGeometry(markerGeo);
+      const markers = [];
 
       markerPositions.forEach((pos, i) => {
         const g = new THREE.Group();
 
-        const pole = new THREE.Mesh(poleGeo, MAT.darkGray);
-        pole.position.y = 0.4;
-        pole.castShadow = true;
-        g.add(pole);
+        const plate = new THREE.Mesh(markerGeo, MAT.markerOrange.clone());
+        plate.position.y = 0.03;
+        plate.castShadow = true;
+        plate.receiveShadow = true;
+        g.add(plate);
 
-        const sphere = new THREE.Mesh(sphereGeo, MAT.markerOrange.clone());
-        sphere.position.y = 0.9;
-        sphere.castShadow = true;
-        g.add(sphere);
+        const outline = new THREE.LineSegments(
+          markerEdges,
+          new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.35 })
+        );
+        outline.position.y = 0.03;
+        g.add(outline);
 
         g.position.copy(pos);
+        g.position.y = 0;
         addStep(g);
 
         create3DLabel(g, `BH-${i + 1}`, '');
+        markers.push({ g, plate });
 
-        clickables3D.push({
+        const entry = {
           mesh: g,
           pulse: true,
           phase: i * 1.2,
-          onHit() {
-            if (g.userData.tested) return;
-            g.userData.tested = true;
-            sphere.material = MAT.markerGreen.clone();
-            this.pulse = false;
-            g.scale.setScalar(1);
-            ss.tested++;
-            markSubtask(i);
-
-            const html = `<strong>BH-${i + 1} Soil Profile</strong><br>` +
-              soilData.map(d => `${d.depth}: ${d.soil}<br>&nbsp;&nbsp;SPT ${d.spt} - ${d.note}`).join('<br>');
-            show3DPopup(g, html, 3000);
-
-            if (ss.tested >= ss.total) {
-              showFeedback('info', 'All borings complete! Submit the soil report.');
-              const ab = DOM.actionBar();
-              ab.innerHTML = '';
-              const submitBtn = makeBtn('Submit Soil Report', 'btn-primary', () => {
-                markSubtask(5);
-                showFeedback('correct', 'Soil Profile: 2m Topsoil, 4m Soft Clay, 5m Loose Sand, 5m Dense Sand, Rock. DRILLED SHAFT FOUNDATION REQUIRED.');
-                safeTimeout(() => {
-                  ab.innerHTML = '<div class="step-instruction" style="color:#27ae60;">Recommendation: DRILLED SHAFT FOUNDATION REQUIRED. Shallow foundations not suitable — bearing layer at 16m depth.</div>';
-                  safeTimeout(() => completeStep(), 2000);
-                }, 1500);
-              });
-              ab.appendChild(submitBtn);
-            }
-          }
-        });
+          onHit() { testBorehole(i); }
+        };
+        clickables3D.push(entry);
       });
 
       const rigGroup = new THREE.Group();
@@ -2213,8 +2239,56 @@ const STEP_HANDLERS = [
       rigGroup.position.set(7, 0, 0);
       addStep(rigGroup);
 
+      // Reliable checklist buttons -- the primary way to run each boring
+      // test. Clicking the pulsing 3D marker still works too, but nothing
+      // requires precisely hitting a moving target.
       const ab = DOM.actionBar();
-      ab.innerHTML = '<div class="step-instruction">Click each pulsing boring marker (BH-1 to BH-5) to conduct soil tests</div>';
+      ab.innerHTML = '<div class="step-instruction">Click each test point to run a soil boring (BH-1 to BH-5)</div>';
+
+      const items = [];
+      markerPositions.forEach((pos, i) => {
+        const item = el('div', 'panel-item');
+        item.innerHTML = `<div class="item-icon">🪨</div><div class="item-label">Test point BH-${i + 1}</div>`;
+        item.addEventListener('click', () => testBorehole(i));
+        items.push(item);
+        ab.appendChild(item);
+      });
+
+      function testBorehole(i) {
+        const { g, plate } = markers[i];
+        if (g.userData.tested) return;
+        g.userData.tested = true;
+        plate.material = MAT.markerGreen.clone();
+        const entry = clickables3D.find(c => c.mesh === g);
+        if (entry) entry.pulse = false;
+        g.scale.setScalar(1);
+
+        const item = items[i];
+        item.classList.add('placed');
+        item.innerHTML += '<div style="color:var(--green-ok);font-size:.85rem;margin-top:2px;">✓ Tested</div>';
+
+        ss.tested++;
+        markSubtask(i);
+
+        const html = `<strong>BH-${i + 1}</strong><div class="info-popup-row">` +
+          soilData.map(d => `<span class="info-chip">${d.depth} ${d.soil} <b>${d.spt}</b></span>`).join('') +
+          `</div>`;
+        show3DPopup(g, html, 3000);
+
+        if (ss.tested >= ss.total) {
+          showFeedback('info', 'All borings complete! Submit the soil report.');
+          ab.innerHTML = '';
+          const submitBtn = makeBtn('Submit Soil Report', 'btn-primary', () => {
+            markSubtask(5);
+            showFeedback('correct', 'Soil Profile: 2m Topsoil, 4m Soft Clay, 5m Loose Sand, 5m Dense Sand, Rock. DRILLED SHAFT FOUNDATION REQUIRED.');
+            safeTimeout(() => {
+              ab.innerHTML = '<div class="step-instruction" style="color:#27ae60;">Recommendation: DRILLED SHAFT FOUNDATION REQUIRED. Shallow foundations not suitable — bearing layer at 16m depth.</div>';
+              safeTimeout(() => completeStep(), 2000);
+            }, 1500);
+          });
+          ab.appendChild(submitBtn);
+        }
+      }
     },
     cleanup() {}
   },
@@ -2225,6 +2299,7 @@ const STEP_HANDLERS = [
       const ss = STATE.stepState;
       ss.placed = 0;
       ss.total = 4;
+      ss.demoStarted = false;
 
       const shaftPositions = [
         new THREE.Vector3(-2.5, 0.01, -2.5),
@@ -2241,6 +2316,9 @@ const STEP_HANDLERS = [
       outlineMesh.position.y = 0.03;
       addStep(outlineMesh);
 
+      const rings = [];
+      const entries = [];
+
       shaftPositions.forEach((pos, i) => {
         const ringGeo = new THREE.RingGeometry(0.3, 0.5, 16);
         const ringMat = new THREE.MeshStandardMaterial({
@@ -2252,6 +2330,7 @@ const STEP_HANDLERS = [
         ring.position.copy(pos);
         ring.position.y = 0.03;
         addStep(ring);
+        rings.push(ring);
 
         const dot = new THREE.Mesh(
           new THREE.CircleGeometry(0.08, 12),
@@ -2264,51 +2343,95 @@ const STEP_HANDLERS = [
 
         create3DLabel(ring, labels[i], '');
 
-        clickables3D.push({
+        const entry = {
           mesh: ring,
           pulse: true,
           phase: i * 1.5,
-          onHit() {
-            if (ring.userData.placed) return;
-            ring.userData.placed = true;
-            this.pulse = false;
-            ring.scale.setScalar(1);
-
-            ring.material = MAT.markerGreen.clone();
-            ring.material.emissive.setHex(0x00aa22);
-
-            const spike = new THREE.Mesh(
-              new THREE.CylinderGeometry(0.03, 0.02, 0.8, 6),
-              MAT.rebarSteel
-            );
-            spike.position.copy(pos);
-            spike.position.y = 0.8;
-            addStep(spike);
-
-            let spikeY = 0.8;
-            const spikeInterval = safeInterval(() => {
-              spikeY -= 0.05;
-              spike.position.y = spikeY;
-              if (spikeY <= 0.2) {
-                clearInterval(spikeInterval);
-                spawnParticles(new THREE.Vector3(pos.x, 0.05, pos.z), MAT.topsoil, 6);
-              }
-            }, 30);
-
-            ss.placed++;
-            markSubtask(i);
-            showFeedback('correct', `Shaft marker ${labels[i]} placed!`);
-
-            if (ss.placed >= ss.total) {
-              showFeedback('correct', 'All shaft markers placed! Layout complete.');
-              safeTimeout(() => completeStep(), 1200);
-            }
-          }
-        });
+          onHit() { triggerDemo(i); }
+        };
+        entries.push(entry);
+        clickables3D.push(entry);
       });
 
+      // Shared by both the 3D ring click and the reliable DOM button below --
+      // clicking either starts the full demo on that shaft.
+      function triggerDemo(i) {
+        if (rings[i].userData.placed || ss.demoStarted) return;
+        ss.demoStarted = true;
+        ab.style.pointerEvents = 'none';
+        placeMarker(i);
+        autoCompleteRest(i);
+      }
+
+      // Places the marker at shaft i -- the visible spike-drop animation.
+      function placeMarker(i) {
+        const pos = shaftPositions[i];
+        const ring = rings[i];
+        if (ring.userData.placed) return;
+        ring.userData.placed = true;
+        entries[i].pulse = false;
+        ring.scale.setScalar(1);
+
+        ring.material = MAT.markerGreen.clone();
+        ring.material.emissive.setHex(0x00aa22);
+
+        const spike = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.03, 0.02, 0.8, 6),
+          MAT.rebarSteel
+        );
+        spike.position.copy(pos);
+        spike.position.y = 0.8;
+        addStep(spike);
+
+        let spikeY = 0.8;
+        const spikeInterval = safeInterval(() => {
+          spikeY -= 0.05;
+          spike.position.y = spikeY;
+          if (spikeY <= 0.2) {
+            clearInterval(spikeInterval);
+            spawnParticles(new THREE.Vector3(pos.x, 0.05, pos.z), MAT.topsoil, 6);
+          }
+        }, 30);
+
+        ss.placed++;
+        markSubtask(i);
+        markItemDone(i);
+        showFeedback('correct', `Shaft marker ${labels[i]} placed!`);
+
+        if (ss.placed >= ss.total) {
+          showFeedback('correct', 'All shaft markers placed! Layout complete.');
+          safeTimeout(() => completeStep(), 1200);
+        }
+      }
+
+      // The process has now been demonstrated once in full. The remaining
+      // shaft markers are placed the same way -- staggered so it still reads.
+      function autoCompleteRest(demoIndex) {
+        const rest = [0, 1, 2, 3].filter(idx => idx !== demoIndex);
+        rest.forEach((i, order) => {
+          safeTimeout(() => placeMarker(i), 400 * (order + 1));
+        });
+      }
+
+      function markItemDone(i) {
+        const item = items[i];
+        item.classList.add('placed');
+        item.innerHTML += '<div style="color:var(--green-ok);font-size:.85rem;margin-top:2px;">✓ Placed</div>';
+      }
+
+      // Reliable checklist buttons -- clicking the pulsing 3D ring still
+      // works too, but nothing requires precisely hitting a moving target.
       const ab = DOM.actionBar();
-      ab.innerHTML = '<div class="step-instruction">Click each pulsing target ring to place a survey marker at shaft positions S1-S4</div>';
+      ab.innerHTML = '<div class="step-instruction">Click one shaft to place a survey marker -- the rest will follow the same way</div>';
+
+      const items = [];
+      labels.forEach((label, i) => {
+        const item = el('div', 'panel-item');
+        item.innerHTML = `<div class="item-icon">📍</div><div class="item-label">Place shaft marker ${label}</div>`;
+        item.addEventListener('click', () => triggerDemo(i));
+        items.push(item);
+        ab.appendChild(item);
+      });
     },
     cleanup() {}
   },
@@ -2385,6 +2508,14 @@ const STEP_HANDLERS = [
         ss.currentShaft = idx;
         ss.depthPct = 0;
         ss.drilling = false;
+
+        // Only the intersection shaft (S4) is drilled interactively and
+        // visibly -- the rest are completed automatically with no visible
+        // process, so the user isn't shown the same drilling four times.
+        if (idx !== DEMO_SHAFT_INDEX) {
+          completeShaftSilently(idx, sp);
+          return;
+        }
 
         // Move rig over shaft position
         OBJ.drillingRig.position.set(sp.x, 0, sp.z);
@@ -2499,6 +2630,23 @@ const STEP_HANDLERS = [
         ab.appendChild(drillBtn);
       }
 
+      // Shafts other than the intersection pile: completed automatically,
+      // no visible drilling process -- they're simply ready by the time the
+      // step finishes, same as the intersection pile.
+      function completeShaftSilently(idx, sp) {
+        const borehole = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.28, 0.28, SHAFT_DEPTH, 12),
+          MAT.boreholeDark
+        );
+        borehole.position.set(sp.x, -SHAFT_DEPTH / 2, sp.z);
+        addStep(borehole);
+        ss.boreholeMeshes.push(borehole);
+
+        markSubtask(idx);
+        buildSoilPile((idx + 1) / 4);
+        drillShaft(idx + 1);
+      }
+
       drillShaft(0);
     },
     cleanup() {
@@ -2528,50 +2676,118 @@ const STEP_HANDLERS = [
       });
 
       ss.casingMeshes = [];
+      ss.demoStarted = false;
+
+      // Only the intersection shaft (S4) gets a demonstrated casing install --
+      // the rest are completed automatically with no visible process.
+      const demoSp = SHAFT_POSITIONS[DEMO_SHAFT_INDEX];
+
+      // Stage the casing lying on the ground, waiting to be lifted -- instead
+      // of spawning mid-air and instantly dropping.
+      const stagingPos = { x: -2, z: 9.5 };
+      const stagedCasing = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.30, 0.30, SHAFT_DEPTH, 16, 1, true),
+        MAT.casingSteel
+      );
+      stagedCasing.rotation.z = Math.PI / 2;
+      stagedCasing.position.set(stagingPos.x, 0.32, stagingPos.z);
+      addStep(stagedCasing);
+      ss.casingMeshes.push(stagedCasing);
 
       const ab = DOM.actionBar();
-      ab.innerHTML = '<div class="step-instruction">Click each shaft to lower a steel casing into the borehole</div>';
+      ab.innerHTML = `<div class="step-instruction">Click to lift the staged casing and lower it into ${demoSp.label} -- the other shafts are installed the same way automatically</div>`;
 
-      SHAFT_POSITIONS.forEach((sp, i) => {
-        const item = el('div', 'panel-item');
-        item.innerHTML = `<div class="item-icon">\u2b07\ufe0f</div><div class="item-label">Lower casing into ${sp.label}</div>`;
-        item.addEventListener('click', () => {
-          if (item.classList.contains('placed')) return;
-          item.classList.add('placed');
-          item.innerHTML += '<div style="color:var(--green-ok);font-size:.85rem;margin-top:2px;">\u2713 Installed</div>';
+      const btn = makeBtn(`Lower casing into ${demoSp.label}`, 'btn-primary', () => {
+        if (ss.demoStarted) return;
+        ss.demoStarted = true;
+        btn.disabled = true;
+        lowerCasingFull();
+      });
+      ab.appendChild(btn);
 
-          // Create casing mesh
+      // Full, clearly visible crane lift -> guide -> lower sequence --
+      // demonstrated on the intersection shaft.
+      function lowerCasingFull() {
+        const sp = demoSp;
+        const casing = stagedCasing;
+        const startX = casing.position.x;
+        const startZ = casing.position.z;
+        const startY = casing.position.y;
+        const hoverY = 9;
+
+        showFeedback('correct', `Crane lifting casing for ${sp.label}...`);
+
+        // Phase 1 -- crane lifts the casing and rotates it upright
+        let t1 = 0;
+        const liftIv = safeInterval(() => {
+          t1 += 0.02;
+          if (t1 >= 1) {
+            clearInterval(liftIv);
+            casing.rotation.z = 0;
+            casing.position.y = hoverY;
+            guidePhase();
+            return;
+          }
+          casing.rotation.z = (Math.PI / 2) * (1 - t1);
+          casing.position.y = startY + (hoverY - startY) * t1;
+        }, 30);
+
+        // Phase 2 -- casing is guided horizontally into position above the shaft
+        function guidePhase() {
+          showFeedback('correct', `Positioning casing over ${sp.label}...`);
+          let t2 = 0;
+          const guideIv = safeInterval(() => {
+            t2 += 0.02;
+            if (t2 >= 1) {
+              clearInterval(guideIv);
+              casing.position.x = sp.x;
+              casing.position.z = sp.z;
+              lowerPhase();
+              return;
+            }
+            casing.position.x = startX + (sp.x - startX) * t2;
+            casing.position.z = startZ + (sp.z - startZ) * t2;
+          }, 30);
+        }
+
+        // Phase 3 -- casing is lowered into the borehole
+        function lowerPhase() {
+          showFeedback('correct', `Lowering casing into ${sp.label}...`);
+          let cy = hoverY;
+          const targetY = -SHAFT_DEPTH / 2;
+          const lowerIv = safeInterval(() => {
+            cy -= 0.22;
+            casing.position.y = cy;
+            if (cy <= targetY) {
+              clearInterval(lowerIv);
+              casing.position.y = targetY;
+              ss.installed++;
+              markSubtask(DEMO_SHAFT_INDEX);
+              showFeedback('correct', `Casing installed in ${sp.label}!`);
+              completeRestSilently();
+            }
+          }, 30);
+        }
+      }
+
+      // The process has now been demonstrated in full on S4. The remaining
+      // shafts are installed the same way -- no animation, just marked ready.
+      function completeRestSilently() {
+        SHAFT_POSITIONS.forEach((sp, i) => {
+          if (i === DEMO_SHAFT_INDEX) return;
           const casing = new THREE.Mesh(
             new THREE.CylinderGeometry(0.30, 0.30, SHAFT_DEPTH, 16, 1, true),
             MAT.casingSteel
           );
-          casing.position.set(sp.x, 5, sp.z);
+          casing.position.set(sp.x, -SHAFT_DEPTH / 2, sp.z);
           addStep(casing);
           ss.casingMeshes.push(casing);
-
-          // Animate casing descending
-          let cy = 5;
-          const targetY = -SHAFT_DEPTH / 2;
-          const iv = safeInterval(() => {
-            cy -= 0.4;
-            casing.position.y = cy;
-            if (cy <= targetY) {
-              clearInterval(iv);
-              casing.position.y = targetY;
-            }
-          }, 30);
-
           ss.installed++;
           markSubtask(i);
-          showFeedback('correct', `Casing installed in ${sp.label}!`);
-
-          if (ss.installed >= 4) {
-            showFeedback('correct', 'All casings installed!');
-            safeTimeout(() => completeStep(), 1200);
-          }
         });
-        ab.appendChild(item);
-      });
+        showFeedback('correct', 'All casings installed!');
+        safeTimeout(() => completeStep(), 1200);
+      }
     },
     cleanup() {}
   },
@@ -2581,6 +2797,7 @@ const STEP_HANDLERS = [
     enter() {
       const ss = STATE.stepState;
       ss.lowered = 0;
+      ss.demoStarted = false;
 
       // Show boreholes with casings
       SHAFT_POSITIONS.forEach(sp => {
@@ -2599,48 +2816,100 @@ const STEP_HANDLERS = [
         addStep(casing);
       });
 
-      ss.cageMeshes = [];
-
+      // Only the intersection shaft (S4) gets a demonstrated install -- its
+      // cage has been parked on site, lying on the ground, since Step 1.
+      // The other three shafts are completed automatically with no visible
+      // process once the demo finishes.
+      const demoSp = SHAFT_POSITIONS[DEMO_SHAFT_INDEX];
       const ab = DOM.actionBar();
-      ab.innerHTML = '<div class="step-instruction">Click each shaft to lower a rebar cage into the casing</div>';
+      ab.innerHTML = `<div class="step-instruction">Click to lift the staged cage and lower it into ${demoSp.label} -- the other shafts are installed the same way automatically</div>`;
 
-      SHAFT_POSITIONS.forEach((sp, i) => {
-        const item = el('div', 'panel-item');
-        item.innerHTML = `<div class="item-icon">\u2699\ufe0f</div><div class="item-label">Lower cage into ${sp.label}</div>`;
-        item.addEventListener('click', () => {
-          if (item.classList.contains('placed')) return;
-          item.classList.add('placed');
-          item.innerHTML += '<div style="color:var(--green-ok);font-size:.85rem;margin-top:2px;">\u2713 Lowered</div>';
+      const btn = makeBtn(`Lower cage into ${demoSp.label}`, 'btn-primary', () => {
+        if (ss.demoStarted) return;
+        ss.demoStarted = true;
+        btn.disabled = true;
+        lowerCageFull();
+      });
+      ab.appendChild(btn);
 
-          // Create rebar cage
-          const cage = buildRebarCage3D();
-          cage.position.set(sp.x, 5, sp.z);
-          addStep(cage);
-          ss.cageMeshes.push(cage);
+      // Full, clearly visible lift -> guide -> lower sequence, demonstrated
+      // on the one shaft at the site intersection.
+      function lowerCageFull() {
+        const sp = demoSp;
+        const cage = stagedRebarCage;
+        const startX = cage.position.x;
+        const startZ = cage.position.z;
+        const startY = cage.position.y;
+        const hoverY = 9;
 
-          // Animate cage descending
-          let cy = 5;
+        showFeedback('correct', `Crane lifting cage for ${sp.label}...`);
+
+        // Phase 1 -- crane lifts one end, rotating the cage upright
+        let t1 = 0;
+        const liftIv = safeInterval(() => {
+          t1 += 0.02;
+          if (t1 >= 1) {
+            clearInterval(liftIv);
+            cage.rotation.z = 0;
+            cage.position.y = hoverY;
+            guidePhase();
+            return;
+          }
+          cage.rotation.z = CAGE_STAGE_ROT * (1 - t1);
+          cage.position.y = startY + (hoverY - startY) * t1;
+        }, 30);
+
+        // Phase 2 -- cage is guided horizontally into position above the shaft
+        function guidePhase() {
+          showFeedback('correct', `Positioning cage over ${sp.label}...`);
+          let t2 = 0;
+          const guideIv = safeInterval(() => {
+            t2 += 0.02;
+            if (t2 >= 1) {
+              clearInterval(guideIv);
+              cage.position.x = sp.x;
+              cage.position.z = sp.z;
+              lowerPhase();
+              return;
+            }
+            cage.position.x = startX + (sp.x - startX) * t2;
+            cage.position.z = startZ + (sp.z - startZ) * t2;
+          }, 30);
+        }
+
+        // Phase 3 -- cage is lowered into the cased borehole
+        function lowerPhase() {
+          showFeedback('correct', `Lowering cage into ${sp.label}...`);
+          let cy = hoverY;
           const targetY = -8;
-          const iv = safeInterval(() => {
-            cy -= 0.3;
+          const lowerIv = safeInterval(() => {
+            cy -= 0.22;
             cage.position.y = cy;
             if (cy <= targetY) {
-              clearInterval(iv);
+              clearInterval(lowerIv);
               cage.position.y = targetY;
+              cage.userData.installed = true;
+              ss.lowered++;
+              markSubtask(DEMO_SHAFT_INDEX);
+              showFeedback('correct', `Rebar cage lowered into ${sp.label}!`);
+              completeRestSilently();
             }
           }, 30);
+        }
+      }
 
+      // The process has now been demonstrated in full on S4. The remaining
+      // shafts are installed the same way -- no separate cage model, no
+      // animation, just marked complete.
+      function completeRestSilently() {
+        SHAFT_POSITIONS.forEach((sp, i) => {
+          if (i === DEMO_SHAFT_INDEX) return;
           ss.lowered++;
           markSubtask(i);
-          showFeedback('correct', `Rebar cage lowered into ${sp.label}!`);
-
-          if (ss.lowered >= 4) {
-            showFeedback('correct', 'All rebar cages placed!');
-            safeTimeout(() => completeStep(), 1200);
-          }
         });
-        ab.appendChild(item);
-      });
+        showFeedback('correct', 'All rebar cages placed!');
+        safeTimeout(() => completeStep(), 1200);
+      }
     },
     cleanup() {}
   },
@@ -2651,7 +2920,10 @@ const STEP_HANDLERS = [
       const ss = STATE.stepState;
       ss.poured = 0;
 
-      // Show boreholes with casings and rebar cages
+      // Show boreholes with casings -- the rebar cages are already sitting
+      // in place from Step 6, no need to spawn them again. The borehole void
+      // mesh is kept solid for now and hidden right before its pour starts --
+      // otherwise it fully encloses (and hides) the concrete growing inside it.
       SHAFT_POSITIONS.forEach(sp => {
         const borehole = new THREE.Mesh(
           new THREE.CylinderGeometry(0.28, 0.28, SHAFT_DEPTH, 12),
@@ -2659,6 +2931,7 @@ const STEP_HANDLERS = [
         );
         borehole.position.set(sp.x, -SHAFT_DEPTH / 2, sp.z);
         addStep(borehole);
+        sp._borehole = borehole;
 
         const casing = new THREE.Mesh(
           new THREE.CylinderGeometry(0.30, 0.30, SHAFT_DEPTH, 16, 1, true),
@@ -2668,86 +2941,166 @@ const STEP_HANDLERS = [
         addStep(casing);
         // Store casing for withdrawal animation
         sp._casing = casing;
-
-        const cage = buildRebarCage3D();
-        cage.position.set(sp.x, -8, sp.z);
-        addStep(cage);
       });
+
+      // Only the intersection shaft (S4) gets a demonstrated pour -- the
+      // rest are completed automatically with no visible process.
+      const demoSp = SHAFT_POSITIONS[DEMO_SHAFT_INDEX];
+
+      // Concrete pump truck parked beside the intersection shaft -- the
+      // "pouring machine" the tremie pipe feeds from.
+      const truck = buildConcreteTruck3D();
+      truck.position.set(demoSp.x + 1.8, 0, demoSp.z + 1.6);
+      truck.rotation.y = -2.5;
+
+      if (demoSp._borehole) demoSp._borehole.visible = false;
+      showFeedback('info', `Position the tremie and hold POUR to fill ${demoSp.label}.`);
+
+      // Tremie pipe, fed from the truck's chute down into the casing
+      const tremie = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.05, 0.05, SHAFT_DEPTH + 2, 8),
+        MAT.darkGray
+      );
+      tremie.position.set(demoSp.x, -SHAFT_DEPTH / 2 + 1, demoSp.z);
+      addStep(tremie);
+
+      // Concrete fill, grows only while the user holds the pour button
+      const concFill = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.27, 0.27, 0.01, 12),
+        MAT.concreteDark
+      );
+      concFill.position.set(demoSp.x, -SHAFT_DEPTH, demoSp.z);
+      addStep(concFill);
+
+      let fillH = 0.01;
+      const maxH = SHAFT_DEPTH;
+      let casingRiseY = -SHAFT_DEPTH / 2;
+      let pouring = false;
+      let pourInterval = null;
 
       const ab = DOM.actionBar();
-      ab.innerHTML = '<div class="step-instruction">Click each shaft to pour concrete via tremie and withdraw casing</div>';
+      ab.innerHTML = '';
 
-      SHAFT_POSITIONS.forEach((sp, i) => {
-        const item = el('div', 'panel-item');
-        item.innerHTML = `<div class="item-icon">\ud83d\udee2</div><div class="item-label">Tremie pour ${sp.label}</div>`;
-        item.addEventListener('click', () => {
-          if (item.classList.contains('placed')) return;
-          item.classList.add('placed');
-          item.innerHTML += '<div style="color:var(--green-ok);font-size:.85rem;margin-top:2px;">\u2713 Poured</div>';
+      const statsDiv = el('div', 'blow-display', '');
+      statsDiv.innerHTML = `
+        <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:center;">
+          <div style="text-align:center;">
+            <div style="color:#aaa;font-size:0.65rem;text-transform:uppercase;">Shaft</div>
+            <div style="color:#f5a623;font-size:1.2rem;font-weight:700;">${demoSp.label}</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="color:#aaa;font-size:0.65rem;text-transform:uppercase;">Poured</div>
+            <div id="pour-depth" style="color:#fff;font-size:1.2rem;font-weight:700;">0.0m / ${maxH}m</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="color:#aaa;font-size:0.65rem;text-transform:uppercase;">Progress</div>
+            <div id="pour-pct" style="color:#27ae60;font-size:1.2rem;font-weight:700;">0%</div>
+          </div>
+        </div>
+      `;
+      ab.appendChild(statsDiv);
 
-          // Tremie pipe
-          const tremie = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.05, 0.05, SHAFT_DEPTH + 2, 8),
-            MAT.darkGray
-          );
-          tremie.position.set(sp.x, -SHAFT_DEPTH / 2 + 1, sp.z);
-          addStep(tremie);
+      const fillWrap = el('div', 'fill-meter-wrap');
+      const fillTrack = el('div', 'fill-meter-track');
+      const fillBar = el('div', 'fill-meter-bar');
+      fillBar.id = 'pour-bar';
+      fillBar.style.background = 'linear-gradient(to right,#616161,#9e9e9e,#bdbdbd)';
+      fillBar.style.width = '0%';
+      fillTrack.appendChild(fillBar);
+      fillWrap.appendChild(fillTrack);
+      ab.appendChild(fillWrap);
 
-          // Concrete fill growing from bottom
+      const pourBtn = makeBtn('HOLD TO POUR', 'btn-primary', () => {});
+      pourBtn.style.cssText += 'font-size:1.1rem;padding:12px 40px;background:#757575;color:#fff;margin-top:10px;';
+      ab.appendChild(pourBtn);
+
+      function doPourTick() {
+        if (fillH >= maxH) return;
+        fillH = Math.min(maxH, fillH + 0.3);
+        concFill.scale.y = fillH / 0.01;
+        concFill.position.y = -SHAFT_DEPTH + fillH / 2;
+
+        const pct = Math.round((fillH / maxH) * 100);
+        const bar = $('pour-bar'); if (bar) bar.style.width = pct + '%';
+        const pctEl = $('pour-pct'); if (pctEl) pctEl.textContent = pct + '%';
+        const dEl = $('pour-depth'); if (dEl) dEl.textContent = `${fillH.toFixed(1)}m / ${maxH}m`;
+
+        if (OBJ.truckChuteGroup) OBJ.truckChuteGroup.rotation.x = 0.05 * Math.sin(fillH * 2);
+        if (OBJ.truckDrum) OBJ.truckDrum.rotation.y += 0.06;
+
+        // Withdraw casing as concrete rises
+        const casing = demoSp._casing;
+        if (casing) {
+          casingRiseY += 0.15;
+          casing.position.y = casingRiseY;
+          if (casing.material.opacity > 0.1) {
+            casing.material = casing.material.clone();
+            casing.material.opacity = Math.max(0.1, 0.85 - (fillH / maxH) * 0.75);
+          }
+        }
+
+        if (fillH >= maxH) {
+          pouring = false;
+          if (pourInterval) { clearInterval(pourInterval); pourInterval = null; }
+          scene.remove(tremie);
+          const ti = stepObjects.indexOf(tremie);
+          if (ti > -1) stepObjects.splice(ti, 1);
+          if (casing) casing.visible = false;
+
+          ss.poured++;
+          markSubtask(DEMO_SHAFT_INDEX);
+          showFeedback('correct', `${demoSp.label} concrete poured, casing withdrawn!`);
+          pourBtn.disabled = true;
+          pourBtn.textContent = 'POURED';
+          completeRestSilently();
+        }
+      }
+
+      pourBtn.addEventListener('mousedown', () => {
+        if (fillH >= maxH || pouring) return;
+        pouring = true;
+        pourInterval = safeInterval(doPourTick, 60);
+        doPourTick();
+      });
+      pourBtn.addEventListener('mouseup', () => {
+        pouring = false;
+        if (pourInterval) { clearInterval(pourInterval); pourInterval = null; }
+      });
+      pourBtn.addEventListener('mouseleave', () => {
+        pouring = false;
+        if (pourInterval) { clearInterval(pourInterval); pourInterval = null; }
+      });
+
+      // The process has now been demonstrated in full on S4. The remaining
+      // shafts are poured the same way -- no animation, just marked ready.
+      function completeRestSilently() {
+        SHAFT_POSITIONS.forEach((sp, i) => {
+          if (i === DEMO_SHAFT_INDEX) return;
+          if (sp._borehole) sp._borehole.visible = false;
           const concFill = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.26, 0.26, 0.01, 12),
+            new THREE.CylinderGeometry(0.27, 0.27, SHAFT_DEPTH, 12),
             MAT.concreteDark
           );
-          concFill.position.set(sp.x, -SHAFT_DEPTH, sp.z);
+          concFill.position.set(sp.x, -SHAFT_DEPTH / 2, sp.z);
           addStep(concFill);
-
-          let fillH = 0.01;
-          const maxH = SHAFT_DEPTH;
-          const casing = sp._casing;
-          let casingRiseY = -SHAFT_DEPTH / 2;
-
-          const iv = safeInterval(() => {
-            fillH = Math.min(maxH, fillH + 0.5);
-            concFill.scale.y = fillH / 0.01;
-            concFill.position.y = -SHAFT_DEPTH + fillH / 2;
-
-            // Withdraw casing as concrete rises
-            if (casing) {
-              casingRiseY += 0.25;
-              casing.position.y = casingRiseY;
-              if (casing.material.opacity > 0.1) {
-                casing.material = casing.material.clone();
-                casing.material.opacity = Math.max(0.1, 0.85 - (fillH / maxH) * 0.75);
-              }
-            }
-
-            if (fillH >= maxH) {
-              clearInterval(iv);
-              // Remove tremie
-              scene.remove(tremie);
-              const ti = stepObjects.indexOf(tremie);
-              if (ti > -1) stepObjects.splice(ti, 1);
-              // Hide casing (fully withdrawn)
-              if (casing) casing.visible = false;
-
-              ss.poured++;
-              markSubtask(i);
-              showFeedback('correct', `${sp.label} concrete poured, casing withdrawn!`);
-
-              if (ss.poured >= 4) {
-                STATE.drilledDepth = SHAFT_DEPTH;
-                showFeedback('correct', 'All shafts complete! Concrete placed in all 4 drilled shafts.');
-                safeTimeout(() => completeStep(), 1200);
-              }
-            }
-          }, 40);
+          if (sp._casing) sp._casing.visible = false;
+          ss.poured++;
+          markSubtask(i);
         });
-        ab.appendChild(item);
-      });
+
+        // The cage is now embedded in poured concrete -- hide it so it
+        // doesn't keep poking up above grade in later steps, same as the
+        // other three shafts which never had a visible cage to begin with.
+        if (stagedRebarCage) stagedRebarCage.visible = false;
+
+        STATE.drilledDepth = SHAFT_DEPTH;
+        showFeedback('correct', 'All shafts complete! Concrete placed in all 4 drilled shafts.');
+        safeTimeout(() => completeStep(), 1200);
+      }
     },
     cleanup() {
-      // Clean up temporary _casing references
-      SHAFT_POSITIONS.forEach(sp => { delete sp._casing; });
+      // Clean up temporary shaft references
+      SHAFT_POSITIONS.forEach(sp => { delete sp._casing; delete sp._borehole; });
     }
   },
 
@@ -3452,7 +3805,7 @@ const STEP_HANDLERS = [
             const chk = FINAL_CHECKS[i];
 
             show3DPopup(m,
-              `<strong>${chk.label}</strong><br><span style="color:#f5a623;font-weight:700;font-size:.9rem;">${score}%</span><br><span style="font-size:.65rem;opacity:.8;">${chk.note}</span>`,
+              `<strong>${chk.label}</strong><span style="color:#f5a623;font-weight:700;">${score}%</span><span style="font-size:.7rem;opacity:.8;">${chk.note}</span>`,
               2200
             );
             markSubtask(i < 4 ? i : 4);
