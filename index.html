@@ -5,6 +5,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Foundation Construction Simulation Lab</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Single fixed dock for all 3D-marker description popups -- always
+       docks at the top of the viewport so it never covers other markers
+       or action-bar buttons, and never drifts with the camera. */
+    #info-popup-dock {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 60;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      padding: 0 16px;
+    }
+    .info-popup-card {
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(10, 20, 40, 0.94);
+      color: #fff;
+      border: 1px solid rgba(245, 166, 35, 0.5);
+      border-left: 3px solid #f5a623;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      line-height: 1.3;
+      max-width: min(90vw, 760px);
+      white-space: nowrap;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+    .info-popup-card.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .info-popup-card strong { color: #f5a623; flex-shrink: 0; }
+    .info-popup-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+    }
+    .info-chip {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 4px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.7rem;
+      white-space: nowrap;
+    }
+    .info-chip b { color: #f5a623; }
+  </style>
 </head>
 <body>
 
@@ -19,6 +78,7 @@
     <button class="nav-btn" id="nav-btn-shallow" onclick="showShallowFoundationSimulation()">Shallow Foundation</button>
     <button class="nav-btn" id="nav-btn-driven" onclick="window.location.href='driven-pile.html'">Driven Pile</button>
     <button class="nav-btn" id="nav-btn-drilled" onclick="window.location.href='drilled-shaft.html'">Drilled Shaft</button>
+    <button class="nav-btn" id="nav-btn-retaining" onclick="window.location.href='retaining-wall.html'">Retaining Wall</button>
   </div>
 </nav>
 
@@ -31,7 +91,7 @@
       <h1 id="dashboard-title">Foundation Construction<br>Simulation Lab</h1>
       <p id="dashboard-subtitle">Interactive 3D learning modules for foundation construction methods. Master each technique through hands-on simulation.</p>
       <div id="dashboard-stats">
-        <div class="stat-item"><span class="stat-num">3</span><span class="stat-lbl">Modules</span></div>
+        <div class="stat-item"><span class="stat-num">4</span><span class="stat-lbl">Modules</span></div>
         <div class="stat-divider"></div>
         <div class="stat-item"><span class="stat-num">11</span><span class="stat-lbl">Steps</span></div>
         <div class="stat-divider"></div>
@@ -147,6 +207,37 @@
         </div>
       </article>
 
+      <!-- Chapter 4: Retaining Wall - Available -->
+      <article class="chapter-card card-available" onclick="window.location.href='retaining-wall.html'">
+        <div class="card-top-bar"></div>
+        <div class="card-inner">
+          <div class="card-head">
+            <div class="card-icon-wrap">
+              <span class="card-icon">⛰️</span>
+            </div>
+            <span class="card-badge badge-available">✓ Available</span>
+          </div>
+          <h3 class="card-title">Retaining Wall</h3>
+          <p class="card-desc">Learn how a cantilever retaining wall is excavated, reinforced with a two-mat footing and stem cage, cast, drained, and backfilled to hold back retained soil.</p>
+          <div class="card-objectives">
+            <div class="obj-heading">Learning Objectives</div>
+            <ul class="obj-list">
+              <li>Understand two-mat footing reinforcement</li>
+              <li>Learn stem formwork and casting</li>
+              <li>See why weep holes and drainage matter</li>
+              <li>Practice compacted lift backfilling</li>
+            </ul>
+          </div>
+          <div class="card-footer">
+            <div class="card-chips">
+              <span class="chip">🪜 13 Steps</span>
+              <span class="chip">🕐 ~30 min</span>
+            </div>
+            <button class="card-btn btn-available" onclick="window.location.href='retaining-wall.html'">Start Simulation →</button>
+          </div>
+        </div>
+      </article>
+
     </div>
   </div>
 
@@ -185,6 +276,7 @@
     <section id="center-col">
       <div id="scene">
         <div id="labels-3d"></div>
+        <div id="info-popup-dock"></div>
         <div id="cam-controls">
           <button class="cam-btn" onclick="setCameraView('iso')">⬡ Iso</button>
           <button class="cam-btn" onclick="setCameraView('top')">⬆ Top</button>

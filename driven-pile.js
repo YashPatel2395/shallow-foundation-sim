@@ -117,91 +117,84 @@ const STEPS = [
     warning: 'Layout errors cannot be corrected after driving. Check twice, drive once.'
   },
   {
-    title: '3. Pile Selection',
-    desc: 'Choose the appropriate pile type for this medium-rise structure on soft clay over dense sand.',
-    subtasks: ['Review pile options', 'Select correct pile type', 'Confirm selection'],
-    why: 'Pile type affects cost, installation method, load capacity, and suitability for soil conditions.',
-    warning: 'Timber piles decay in alternating wet/dry conditions. Steel piles corrode in aggressive soils.'
-  },
-  {
-    title: '4. Position Pile',
+    title: '3. Position Pile',
     desc: 'Use the crane to lift the concrete pile from storage and position it over the pile marker.',
     subtasks: ['Attach lifting sling', 'Crane lifts pile vertical', 'Guide pile to position'],
     why: 'Correct positioning ensures the pile is driven to the design location under the column.',
     warning: 'Never stand under a suspended pile. Maintain clear exclusion zone during lifting.'
   },
   {
-    title: '5. Alignment Check',
+    title: '4. Alignment Check',
     desc: 'Verify the pile is perfectly vertical using theodolite readings from two directions.',
     subtasks: ['Check North-South verticality', 'Check East-West verticality', 'Confirm within ±0.5°'],
     why: 'An out-of-plumb pile induces bending. Tolerance is typically ±1:75 (0.75°).',
     warning: 'Misaligned piles transfer load eccentrically, reducing capacity and causing structural problems.'
   },
   {
-    title: '6. Drive Pile',
+    title: '5. Drive Pile',
     desc: 'Operate the drop hammer to drive the pile through soft soils to the bearing layer.',
     subtasks: ['Begin driving in topsoil', 'Drive through soft clay', 'Drive through loose sand', 'Enter dense sand'],
     why: 'Impact energy is transferred through the pile to the tip, which displaces and compresses soil.',
     warning: 'Monitor blow count carefully. Rapid change indicates layer change or obstruction.'
   },
   {
-    title: '7. Reach Pile Refusal',
+    title: '6. Reach Pile Refusal',
     desc: 'Recognize when the pile has reached the bearing layer and refusal condition is achieved.',
     subtasks: ['Monitor penetration per blow', 'Observe decreasing movement', 'Confirm refusal criteria', 'Record final depth'],
     why: 'Pile refusal indicates the pile tip has reached a strong bearing layer capable of carrying design loads.',
     warning: 'Premature refusal on an obstruction (boulder) must be distinguished from true bearing layer refusal.'
   },
   {
-    title: '8. Formwork Installation',
+    title: '7. Formwork Installation',
     desc: 'Install wooden formwork panels to contain the concrete pour.',
     subtasks: ['Place North wall panel', 'Place South wall panel', 'Place East wall panel', 'Place West wall panel'],
     why: 'Formwork gives the concrete its final shape and dimensions.',
     warning: 'Misaligned formwork produces an off-centre foundation.'
   },
   {
-    title: '9. Reinforcement Placement',
+    title: '8. Reinforcement Placement',
     desc: 'Lay the base rebar mat first, then place the column rebar cage ready for the column.',
     subtasks: ['Place lower mat (8 longitudinal bars)', 'Place cross mat (8 cross bars)', 'Place column rebar (4 corner bars)', 'Reinforcement complete'],
     why: 'Rebar provides tensile strength — base mat resists footing loads, column cage transfers structural loads upward.',
     warning: 'Column rebar must be placed before concrete is poured — it cannot be added afterwards.'
   },
   {
-    title: '10. Concrete Placement',
+    title: '9. Concrete Placement',
     desc: 'Pour concrete from the ready-mix truck. Hit the 88–98% target zone.',
     subtasks: ['Hold pour button to fill', 'Release in the green zone (88–98%)', 'Avoid overfill'],
     why: 'Correct fill level ensures structural integrity and cover depth.',
     warning: 'Overfill causes honeycombing; underfill reduces load capacity.'
   },
   {
-    title: '11. Inspection',
+    title: '10. Inspection',
     desc: 'The site inspector checks all critical construction elements.',
     subtasks: ['Click each inspection point', 'Review PASS results', 'Sign off inspection'],
     why: 'Third-party inspection ensures compliance with structural codes.',
     warning: 'Uninspected work cannot proceed legally.'
   },
   {
-    title: '12. Curing',
+    title: '11. Curing',
     desc: 'Keep the concrete moist for 7 days to reach full strength.',
     subtasks: ['Water concrete each day', 'Monitor strength gain bar', 'Complete 7-day cycle'],
     why: 'Curing prevents shrinkage cracks and reaches design strength.',
     warning: 'Missing watering days reduces final strength by up to 40%.'
   },
   {
-    title: '13. Final Inspection',
+    title: '12. Final Inspection',
     desc: 'Verify 5 quality checkpoints on the completed foundation.',
     subtasks: ['Check all 5 quality points', 'Average score ≥ 80%', 'Proceed to pillar construction'],
     why: 'Final QA confirms the foundation meets design specifications.',
     warning: 'Defective foundation cannot support the structure above.'
   },
   {
-    title: '14. Pillar Construction',
+    title: '13. Pillar Construction',
     desc: 'Install formwork around the pre-placed column rebar, pour concrete, water and cure it, then strip the formwork.',
     subtasks: ['Install column formwork', 'Pour column concrete', 'Water & cure column concrete', 'Strip formwork'],
     why: 'The column transfers structural loads to the foundation below.',
     warning: 'Column must be centred and plumb for load transfer. Water the concrete immediately after pouring.'
   },
   {
-    title: '15. Backfilling',
+    title: '14. Backfilling',
     desc: 'Refill soil around the finished pillar and compact it — only the column top remains above ground.',
     subtasks: ['Add soil 5 times around pillar', 'Compact 3 times (after 60% fill)', 'Reach 100% fill — pillar base buried'],
     why: 'Backfilling after the pillar protects the underground foundation and sets the finished ground level.',
@@ -225,14 +218,6 @@ const STEP_META = [
     qualityCheck: 'All pile positions within ±25mm of design coordinates.',
     commonMistake: 'Transposing coordinates or measuring from wrong reference point.',
     learningObjective: 'Pile positions must match the structural design load path.'
-  },
-  {
-    purpose: 'Select the pile material and type best suited for the soil and loading conditions.',
-    userAction: 'Review three pile options and select the most appropriate type.',
-    tools: ['Design specifications', 'Soil report', 'Pile catalogues'],
-    qualityCheck: 'Selected pile type matches soil conditions and load requirements.',
-    commonMistake: 'Choosing based on cost alone without considering durability and soil compatibility.',
-    learningObjective: 'Pile selection depends on soil type, groundwater, loads, and durability requirements.'
   },
   {
     purpose: 'Safely lift and position the pile from storage into the driving leads.',
@@ -675,19 +660,18 @@ function clearScene3D() {
 const CAM_PRESETS = [
   { pos: new THREE.Vector3(16,  4, 22), look: new THREE.Vector3(0, -5, 0) },   // 0 investigation (surface + section)
   { pos: new THREE.Vector3(12,  8, 16), look: new THREE.Vector3(0,  0, 0) },   // 1 layout (ground plan)
-  { pos: new THREE.Vector3(14,  4, 18), look: new THREE.Vector3(0,  0, 0) },   // 2 pile selection
-  { pos: new THREE.Vector3(12,  6, 16), look: new THREE.Vector3(0,  5, 0) },   // 3 position pile (showing rig)
-  { pos: new THREE.Vector3(9,   5, 13), look: new THREE.Vector3(0,  4, 0) },   // 4 alignment check
-  { pos: new THREE.Vector3(18,  0, 24), look: new THREE.Vector3(0, -8, 0) },   // 5 drive pile (section view)
-  { pos: new THREE.Vector3(18, -4, 24), look: new THREE.Vector3(0,-14, 0) },   // 6 pile refusal (deep section)
-  { pos: new THREE.Vector3( 5,  6,  7), look: new THREE.Vector3(0,-1.5,0) }, // 7 formwork
-  { pos: new THREE.Vector3( 3,  7,  5), look: new THREE.Vector3(0,-1.5,0) }, // 8 reinforcement
-  { pos: new THREE.Vector3( 9,  4, 12), look: new THREE.Vector3(0,-1.5,0) }, // 9 concrete
-  { pos: new THREE.Vector3( 8,  7, 11), look: new THREE.Vector3(0, 0,  0) }, // 10 inspection
-  { pos: new THREE.Vector3( 4,  4,  6), look: new THREE.Vector3(0,-1,  0) }, // 11 curing
-  { pos: new THREE.Vector3(10, 10, 13), look: new THREE.Vector3(0, 0,  0) }, // 12 final insp
-  { pos: new THREE.Vector3( 8,  2, 11), look: new THREE.Vector3(0,-2,  0) }, // 13 pillar
-  { pos: new THREE.Vector3( 7,  5,  9), look: new THREE.Vector3(0,-1,  0) }  // 14 backfill
+  { pos: new THREE.Vector3(12,  6, 16), look: new THREE.Vector3(0,  5, 0) },   // 2 position pile (showing rig)
+  { pos: new THREE.Vector3(9,   5, 13), look: new THREE.Vector3(0,  4, 0) },   // 3 alignment check
+  { pos: new THREE.Vector3(18,  0, 24), look: new THREE.Vector3(0, -8, 0) },   // 4 drive pile (section view)
+  { pos: new THREE.Vector3(18, -4, 24), look: new THREE.Vector3(0,-14, 0) },   // 5 pile refusal (deep section)
+  { pos: new THREE.Vector3( 5,  6,  7), look: new THREE.Vector3(0,-1.5,0) }, // 6 formwork
+  { pos: new THREE.Vector3( 3,  7,  5), look: new THREE.Vector3(0,-1.5,0) }, // 7 reinforcement
+  { pos: new THREE.Vector3( 9,  4, 12), look: new THREE.Vector3(0,-1.5,0) }, // 8 concrete
+  { pos: new THREE.Vector3( 8,  7, 11), look: new THREE.Vector3(0, 0,  0) }, // 9 inspection
+  { pos: new THREE.Vector3( 4,  4,  6), look: new THREE.Vector3(0,-1,  0) }, // 10 curing
+  { pos: new THREE.Vector3(10, 10, 13), look: new THREE.Vector3(0, 0,  0) }, // 11 final insp
+  { pos: new THREE.Vector3( 8,  2, 11), look: new THREE.Vector3(0,-2,  0) }, // 12 pillar
+  { pos: new THREE.Vector3( 7,  5,  9), look: new THREE.Vector3(0,-1,  0) }  // 13 backfill
 ];
 
 let camTarget = null;
@@ -1473,19 +1457,26 @@ function update3DLabels() {
    3D POPUP
 ══════════════════════════════════════════════════════════════ */
 
+let activePopupTimer = null;
+
 function show3DPopup(mesh, html, duration) {
-  const vec = new THREE.Vector3();
-  mesh.getWorldPosition(vec);
-  vec.project(camera);
-  const canvas = renderer.domElement;
-  const x = (vec.x * 0.5 + 0.5) * canvas.clientWidth  + canvas.getBoundingClientRect().left;
-  const y = (-vec.y * 0.5 + 0.5) * canvas.clientHeight + canvas.getBoundingClientRect().top;
+  const dock = document.getElementById('info-popup-dock');
+  if (!dock) return;
+
+  if (activePopupTimer) clearTimeout(activePopupTimer);
+  dock.innerHTML = '';
+
   const popup = document.createElement('div');
-  popup.className = 'soil-popup fade-in';
-  popup.style.cssText = `left:${x}px;top:${y - 90}px;`;
+  popup.className = 'info-popup-card';
   popup.innerHTML = html;
-  document.body.appendChild(popup);
-  setTimeout(() => popup.remove(), duration || 2500);
+  dock.appendChild(popup);
+  requestAnimationFrame(() => popup.classList.add('show'));
+
+  activePopupTimer = setTimeout(() => {
+    popup.classList.remove('show');
+    setTimeout(() => { if (popup.parentNode) popup.remove(); }, 200);
+    activePopupTimer = null;
+  }, duration || 2500);
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -1591,8 +1582,8 @@ function startStep(n) {
   clearAllTimers();
   clearScene3D();
 
-  // For shallow foundation steps (7+), hide pile cutaway and show already-excavated pit
-  if (n >= 7) {
+  // For shallow foundation steps (6+), hide pile cutaway and show already-excavated pit
+  if (n >= 6) {
     soilLayerGroup.visible = false;
     STATE.excavationComplete = true;   // pit is already dug when shallow steps begin
     buildGroundWithHole();
@@ -1603,7 +1594,9 @@ function startStep(n) {
   updateHUD();
   renderChecklist();
   renderTaskPanel(n);
-  DOM.actionBar().innerHTML = '';
+  const ab = DOM.actionBar();
+  ab.innerHTML = '';
+  ab.style.pointerEvents = '';
   setCamPreset(n);
   STEP_HANDLERS[n].enter();
 }
@@ -2989,60 +2982,40 @@ const STEP_HANDLERS = [
         { depth: '16m+', soil: 'Rock/Gravel', spt: 'N>50', note: 'Refusal - bearing layer' }
       ];
 
-      const poleGeo   = new THREE.CylinderGeometry(0.04, 0.04, 0.8, 6);
-      const sphereGeo = new THREE.SphereGeometry(0.22, 8, 8);
+      const markerGeo   = new THREE.BoxGeometry(1.0, 0.06, 1.0);
+      const markerEdges = new THREE.EdgesGeometry(markerGeo);
+      const markers = [];
 
       markerPositions.forEach((pos, i) => {
         const g = new THREE.Group();
 
-        const pole = new THREE.Mesh(poleGeo, MAT.darkGray);
-        pole.position.y = 0.4;
-        pole.castShadow = true;
-        g.add(pole);
+        const plate = new THREE.Mesh(markerGeo, MAT.markerOrange.clone());
+        plate.position.y = 0.03;
+        plate.castShadow = true;
+        plate.receiveShadow = true;
+        g.add(plate);
 
-        const sphere = new THREE.Mesh(sphereGeo, MAT.markerOrange.clone());
-        sphere.position.y = 0.9;
-        sphere.castShadow = true;
-        g.add(sphere);
+        const outline = new THREE.LineSegments(
+          markerEdges,
+          new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.35 })
+        );
+        outline.position.y = 0.03;
+        g.add(outline);
 
         g.position.copy(pos);
+        g.position.y = 0;
         addStep(g);
 
-        const label = create3DLabel(g, `BH-${i + 1}`, '');
+        create3DLabel(g, `BH-${i + 1}`, '');
+        markers.push({ g, plate });
 
-        clickables3D.push({
+        const entry = {
           mesh: g,
           pulse: true,
           phase: i * 1.2,
-          onHit() {
-            if (g.userData.tested) return;
-            g.userData.tested = true;
-            sphere.material = MAT.markerGreen.clone();
-            this.pulse = false;
-            g.scale.setScalar(1);
-            ss.tested++;
-            markSubtask(i);
-
-            const html = `<strong>BH-${i + 1} Soil Profile</strong><br>` +
-              soilData.map(d => `${d.depth}: ${d.soil}<br>&nbsp;&nbsp;SPT ${d.spt} - ${d.note}`).join('<br>');
-            show3DPopup(g, html, 3000);
-
-            if (ss.tested >= ss.total) {
-              showFeedback('info', 'All borings complete! Submit the soil report.');
-              const ab = DOM.actionBar();
-              ab.innerHTML = '';
-              const submitBtn = makeBtn('Submit Soil Report', 'btn-primary', () => {
-                markSubtask(5);
-                showFeedback('correct', 'Soil Profile: 2m Topsoil, 4m Soft Clay, 5m Loose Sand, 5m Dense Sand, Rock. DRIVEN PILE FOUNDATION REQUIRED.');
-                safeTimeout(() => {
-                  ab.innerHTML = '<div class="step-instruction" style="color:#27ae60;">Recommendation: DRIVEN PILE FOUNDATION REQUIRED. Shallow foundations not suitable — bearing layer at 16m depth.</div>';
-                  safeTimeout(() => completeStep(), 2000);
-                }, 1500);
-              });
-              ab.appendChild(submitBtn);
-            }
-          }
-        });
+          onHit() { testBorehole(i); }
+        };
+        clickables3D.push(entry);
       });
 
       // Add boring rig model at center
@@ -3062,8 +3035,56 @@ const STEP_HANDLERS = [
       rigGroup.position.set(7, 0, 0);
       addStep(rigGroup);
 
+      // Reliable checklist buttons -- the primary way to run each boring
+      // test. Clicking the pulsing 3D marker still works too, but nothing
+      // requires precisely hitting a moving target.
       const ab = DOM.actionBar();
-      ab.innerHTML = '<div class="step-instruction">Click each pulsing boring marker (BH-1 to BH-5) to conduct soil tests</div>';
+      ab.innerHTML = '<div class="step-instruction">Click each test point to run a soil boring (BH-1 to BH-5)</div>';
+
+      const items = [];
+      markerPositions.forEach((pos, i) => {
+        const item = el('div', 'panel-item');
+        item.innerHTML = `<div class="item-icon">🪨</div><div class="item-label">Test point BH-${i + 1}</div>`;
+        item.addEventListener('click', () => testBorehole(i));
+        items.push(item);
+        ab.appendChild(item);
+      });
+
+      function testBorehole(i) {
+        const { g, plate } = markers[i];
+        if (g.userData.tested) return;
+        g.userData.tested = true;
+        plate.material = MAT.markerGreen.clone();
+        const entry = clickables3D.find(c => c.mesh === g);
+        if (entry) entry.pulse = false;
+        g.scale.setScalar(1);
+
+        const item = items[i];
+        item.classList.add('placed');
+        item.innerHTML += '<div style="color:var(--green-ok);font-size:.85rem;margin-top:2px;">✓ Tested</div>';
+
+        ss.tested++;
+        markSubtask(i);
+
+        const html = `<strong>BH-${i + 1}</strong><div class="info-popup-row">` +
+          soilData.map(d => `<span class="info-chip">${d.depth} ${d.soil} <b>${d.spt}</b></span>`).join('') +
+          `</div>`;
+        show3DPopup(g, html, 3000);
+
+        if (ss.tested >= ss.total) {
+          showFeedback('info', 'All borings complete! Submit the soil report.');
+          ab.innerHTML = '';
+          const submitBtn = makeBtn('Submit Soil Report', 'btn-primary', () => {
+            markSubtask(5);
+            showFeedback('correct', 'Soil Profile: 2m Topsoil, 4m Soft Clay, 5m Loose Sand, 5m Dense Sand, Rock. DRIVEN PILE FOUNDATION REQUIRED.');
+            safeTimeout(() => {
+              ab.innerHTML = '<div class="step-instruction" style="color:#27ae60;">Recommendation: DRIVEN PILE FOUNDATION REQUIRED. Shallow foundations not suitable — bearing layer at 16m depth.</div>';
+              safeTimeout(() => completeStep(), 2000);
+            }, 1500);
+          });
+          ab.appendChild(submitBtn);
+        }
+      }
     },
     cleanup() {}
   },
@@ -3074,6 +3095,7 @@ const STEP_HANDLERS = [
       const ss = STATE.stepState;
       ss.placed = 0;
       ss.total = 4;
+      ss.demoStarted = false;
 
       const pilePositions = [
         new THREE.Vector3(-2.5, 0.01, -2.5),
@@ -3091,6 +3113,9 @@ const STEP_HANDLERS = [
       outlineMesh.position.y = 0.03;
       addStep(outlineMesh);
 
+      const rings = [];
+      const entries = [];
+
       pilePositions.forEach((pos, i) => {
         // Target ring
         const ringGeo = new THREE.RingGeometry(0.3, 0.5, 16);
@@ -3103,6 +3128,7 @@ const STEP_HANDLERS = [
         ring.position.copy(pos);
         ring.position.y = 0.03;
         addStep(ring);
+        rings.push(ring);
 
         // Center dot
         const dot = new THREE.Mesh(
@@ -3114,143 +3140,100 @@ const STEP_HANDLERS = [
         dot.position.y = 0.04;
         addStep(dot);
 
-        const labelEl = create3DLabel(ring, labels[i], '');
+        create3DLabel(ring, labels[i], '');
 
-        clickables3D.push({
+        const entry = {
           mesh: ring,
           pulse: true,
           phase: i * 1.5,
-          onHit() {
-            if (ring.userData.placed) return;
-            ring.userData.placed = true;
-            this.pulse = false;
-            ring.scale.setScalar(1);
-
-            // Replace ring with survey stake
-            ring.material = MAT.markerGreen.clone();
-            ring.material.emissive.setHex(0x00aa22);
-
-            // Animate a spike going into ground
-            const spike = new THREE.Mesh(
-              new THREE.CylinderGeometry(0.03, 0.02, 0.8, 6),
-              MAT.rebarSteel
-            );
-            spike.position.copy(pos);
-            spike.position.y = 0.8;
-            addStep(spike);
-
-            // Animate spike descending
-            let spikeY = 0.8;
-            const spikeInterval = safeInterval(() => {
-              spikeY -= 0.05;
-              spike.position.y = spikeY;
-              if (spikeY <= 0.2) {
-                clearInterval(spikeInterval);
-                spawnParticles(new THREE.Vector3(pos.x, 0.05, pos.z), MAT.topsoil, 6);
-              }
-            }, 30);
-
-            ss.placed++;
-            markSubtask(i);
-            showFeedback('correct', `Pile marker ${labels[i]} placed!`);
-
-            if (ss.placed >= ss.total) {
-              showFeedback('correct', 'All pile markers placed! Layout complete.');
-              safeTimeout(() => completeStep(), 1200);
-            }
-          }
-        });
+          onHit() { triggerDemo(i); }
+        };
+        entries.push(entry);
+        clickables3D.push(entry);
       });
 
-      const ab = DOM.actionBar();
-      ab.innerHTML = '<div class="step-instruction">Click each pulsing target ring to place a survey marker at pile positions P1-P4</div>';
-    },
-    cleanup() {}
-  },
+      // Shared by both the 3D ring click and the reliable DOM button below --
+      // clicking either starts the full demo on that pile.
+      function triggerDemo(i) {
+        if (rings[i].userData.placed || ss.demoStarted) return;
+        ss.demoStarted = true;
+        ab.style.pointerEvents = 'none';
+        placeMarker(i);
+        autoCompleteRest(i);
+      }
 
-  /* ─────────────────── 2: Pile Selection ─── */
-  {
-    enter() {
-      const ss = STATE.stepState;
-      ss.selected = false;
+      // Places the marker at pile i -- the visible spike-drop animation.
+      function placeMarker(i) {
+        const pos = pilePositions[i];
+        const ring = rings[i];
+        if (ring.userData.placed) return;
+        ring.userData.placed = true;
+        entries[i].pulse = false;
+        ring.scale.setScalar(1);
 
-      // Show the rig in background
-      const rig = buildDrivingRig(0, -1);
-      rig.position.set(0, 0, 0);
-      addStep(rig);
-      OBJ.rig = rig;
+        ring.material = MAT.markerGreen.clone();
+        ring.material.emissive.setHex(0x00aa22);
 
-      markSubtask(0); // Review pile options
+        const spike = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.03, 0.02, 0.8, 6),
+          MAT.rebarSteel
+        );
+        spike.position.copy(pos);
+        spike.position.y = 0.8;
+        addStep(spike);
 
-      const ab = DOM.actionBar();
-      ab.innerHTML = '<div class="step-instruction">Select the best pile type for soft clay over dense sand conditions:</div>';
+        let spikeY = 0.8;
+        const spikeInterval = safeInterval(() => {
+          spikeY -= 0.05;
+          spike.position.y = spikeY;
+          if (spikeY <= 0.2) {
+            clearInterval(spikeInterval);
+            spawnParticles(new THREE.Vector3(pos.x, 0.05, pos.z), MAT.topsoil, 6);
+          }
+        }, 30);
 
-      const optionsRow = el('div', '', '');
-      optionsRow.style.cssText = 'display:flex;gap:12px;flex-wrap:wrap;justify-content:center;';
+        ss.placed++;
+        markSubtask(i);
+        markItemDone(i);
+        showFeedback('correct', `Pile marker ${labels[i]} placed!`);
 
-      const options = [
-        {
-          icon: '🪵', name: 'Timber Pile',
-          desc: 'Natural, cheap. Suitable for permanent wet conditions only. Decays in dry cycles.',
-          correct: false, penalty: 20,
-          feedback: 'Incorrect — timber piles decay in variable moisture conditions.'
-        },
-        {
-          icon: '⚙️', name: 'Steel H-Pile',
-          desc: 'High capacity, slender. Expensive. Can corrode in aggressive soils.',
-          correct: false, penalty: 10,
-          feedback: 'Acceptable but not optimal for this soil profile.'
-        },
-        {
-          icon: '🧱', name: 'Concrete Pile',
-          desc: 'Precast, durable, standard choice. Excellent for soft clay over dense sand conditions.',
-          correct: true, penalty: 0,
-          feedback: 'Correct! Precast concrete pile is the standard choice for this application.'
+        if (ss.placed >= ss.total) {
+          showFeedback('correct', 'All pile markers placed! Layout complete.');
+          safeTimeout(() => completeStep(), 1200);
         }
-      ];
+      }
 
-      options.forEach(opt => {
-        const card = el('div', 'panel-item', '');
-        card.style.cssText = 'min-width:140px;max-width:180px;cursor:pointer;';
-        card.innerHTML = `
-          <span class="item-icon">${opt.icon}</span>
-          <span class="item-label" style="font-size:0.82rem;">${opt.name}</span>
-          <span style="font-size:0.68rem;color:#ccc;text-align:center;line-height:1.3;margin-top:4px;">${opt.desc}</span>
-        `;
-
-        card.addEventListener('click', () => {
-          if (ss.selected) return;
-
-          if (opt.correct) {
-            ss.selected = true;
-            card.classList.add('selected');
-            card.style.borderColor = '#27ae60';
-            markSubtask(1);
-            addScore(20, opt.feedback);
-            safeTimeout(() => {
-              markSubtask(2);
-              showFeedback('correct', 'Pile selection confirmed. Proceeding to positioning.');
-              safeTimeout(() => completeStep(), 1200);
-            }, 1500);
-          } else {
-            card.style.borderColor = '#e74c3c';
-            STATE.score = Math.max(0, STATE.score - opt.penalty);
-            updateHUD();
-            shakeScene();
-            showFeedback('wrong', `${opt.feedback} (-${opt.penalty} pts)`);
-            safeTimeout(() => { card.style.borderColor = 'rgba(255,255,255,0.2)'; }, 1500);
-          }
+      // The process has now been demonstrated once in full. The remaining
+      // pile markers are placed the same way -- staggered so it still reads.
+      function autoCompleteRest(demoIndex) {
+        const rest = [0, 1, 2, 3].filter(idx => idx !== demoIndex);
+        rest.forEach((i, order) => {
+          safeTimeout(() => placeMarker(i), 400 * (order + 1));
         });
+      }
 
-        optionsRow.appendChild(card);
+      function markItemDone(i) {
+        const item = items[i];
+        item.classList.add('placed');
+        item.innerHTML += '<div style="color:var(--green-ok);font-size:.85rem;margin-top:2px;">✓ Placed</div>';
+      }
+
+      const ab = DOM.actionBar();
+      ab.innerHTML = '<div class="step-instruction">Click one pile to place a survey marker -- the rest will follow the same way</div>';
+
+      const items = [];
+      labels.forEach((label, i) => {
+        const item = el('div', 'panel-item');
+        item.innerHTML = `<div class="item-icon">📍</div><div class="item-label">Place pile marker ${label}</div>`;
+        item.addEventListener('click', () => triggerDemo(i));
+        items.push(item);
+        ab.appendChild(item);
       });
-
-      ab.appendChild(optionsRow);
     },
     cleanup() {}
   },
 
-  /* ─────────────────── 3: Position Pile ─── */
+  /* ─────────────────── 2: Position Pile ─── */
   {
     enter() {
       const ss = STATE.stepState;
@@ -3359,7 +3342,7 @@ const STEP_HANDLERS = [
     }
   },
 
-  /* ─────────────────── 4: Alignment Check ─── */
+  /* ─────────────────── 3: Alignment Check ─── */
   {
     enter() {
       const ss = STATE.stepState;
@@ -3516,7 +3499,7 @@ const STEP_HANDLERS = [
     cleanup() {}
   },
 
-  /* ─────────────────── 5: Drive Pile ─── */
+  /* ─────────────────── 4: Drive Pile ─── */
   {
     enter() {
       const ss = STATE.stepState;
@@ -3756,7 +3739,7 @@ const STEP_HANDLERS = [
     }
   },
 
-  /* ─────────────────── 6: Pile Refusal ─── */
+  /* ─────────────────── 5: Pile Refusal ─── */
   {
     enter() {
       const ss = STATE.stepState;
@@ -3971,7 +3954,7 @@ const STEP_HANDLERS = [
     },
     cleanup() {}
   },
-  /* ─────────────────── 10: Formwork ─── */
+  /* ─────────────────── 6: Formwork ─── */
   {
     enter() {
       buildPilesForStep();
@@ -4042,7 +4025,7 @@ const STEP_HANDLERS = [
     cleanup() {}
   },
 
-  /* ─────────────────── 11: Reinforcement ─── */
+  /* ─────────────────── 7: Reinforcement ─── */
   {
     enter() {
       buildPilesForStep();
@@ -4261,7 +4244,7 @@ const STEP_HANDLERS = [
     cleanup() {}
   },
 
-  /* ─────────────────── 12: Concrete Placement ─── */
+  /* ─────────────────── 8: Concrete Placement ─── */
   {
     enter() {
       buildPilesForStep();
@@ -4377,7 +4360,7 @@ const STEP_HANDLERS = [
     }
   },
 
-  /* ─────────────────── 13: Inspection ─── */
+  /* ─────────────────── 9: Inspection ─── */
   {
     enter() {
       buildPilesForStep();
@@ -4529,7 +4512,7 @@ const STEP_HANDLERS = [
     cleanup() {}
   },
 
-  /* ─────────────────── 14: Curing ─── */
+  /* ─────────────────── 10: Curing ─── */
   {
     enter() {
       buildPilesForStep();
@@ -4660,7 +4643,7 @@ const STEP_HANDLERS = [
     }
   },
 
-  /* ─────────────────── 15: Final Inspection ─── */
+  /* ─────────────────── 11: Final Inspection ─── */
   {
     enter() {
       buildPilesForStep();
@@ -4704,7 +4687,7 @@ const STEP_HANDLERS = [
             const chk = FINAL_CHECKS[i];
 
             show3DPopup(m,
-              `<strong>${chk.label}</strong><br><span style="color:#f5a623;font-weight:700;font-size:.9rem;">${score}%</span><br><span style="font-size:.65rem;opacity:.8;">${chk.note}</span>`,
+              `<strong>${chk.label}</strong><span style="color:#f5a623;font-weight:700;">${score}%</span><span style="font-size:.7rem;opacity:.8;">${chk.note}</span>`,
               2200
             );
             markSubtask(i < 4 ? i : 4);
@@ -4735,7 +4718,7 @@ const STEP_HANDLERS = [
     cleanup() {}
   },
 
-  /* ─────────────────── 16: Pillar Construction ─── */
+  /* ─────────────────── 12: Pillar Construction ─── */
   {
     enter() {
       buildPilesForStep();
@@ -5059,7 +5042,7 @@ const STEP_HANDLERS = [
     }
   },
 
-  /* ─────────────────── 17: Backfilling ─── */
+  /* ─────────────────── 13: Backfilling ─── */
   {
     enter() {
       buildPilesForStep();

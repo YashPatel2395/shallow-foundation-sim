@@ -99,6 +99,64 @@
       background: rgba(255,255,255,0.12);
       border-radius: 2px;
     }
+
+    /* Single fixed dock for all 3D-marker description popups -- always
+       docks at the top of the viewport so it never covers other markers
+       or action-bar buttons, and never drifts with the camera. */
+    #info-popup-dock {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 60;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      padding: 0 16px;
+    }
+    .info-popup-card {
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(10, 20, 40, 0.94);
+      color: #fff;
+      border: 1px solid rgba(245, 166, 35, 0.5);
+      border-left: 3px solid #f5a623;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      line-height: 1.3;
+      max-width: min(90vw, 760px);
+      white-space: nowrap;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+    .info-popup-card.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .info-popup-card strong { color: #f5a623; flex-shrink: 0; }
+    .info-popup-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+    }
+    .info-chip {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 4px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.7rem;
+      white-space: nowrap;
+    }
+    .info-chip b { color: #f5a623; }
   </style>
 </head>
 <body>
@@ -114,6 +172,7 @@
     <button class="nav-btn" onclick="window.location.href='index.html'">Shallow Foundation</button>
     <button class="nav-btn active">Driven Pile</button>
     <button class="nav-btn" onclick="window.location.href='index.html'">Drilled Shaft</button>
+    <button class="nav-btn" onclick="window.location.href='retaining-wall.html'">Retaining Wall</button>
   </div>
 </nav>
 
@@ -131,7 +190,7 @@
     <div id="header-meta">
       <button id="reset-sim-btn" onclick="resetSimulation()">↺ Reset</button>
       <div id="score-badge">Score: <span id="score-val">1000</span></div>
-      <div id="step-badge">Step <span id="step-cur">1</span> / 15</div>
+      <div id="step-badge">Step <span id="step-cur">1</span> / 14</div>
     </div>
   </header>
 
@@ -147,6 +206,7 @@
     <section id="center-col">
       <div id="scene">
         <div id="labels-3d"></div>
+        <div id="info-popup-dock"></div>
         <div id="cam-controls">
           <button class="cam-btn" onclick="setCameraView('iso')" title="3/4 section view">Section</button>
           <button class="cam-btn" onclick="setCameraView('front')" title="Front elevation — full depth">Elevation</button>

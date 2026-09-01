@@ -970,19 +970,26 @@ function update3DLabels() {
    3D POPUP
 ══════════════════════════════════════════════════════════════ */
 
+let activePopupTimer = null;
+
 function show3DPopup(mesh, html, duration) {
-  const vec = new THREE.Vector3();
-  mesh.getWorldPosition(vec);
-  vec.project(camera);
-  const canvas = renderer.domElement;
-  const x = (vec.x * 0.5 + 0.5) * canvas.clientWidth  + canvas.getBoundingClientRect().left;
-  const y = (-vec.y * 0.5 + 0.5) * canvas.clientHeight + canvas.getBoundingClientRect().top;
+  const dock = document.getElementById('info-popup-dock');
+  if (!dock) return;
+
+  if (activePopupTimer) clearTimeout(activePopupTimer);
+  dock.innerHTML = '';
+
   const popup = document.createElement('div');
-  popup.className = 'soil-popup fade-in';
-  popup.style.cssText = `left:${x}px;top:${y - 90}px;`;
+  popup.className = 'info-popup-card';
   popup.innerHTML = html;
-  document.body.appendChild(popup);
-  setTimeout(() => popup.remove(), duration || 2200);
+  dock.appendChild(popup);
+  requestAnimationFrame(() => popup.classList.add('show'));
+
+  activePopupTimer = setTimeout(() => {
+    popup.classList.remove('show');
+    setTimeout(() => { if (popup.parentNode) popup.remove(); }, 200);
+    activePopupTimer = null;
+  }, duration || 2200);
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -2306,62 +2313,94 @@ const STEP_HANDLERS = [
         new THREE.Vector3( 0,  0.01,  7)
       ];
 
-      const poleGeo   = new THREE.CylinderGeometry(0.04, 0.04, 0.8, 6);
-      const sphereGeo = new THREE.SphereGeometry(0.18, 8, 8);
+      const markerGeo   = new THREE.BoxGeometry(1.0, 0.06, 1.0);
+      const markerEdges = new THREE.EdgesGeometry(markerGeo);
+      const markers = [];
 
       markerPositions.forEach((pos, i) => {
         const g = new THREE.Group();
 
-        const pole = new THREE.Mesh(poleGeo, MAT.darkGray);
-        pole.position.y = 0.4;
-        pole.castShadow = true;
-        g.add(pole);
+        const plate = new THREE.Mesh(markerGeo, MAT.markerOrange.clone());
+        plate.position.y = 0.03;
+        plate.castShadow = true;
+        plate.receiveShadow = true;
+        g.add(plate);
 
-        const sphere = new THREE.Mesh(sphereGeo, MAT.markerOrange.clone());
-        sphere.position.y = 0.9;
-        sphere.castShadow = true;
-        g.add(sphere);
+        const outline = new THREE.LineSegments(
+          markerEdges,
+          new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.35 })
+        );
+        outline.position.y = 0.03;
+        g.add(outline);
 
         g.position.copy(pos);
+        g.position.y = 0;
         addStep(g);
 
-        clickables3D.push({
+        create3DLabel(g, `${i + 1}`, '');
+        markers.push({ g, plate });
+
+        const entry = {
           mesh: g,
           pulse: true,
           phase: i * 1.2,
-          onHit() {
-            if (sphere.material.color.getHex() === MAT.markerGreen.color.getHex()) return;
-            if (sphere.material.emissive) {
-              sphere.material.color.set(0x00cc44);
-              sphere.material.emissive.set(0x00aa22);
-            }
-            ss.tested++;
-            markSubtask(0);
-
-            const data = SOIL_RESULTS[i];
-            show3DPopup(sphere,
-              `<strong>${data.soil}</strong><br>Bearing: ${data.bearing}<br>Moisture: ${data.moisture}<br><em style="opacity:.75">${data.note}</em>`,
-              2500
-            );
-
-            showFeedback('info', `Soil sample ${i + 1}: ${data.soil}`);
-
-            if (ss.tested === ss.total) {
-              markSubtask(1);
-              DOM.actionBar().innerHTML = '';
-              DOM.actionBar().appendChild(
-                makeBtn('📋 Submit Assessment Report', 'btn btn-primary', () => {
-                  markSubtask(2);
-                  completeStep();
-                })
-              );
-              showFeedback('correct', 'All soil tests complete! Submit your report.');
-            }
-          }
-        });
+          onHit() { testPoint(i); }
+        };
+        clickables3D.push(entry);
       });
 
-      DOM.actionBar().innerHTML = '<span style="color:#aaa;font-size:.85rem;">Click the pulsing orange markers on the site to test soil</span>';
+      // Reliable checklist buttons -- the primary way to run each soil
+      // test. Clicking the pulsing 3D marker still works too, but nothing
+      // requires precisely hitting a moving target.
+      const ab = DOM.actionBar();
+      ab.innerHTML = '<div class="step-instruction">Click each test point to sample the soil (1-5)</div>';
+
+      const items = [];
+      markerPositions.forEach((pos, i) => {
+        const item = el('div', 'panel-item');
+        item.innerHTML = `<div class="item-icon">🪨</div><div class="item-label">Test point ${i + 1}</div>`;
+        item.addEventListener('click', () => testPoint(i));
+        items.push(item);
+        ab.appendChild(item);
+      });
+
+      function testPoint(i) {
+        const { g, plate } = markers[i];
+        if (g.userData.tested) return;
+        g.userData.tested = true;
+        plate.material = MAT.markerGreen.clone();
+        const entry = clickables3D.find(c => c.mesh === g);
+        if (entry) entry.pulse = false;
+        g.scale.setScalar(1);
+
+        const item = items[i];
+        item.classList.add('placed');
+        item.innerHTML += '<div style="color:var(--green-ok);font-size:.85rem;margin-top:2px;">✓ Tested</div>';
+
+        ss.tested++;
+        markSubtask(0);
+
+        const data = SOIL_RESULTS[i];
+        const html = `<strong>Point ${i + 1}</strong><span class="info-chip">${data.soil}</span>` +
+          `<span class="info-chip">Bearing <b>${data.bearing}</b></span>` +
+          `<span class="info-chip">Moisture <b>${data.moisture}</b></span>` +
+          `<span style="opacity:.75;font-size:.7rem;">${data.note}</span>`;
+        show3DPopup(g, html, 2500);
+
+        showFeedback('info', `Soil sample ${i + 1}: ${data.soil}`);
+
+        if (ss.tested === ss.total) {
+          markSubtask(1);
+          ab.innerHTML = '';
+          ab.appendChild(
+            makeBtn('📋 Submit Assessment Report', 'btn btn-primary', () => {
+              markSubtask(2);
+              completeStep();
+            })
+          );
+          showFeedback('correct', 'All soil tests complete! Submit your report.');
+        }
+      }
     },
     cleanup() {}
   },
@@ -3332,7 +3371,7 @@ const STEP_HANDLERS = [
             const chk = FINAL_CHECKS[i];
 
             show3DPopup(m,
-              `<strong>${chk.label}</strong><br><span style="color:#f5a623;font-weight:700;font-size:.9rem;">${score}%</span><br><span style="font-size:.65rem;opacity:.8;">${chk.note}</span>`,
+              `<strong>${chk.label}</strong><span style="color:#f5a623;font-weight:700;">${score}%</span><span style="font-size:.7rem;opacity:.8;">${chk.note}</span>`,
               2200
             );
             markSubtask(i < 4 ? i : 4);

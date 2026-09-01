@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Drilled Shaft Foundation Simulation — Foundation Construction Lab</title>
+  <title>Retaining Wall Simulation — Foundation Construction Lab</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* Drilled Shaft specific styles */
+    /* Retaining Wall specific styles */
     .soil-layer-label {
       display: inline-block;
       padding: 2px 8px;
@@ -157,6 +157,15 @@
       white-space: nowrap;
     }
     .info-chip b { color: #f5a623; }
+
+    /* Fill/progress meter reused for hold-to-dig / hold-to-pour readouts */
+    .fill-meter-wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: center;
+    }
   </style>
 </head>
 <body>
@@ -171,8 +180,8 @@
     <button class="nav-btn" onclick="window.location.href='index.html'">Dashboard</button>
     <button class="nav-btn" onclick="window.location.href='index.html'">Shallow Foundation</button>
     <button class="nav-btn" onclick="window.location.href='driven-pile.html'">Driven Pile</button>
-    <button class="nav-btn active">Drilled Shaft</button>
-    <button class="nav-btn" onclick="window.location.href='retaining-wall.html'">Retaining Wall</button>
+    <button class="nav-btn" onclick="window.location.href='drilled-shaft.html'">Drilled Shaft</button>
+    <button class="nav-btn active">Retaining Wall</button>
   </div>
 </nav>
 
@@ -183,14 +192,14 @@
     <div id="header-left">
       <button id="back-btn" onclick="window.location.href='index.html'">← Dashboard</button>
       <div id="header-title">
-        <span class="hard-hat">🔨</span>
-        Drilled Shaft Foundation Simulation
+        <span class="hard-hat">🧱</span>
+        Retaining Wall Construction Simulation
       </div>
     </div>
     <div id="header-meta">
       <button id="reset-sim-btn" onclick="resetSimulation()">↺ Reset</button>
       <div id="score-badge">Score: <span id="score-val">1000</span></div>
-      <div id="step-badge">Step <span id="step-cur">1</span> / 15</div>
+      <div id="step-badge">Step <span id="step-cur">1</span> / 13</div>
     </div>
   </header>
 
@@ -209,8 +218,8 @@
         <div id="info-popup-dock"></div>
         <div id="cam-controls">
           <button class="cam-btn" onclick="setCameraView('iso')" title="3/4 section view">Section</button>
-          <button class="cam-btn" onclick="setCameraView('front')" title="Front elevation — full depth">Elevation</button>
-          <button class="cam-btn" onclick="setCameraView('cutaway')" title="Deep view — bearing layer">Deep</button>
+          <button class="cam-btn" onclick="setCameraView('front')" title="Front elevation">Elevation</button>
+          <button class="cam-btn" onclick="setCameraView('cutaway')" title="Deep view — footing level">Deep</button>
           <button class="cam-btn" onclick="setCameraView('top')" title="Plan view">Plan</button>
           <button class="cam-btn" id="reset-cam-btn" onclick="resetCamera()">↺ Reset</button>
           <div id="zoom-control">
@@ -234,9 +243,9 @@
 <div id="feedback-bar" class="hidden"></div>
 <div id="result-overlay" class="hidden">
   <div id="result-card">
-    <div id="result-icon">🏗️</div>
-    <h2>Drilled Shaft Foundation Complete!</h2>
-    <p>All shafts drilled and pile cap constructed.</p>
+    <div id="result-icon">🧱</div>
+    <h2>Retaining Wall Complete!</h2>
+    <p>Wall cast, drained, and backfilled to grade.</p>
     <div id="result-score-line">Final Score: <span id="result-score">0</span></div>
     <div id="result-grade"></div>
     <div class="result-actions">
@@ -247,6 +256,6 @@
 </div>
 
 <script src="three.min.js"></script>
-<script defer src="drilled-shaft.js"></script>
+<script defer src="retaining-wall.js"></script>
 </body>
 </html>
