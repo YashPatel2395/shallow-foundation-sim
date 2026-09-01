@@ -569,31 +569,27 @@ function clearScene3D() {
    CAMERA PRESETS
 ══════════════════════════════════════════════════════════════ */
 
-// Steps 2-10 view end-on down the wall's short axis (the excavation
-// rectangle is 10 units long by ~3.4 wide -- the camera sits out past one
-// short end at Z=0.4, the footing's own centerline, and looks straight down
-// the length) so everything happening along the wall is visible in one
-// shot instead of foreshortened by a diagonal angle. This also keeps these
-// cameras well clear of the permanent hillside (which only starts past
-// Z=2.15 -- see addHillside()/RAMP_Z0 in the GROUND/SITE section). Steps 0,
-// 1, 11 and 12 keep a heel-side/elevated diagonal vantage instead, since
-// those need the wall's full length spread across the frame (staked layout
-// points, spread-out final-inspection checkpoints) or the hillside itself
-// in view (establishing shots, backfilling).
+// Single hand-tuned default camera for every step, found live via the
+// #cam-debug readout (orbit/pan/zoom to the desired framing, read the
+// numbers off-screen) -- an end-on vantage down the wall's short axis that
+// keeps the full excavation/stem cross-section visible without diagonal
+// foreshortening, and clears the permanent hillside (which starts past
+// Z=2.15 -- see addHillside()/RAMP_Z0 in the GROUND/SITE section).
+const CAM_DEFAULT = { pos: new THREE.Vector3(13.93, 3.87, -3.66), look: new THREE.Vector3(-3.00, -1.23, 0.40) };
 const CAM_PRESETS = [
-  { pos: new THREE.Vector3(14,  5,  18),   look: new THREE.Vector3(0,   -1,  0) },   // 0 investigation
-  { pos: new THREE.Vector3(12,  7,  16),   look: new THREE.Vector3(0,    0,  0) },   // 1 layout
-  { pos: new THREE.Vector3(15,  2,  0.4),  look: new THREE.Vector3(-3, -0.6, 0.4) }, // 2 excavation
-  { pos: new THREE.Vector3(15,  1,  0.4),  look: new THREE.Vector3(-3, -1.5, 0.4) }, // 3 base prep
-  { pos: new THREE.Vector3(15,  2,  0.4),  look: new THREE.Vector3(-3,   -1, 0.4) }, // 4 base rebar
-  { pos: new THREE.Vector3(15,  3,  0.4),  look: new THREE.Vector3(-3,  0.5, 0.4) }, // 5 stem starter rebar
-  { pos: new THREE.Vector3(15,  1,  0.4),  look: new THREE.Vector3(-3, -1.3, 0.4) }, // 6 base casting
-  { pos: new THREE.Vector3(15,  3,  0.4),  look: new THREE.Vector3(-3,    1, 0.4) }, // 7 stem binders
-  { pos: new THREE.Vector3(15,  3,  0.4),  look: new THREE.Vector3(-3,    1, 0.4) }, // 8 stem formwork
-  { pos: new THREE.Vector3(15,  3,  0.4),  look: new THREE.Vector3(-3,    1, 0.4) }, // 9 stem casting
-  { pos: new THREE.Vector3(15,  2,  0.4),  look: new THREE.Vector3(-3,  0.5, 0.4) }, // 10 drainage
-  { pos: new THREE.Vector3(12,  5,  13),   look: new THREE.Vector3(0,   0.5, 0) },   // 11 backfilling
-  { pos: new THREE.Vector3(11,  5,  12),   look: new THREE.Vector3(0,     1, 0) }    // 12 final inspection
+  CAM_DEFAULT, // 0 investigation
+  CAM_DEFAULT, // 1 layout
+  CAM_DEFAULT, // 2 excavation
+  CAM_DEFAULT, // 3 base prep
+  CAM_DEFAULT, // 4 base rebar
+  CAM_DEFAULT, // 5 stem starter rebar
+  CAM_DEFAULT, // 6 base casting
+  CAM_DEFAULT, // 7 stem binders
+  CAM_DEFAULT, // 8 stem formwork
+  CAM_DEFAULT, // 9 stem casting
+  CAM_DEFAULT, // 10 drainage
+  CAM_DEFAULT, // 11 backfilling
+  CAM_DEFAULT  // 12 final inspection
 ];
 
 let camTarget = null;
