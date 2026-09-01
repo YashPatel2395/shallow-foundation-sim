@@ -1511,6 +1511,15 @@ function animate() {
     _zs.value = Math.round(camera.position.distanceTo(controls.target));
   }
 
+  const _camDbg = document.getElementById('cam-debug');
+  if (_camDbg) {
+    const p = camera.position, t = controls.target;
+    _camDbg.textContent =
+      `step ${STATE.currentStep}\n` +
+      `pos   ${p.x.toFixed(2)}, ${p.y.toFixed(2)}, ${p.z.toFixed(2)}\n` +
+      `look  ${t.x.toFixed(2)}, ${t.y.toFixed(2)}, ${t.z.toFixed(2)}`;
+  }
+
   update3DLabels();
   controls.update();
   renderer.render(scene, camera);
