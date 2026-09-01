@@ -100,27 +100,7 @@
       border-radius: 2px;
     }
 
-    /* Live camera position/target readout -- dev tool for tuning
-       CAM_PRESETS: orbit/pan/zoom to the desired framing for a step, read
-       the numbers off here, report them back. */
-    #cam-debug {
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      z-index: 60;
-      pointer-events: none;
-      background: rgba(10, 20, 40, 0.85);
-      color: #f5a623;
-      font-family: 'SF Mono', Monaco, monospace;
-      font-size: 0.78rem;
-      line-height: 1.5;
-      padding: 8px 12px;
-      border-radius: 6px;
-      border: 1px solid rgba(245,166,35,0.4);
-      white-space: pre;
-    }
-
-    /* Single fixed dock for all 3D-marker description popups -- always
+/* Single fixed dock for all 3D-marker description popups -- always
        docks at the top of the viewport so it never covers other markers
        or action-bar buttons, and never drifts with the camera. */
     #info-popup-dock {
@@ -236,7 +216,6 @@
       <div id="scene">
         <div id="labels-3d"></div>
         <div id="info-popup-dock"></div>
-        <div id="cam-debug"></div>
         <div id="cam-controls">
           <button class="cam-btn" onclick="setCameraView('iso')" title="3/4 section view">Section</button>
           <button class="cam-btn" onclick="setCameraView('front')" title="Front elevation">Elevation</button>

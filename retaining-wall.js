@@ -569,12 +569,11 @@ function clearScene3D() {
    CAMERA PRESETS
 ══════════════════════════════════════════════════════════════ */
 
-// Single hand-tuned default camera for every step, found live via the
-// #cam-debug readout (orbit/pan/zoom to the desired framing, read the
-// numbers off-screen) -- an end-on vantage down the wall's short axis that
-// keeps the full excavation/stem cross-section visible without diagonal
-// foreshortening, and clears the permanent hillside (which starts past
-// Z=2.15 -- see addHillside()/RAMP_Z0 in the GROUND/SITE section).
+// Single hand-tuned default camera for every step -- an end-on vantage
+// down the wall's short axis that keeps the full excavation/stem
+// cross-section visible without diagonal foreshortening, and clears the
+// permanent hillside (which starts past Z=2.15 -- see addHillside()/
+// RAMP_Z0 in the GROUND/SITE section).
 const CAM_DEFAULT = { pos: new THREE.Vector3(13.93, 3.87, -3.66), look: new THREE.Vector3(-3.00, -1.23, 0.40) };
 const CAM_PRESETS = [
   CAM_DEFAULT, // 0 investigation
@@ -1505,15 +1504,6 @@ function animate() {
   const _zs = document.getElementById('zoom-slider');
   if (_zs && document.activeElement !== _zs) {
     _zs.value = Math.round(camera.position.distanceTo(controls.target));
-  }
-
-  const _camDbg = document.getElementById('cam-debug');
-  if (_camDbg) {
-    const p = camera.position, t = controls.target;
-    _camDbg.textContent =
-      `step ${STATE.currentStep}\n` +
-      `pos   ${p.x.toFixed(2)}, ${p.y.toFixed(2)}, ${p.z.toFixed(2)}\n` +
-      `look  ${t.x.toFixed(2)}, ${t.y.toFixed(2)}, ${t.z.toFixed(2)}`;
   }
 
   update3DLabels();
