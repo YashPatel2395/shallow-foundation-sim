@@ -569,25 +569,31 @@ function clearScene3D() {
    CAMERA PRESETS
 ══════════════════════════════════════════════════════════════ */
 
-// Steps 2-10 approach from the toe (flat) side rather than the heel side so
-// the close-in work cameras never sit low over the permanent hillside --
-// see addHillside()/RAMP_Z0 in the GROUND/SITE section. Steps 0, 1, 11 and
-// 12 deliberately keep a heel-side/elevated vantage so the hillside itself
-// stays in frame for the establishing, backfilling and finished-wall shots.
+// Steps 2-10 view end-on down the wall's short axis (the excavation
+// rectangle is 10 units long by ~3.4 wide -- the camera sits out past one
+// short end at Z=0.4, the footing's own centerline, and looks straight down
+// the length) so everything happening along the wall is visible in one
+// shot instead of foreshortened by a diagonal angle. This also keeps these
+// cameras well clear of the permanent hillside (which only starts past
+// Z=2.15 -- see addHillside()/RAMP_Z0 in the GROUND/SITE section). Steps 0,
+// 1, 11 and 12 keep a heel-side/elevated diagonal vantage instead, since
+// those need the wall's full length spread across the frame (staked layout
+// points, spread-out final-inspection checkpoints) or the hillside itself
+// in view (establishing shots, backfilling).
 const CAM_PRESETS = [
-  { pos: new THREE.Vector3(14,  5,  18), look: new THREE.Vector3(0, -1, 0) },   // 0 investigation
-  { pos: new THREE.Vector3(12,  7,  16), look: new THREE.Vector3(0,  0, 0) },   // 1 layout
-  { pos: new THREE.Vector3(7,   2,  -8), look: new THREE.Vector3(0, -0.6, 0) }, // 2 excavation
-  { pos: new THREE.Vector3(11,  1, -11), look: new THREE.Vector3(0, -1.5, 0) }, // 3 base prep
-  { pos: new THREE.Vector3(11,  2, -11), look: new THREE.Vector3(0, -1, 0) },   // 4 base rebar
-  { pos: new THREE.Vector3(10,  3, -10), look: new THREE.Vector3(0,  0.5, 0) }, // 5 stem starter rebar
-  { pos: new THREE.Vector3(12,  1, -12), look: new THREE.Vector3(0, -1.3, 0) }, // 6 base casting
-  { pos: new THREE.Vector3(10,  3, -10), look: new THREE.Vector3(0,  1, 0) },   // 7 stem binders
-  { pos: new THREE.Vector3(10,  3, -11), look: new THREE.Vector3(0,  1, 0) },   // 8 stem formwork
-  { pos: new THREE.Vector3(10,  3, -11), look: new THREE.Vector3(0,  1, 0) },   // 9 stem casting
-  { pos: new THREE.Vector3(9,   2,  -9), look: new THREE.Vector3(0,  0.5, 0) }, // 10 drainage
-  { pos: new THREE.Vector3(12,  5,  13), look: new THREE.Vector3(0,  0.5, 0) }, // 11 backfilling
-  { pos: new THREE.Vector3(11,  5,  12), look: new THREE.Vector3(0,  1, 0) }    // 12 final inspection
+  { pos: new THREE.Vector3(14,  5,  18),   look: new THREE.Vector3(0,   -1,  0) },   // 0 investigation
+  { pos: new THREE.Vector3(12,  7,  16),   look: new THREE.Vector3(0,    0,  0) },   // 1 layout
+  { pos: new THREE.Vector3(15,  2,  0.4),  look: new THREE.Vector3(-3, -0.6, 0.4) }, // 2 excavation
+  { pos: new THREE.Vector3(15,  1,  0.4),  look: new THREE.Vector3(-3, -1.5, 0.4) }, // 3 base prep
+  { pos: new THREE.Vector3(15,  2,  0.4),  look: new THREE.Vector3(-3,   -1, 0.4) }, // 4 base rebar
+  { pos: new THREE.Vector3(15,  3,  0.4),  look: new THREE.Vector3(-3,  0.5, 0.4) }, // 5 stem starter rebar
+  { pos: new THREE.Vector3(15,  1,  0.4),  look: new THREE.Vector3(-3, -1.3, 0.4) }, // 6 base casting
+  { pos: new THREE.Vector3(15,  3,  0.4),  look: new THREE.Vector3(-3,    1, 0.4) }, // 7 stem binders
+  { pos: new THREE.Vector3(15,  3,  0.4),  look: new THREE.Vector3(-3,    1, 0.4) }, // 8 stem formwork
+  { pos: new THREE.Vector3(15,  3,  0.4),  look: new THREE.Vector3(-3,    1, 0.4) }, // 9 stem casting
+  { pos: new THREE.Vector3(15,  2,  0.4),  look: new THREE.Vector3(-3,  0.5, 0.4) }, // 10 drainage
+  { pos: new THREE.Vector3(12,  5,  13),   look: new THREE.Vector3(0,   0.5, 0) },   // 11 backfilling
+  { pos: new THREE.Vector3(11,  5,  12),   look: new THREE.Vector3(0,     1, 0) }    // 12 final inspection
 ];
 
 let camTarget = null;
@@ -809,13 +815,15 @@ const HOLE_X1 = WALL_X1 + 0.5;
 const HOLE_Z0 = TRENCH_Z0;
 const HOLE_Z1 = TRENCH_Z1;
 
-// The retained side isn't flat lawn -- it's the toe of a natural hillside
-// that the wall exists to hold back. A short flat working apron beyond the
-// excavation gives way to a rising slope, then a flat plateau at the
-// backfilled retained grade, so the reason for the wall is visible from the
-// very first frame, not just after backfilling ties into it.
-const RAMP_Z0  = HOLE_Z1 + 0.3;
-const RAMP_RUN = 5.5;
+// The retained side isn't flat lawn -- it's the toe of an existing, overly
+// steep bank that the wall exists to hold back. The rise starts right at
+// the excavation margin (matching where the backfill wedge in the
+// Backfilling step ends, at STEM_Z1 + HEEL_WIDTH + 0.3 = 2.05) so the
+// backfilled soil ties into the existing grade with no visible gap, and
+// it's steeper than a natural angle of repose -- the whole reason a
+// structural wall is needed here instead of just grading a slope.
+const RAMP_Z0  = HOLE_Z1 + 0.05;
+const RAMP_RUN = 2.2;
 const RAMP_Z1  = RAMP_Z0 + RAMP_RUN;
 
 // A single tilted quad connecting (y0 at z0) to (y1 at z1), full site width.
