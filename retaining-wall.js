@@ -511,7 +511,7 @@ TEX.gravel.repeat.set(2, 2);
 ══════════════════════════════════════════════════════════════ */
 
 const MAT = {
-  grass:    new THREE.MeshLambertMaterial({ map: TEX.grass }),
+  grass:    new THREE.MeshLambertMaterial({ map: TEX.grass, side: THREE.DoubleSide }),
   concrete: new THREE.MeshLambertMaterial({ map: TEX.concrete }),
   concreteDark: new THREE.MeshLambertMaterial({ color: 0x888888, map: TEX.concrete }),
   concreteWet:  new THREE.MeshLambertMaterial({ color: 0x9e9e9e, transparent: true, opacity: 0.92 }),
@@ -569,20 +569,25 @@ function clearScene3D() {
    CAMERA PRESETS
 ══════════════════════════════════════════════════════════════ */
 
+// Steps 2-10 approach from the toe (flat) side rather than the heel side so
+// the close-in work cameras never sit low over the permanent hillside --
+// see addHillside()/RAMP_Z0 in the GROUND/SITE section. Steps 0, 1, 11 and
+// 12 deliberately keep a heel-side/elevated vantage so the hillside itself
+// stays in frame for the establishing, backfilling and finished-wall shots.
 const CAM_PRESETS = [
-  { pos: new THREE.Vector3(14,  5, 18), look: new THREE.Vector3(0, -1, 0) },   // 0 investigation
-  { pos: new THREE.Vector3(12,  7, 16), look: new THREE.Vector3(0,  0, 0) },   // 1 layout
-  { pos: new THREE.Vector3(7,   2,  8), look: new THREE.Vector3(0, -0.6, 0) }, // 2 excavation
-  { pos: new THREE.Vector3(11,  1, 11), look: new THREE.Vector3(0, -1.5, 0) }, // 3 base prep
-  { pos: new THREE.Vector3(11,  2, 11), look: new THREE.Vector3(0, -1, 0) },   // 4 base rebar
-  { pos: new THREE.Vector3(10,  3, 10), look: new THREE.Vector3(0,  0.5, 0) }, // 5 stem starter rebar
-  { pos: new THREE.Vector3(12,  1, 12), look: new THREE.Vector3(0, -1.3, 0) }, // 6 base casting
-  { pos: new THREE.Vector3(10,  3, 10), look: new THREE.Vector3(0,  1, 0) },   // 7 stem binders
-  { pos: new THREE.Vector3(10,  3, 11), look: new THREE.Vector3(0,  1, 0) },   // 8 stem formwork
-  { pos: new THREE.Vector3(10,  3, 11), look: new THREE.Vector3(0,  1, 0) },   // 9 stem casting
-  { pos: new THREE.Vector3(9,   2,  9), look: new THREE.Vector3(0,  0.5, 0) }, // 10 drainage
-  { pos: new THREE.Vector3(12,  4, 13), look: new THREE.Vector3(0,  0.5, 0) }, // 11 backfilling
-  { pos: new THREE.Vector3(11,  5, 12), look: new THREE.Vector3(0,  1, 0) }    // 12 final inspection
+  { pos: new THREE.Vector3(14,  5,  18), look: new THREE.Vector3(0, -1, 0) },   // 0 investigation
+  { pos: new THREE.Vector3(12,  7,  16), look: new THREE.Vector3(0,  0, 0) },   // 1 layout
+  { pos: new THREE.Vector3(7,   2,  -8), look: new THREE.Vector3(0, -0.6, 0) }, // 2 excavation
+  { pos: new THREE.Vector3(11,  1, -11), look: new THREE.Vector3(0, -1.5, 0) }, // 3 base prep
+  { pos: new THREE.Vector3(11,  2, -11), look: new THREE.Vector3(0, -1, 0) },   // 4 base rebar
+  { pos: new THREE.Vector3(10,  3, -10), look: new THREE.Vector3(0,  0.5, 0) }, // 5 stem starter rebar
+  { pos: new THREE.Vector3(12,  1, -12), look: new THREE.Vector3(0, -1.3, 0) }, // 6 base casting
+  { pos: new THREE.Vector3(10,  3, -10), look: new THREE.Vector3(0,  1, 0) },   // 7 stem binders
+  { pos: new THREE.Vector3(10,  3, -11), look: new THREE.Vector3(0,  1, 0) },   // 8 stem formwork
+  { pos: new THREE.Vector3(10,  3, -11), look: new THREE.Vector3(0,  1, 0) },   // 9 stem casting
+  { pos: new THREE.Vector3(9,   2,  -9), look: new THREE.Vector3(0,  0.5, 0) }, // 10 drainage
+  { pos: new THREE.Vector3(12,  5,  13), look: new THREE.Vector3(0,  0.5, 0) }, // 11 backfilling
+  { pos: new THREE.Vector3(11,  5,  12), look: new THREE.Vector3(0,  1, 0) }    // 12 final inspection
 ];
 
 let camTarget = null;
@@ -804,19 +809,63 @@ const HOLE_X1 = WALL_X1 + 0.5;
 const HOLE_Z0 = TRENCH_Z0;
 const HOLE_Z1 = TRENCH_Z1;
 
-// Intact lawn, no trench -- used before excavation happens.
+// The retained side isn't flat lawn -- it's the toe of a natural hillside
+// that the wall exists to hold back. A short flat working apron beyond the
+// excavation gives way to a rising slope, then a flat plateau at the
+// backfilled retained grade, so the reason for the wall is visible from the
+// very first frame, not just after backfilling ties into it.
+const RAMP_Z0  = HOLE_Z1 + 0.3;
+const RAMP_RUN = 5.5;
+const RAMP_Z1  = RAMP_Z0 + RAMP_RUN;
+
+// A single tilted quad connecting (y0 at z0) to (y1 at z1), full site width.
+function buildSlopedQuad(z0, y0, z1, y1) {
+  const geo = new THREE.BufferGeometry();
+  const positions = new Float32Array([
+    -GROUND_HALF, y0, z0,
+     GROUND_HALF, y0, z0,
+     GROUND_HALF, y1, z1,
+    -GROUND_HALF, y1, z1
+  ]);
+  const uvs = new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]);
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
+  geo.setIndex([0, 1, 2, 0, 2, 3]);
+  geo.computeVertexNormals();
+  const mesh = new THREE.Mesh(geo, MAT.grass);
+  mesh.receiveShadow = true;
+  return mesh;
+}
+
+// Adds the rising slope + flat hilltop plateau beyond the working apron --
+// shared by buildGround() and buildGroundWithTrench() so the hillside is
+// always present, whether or not the trench is currently open.
+function addHillside() {
+  groundGroup.add(buildSlopedQuad(RAMP_Z0, TOE_GRADE_Y, RAMP_Z1, RETAINED_GRADE_Y));
+  const plateau = new THREE.Mesh(new THREE.PlaneGeometry(GROUND_HALF * 2, GROUND_HALF - RAMP_Z1), MAT.grass);
+  plateau.rotation.x = -Math.PI / 2;
+  plateau.position.set(0, RETAINED_GRADE_Y - 0.01, (RAMP_Z1 + GROUND_HALF) / 2);
+  plateau.receiveShadow = true;
+  groundGroup.add(plateau);
+}
+
+// Intact lawn, no trench -- used before excavation happens. Flat toe/working
+// apron out to the base of the hillside, then the permanent slope + plateau.
 function buildGround() {
   while (groundGroup.children.length) groundGroup.remove(groundGroup.children[0]);
-  const plane = new THREE.Mesh(new THREE.PlaneGeometry(GROUND_HALF * 2, GROUND_HALF * 2), MAT.grass);
-  plane.rotation.x = -Math.PI / 2;
-  plane.position.set(0, TOE_GRADE_Y - 0.01, 0);
-  plane.receiveShadow = true;
-  groundGroup.add(plane);
+  const flat = new THREE.Mesh(new THREE.PlaneGeometry(GROUND_HALF * 2, GROUND_HALF + RAMP_Z0), MAT.grass);
+  flat.rotation.x = -Math.PI / 2;
+  flat.position.set(0, TOE_GRADE_Y - 0.01, (-GROUND_HALF + RAMP_Z0) / 2);
+  flat.receiveShadow = true;
+  groundGroup.add(flat);
+  addHillside();
 }
 
 // Ground with a trench-shaped opening left over the wall footprint, so the
 // excavation and everything built inside it (footing, rebar, casting) is
 // actually visible instead of sitting under a solid, unbroken lawn plane.
+// The hillside itself is unaffected -- the hole only ever cuts through the
+// flat working apron in front of it.
 function buildGroundWithTrench() {
   while (groundGroup.children.length) groundGroup.remove(groundGroup.children[0]);
 
@@ -828,12 +877,14 @@ function buildGroundWithTrench() {
     groundGroup.add(m);
   }
 
-  // West / east strips run the full Z depth of the site.
-  piece(HOLE_X0 - (-GROUND_HALF), GROUND_HALF * 2, (-GROUND_HALF + HOLE_X0) / 2, 0);
-  piece(GROUND_HALF - HOLE_X1,    GROUND_HALF * 2, (HOLE_X1 + GROUND_HALF) / 2, 0);
+  // West / east strips run the full Z depth of the flat working apron.
+  piece(HOLE_X0 - (-GROUND_HALF), GROUND_HALF + RAMP_Z0, (-GROUND_HALF + HOLE_X0) / 2, (-GROUND_HALF + RAMP_Z0) / 2);
+  piece(GROUND_HALF - HOLE_X1,    GROUND_HALF + RAMP_Z0, (HOLE_X1 + GROUND_HALF) / 2, (-GROUND_HALF + RAMP_Z0) / 2);
   // Toe-side / heel-side strips fill the rest of the frame around the hole.
   piece(HOLE_X1 - HOLE_X0, HOLE_Z0 - (-GROUND_HALF), (HOLE_X0 + HOLE_X1) / 2, (-GROUND_HALF + HOLE_Z0) / 2);
-  piece(HOLE_X1 - HOLE_X0, GROUND_HALF - HOLE_Z1,     (HOLE_X0 + HOLE_X1) / 2, (HOLE_Z1 + GROUND_HALF) / 2);
+  piece(HOLE_X1 - HOLE_X0, RAMP_Z0 - HOLE_Z1,         (HOLE_X0 + HOLE_X1) / 2, (HOLE_Z1 + RAMP_Z0) / 2);
+
+  addHillside();
 }
 
 let siteGroup = null;
