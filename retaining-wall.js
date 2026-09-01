@@ -783,6 +783,14 @@ const TRENCH_MARGIN  = 0.5;                                       // working roo
 const TRENCH_Z0      = FOOTING_Z0 - TRENCH_MARGIN;
 const TRENCH_Z1      = FOOTING_Z1 + TRENCH_MARGIN;
 
+// Rebar spacing -- dense enough to read as a real reinforcement mesh
+// rather than a handful of scattered rods. Stem dowels use the same
+// spacing as the Direction-2 mat bars so they visually align as the same
+// reinforcement system, not two unrelated cages.
+const REBAR_SPACING_1 = 0.16;
+const REBAR_SPACING_2 = 0.28;
+const STEM_DOWEL_SPACING = REBAR_SPACING_2;
+
 /* ══════════════════════════════════════════════════════════════
    GROUND / SITE
 ══════════════════════════════════════════════════════════════ */
@@ -930,70 +938,156 @@ function buildTrenchVoid() {
   return g;
 }
 
+// A footing transverse bar with a real 90-degree hook at each end, bending
+// up into the footing thickness at the toe and heel edges -- the standard
+// anchorage detail at a discontinuous footing edge (as opposed to the stem
+// dowels in DowelBendCurve, which are a separate set of bars).
+class FootingEndHookCurve extends THREE.Curve {
+  constructor(x, y, z0, z1, hookHeight) {
+    super();
+    const bendIn = 0.08;
+    this.pts = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(x, y + hookHeight, z0),
+      new THREE.Vector3(x, y + hookHeight * 0.15, z0 + bendIn * 0.35),
+      new THREE.Vector3(x, y, z0 + bendIn),
+      new THREE.Vector3(x, y, z1 - bendIn),
+      new THREE.Vector3(x, y + hookHeight * 0.15, z1 - bendIn * 0.35),
+      new THREE.Vector3(x, y + hookHeight, z1)
+    ]);
+  }
+  getPoint(t, target = new THREE.Vector3()) {
+    return this.pts.getPoint(t, target);
+  }
+}
+
 // A single rebar mat: bars running either along X (dir 1, spanning the
 // wall length) or along Z (dir 2, spanning the footing width), at a
 // given Y height. Returns { group, bars, reveal(pct) } -- reveal grows
 // the mat progressively along its own run direction, for hold-to-place.
-function buildRebarMat(dir, y, spacing) {
+// opts.chairs adds small spacer chairs under the bars (bottom mat only,
+// matching the reference); opts.hooks adds a stub-cap end marker (top mat
+// only); opts.endBends bends dir-2 bars into a real L-hook at the toe and
+// heel edges (bottom mat only, matching the reference's footing detail).
+function buildRebarMat(dir, y, spacing, opts) {
+  opts = opts || {};
   const group = new THREE.Group();
   const bars = [];
+
+  function addHooks(bar, x, z, alongX) {
+    const hookLen = 0.12;
+    [-1, 1].forEach(sign => {
+      const hook = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, hookLen, 5), MAT.rebarSteel);
+      if (alongX) {
+        hook.position.set(x + sign * (WALL_LENGTH / 2), y - hookLen / 2, z);
+      } else {
+        hook.position.set(x, y - hookLen / 2, z + sign * ((FOOTING_Z1 - FOOTING_Z0) / 2));
+      }
+      hook.visible = false;
+      group.add(hook);
+      bar.userData.extras = bar.userData.extras || [];
+      bar.userData.extras.push(hook);
+    });
+  }
+
+  function addChairs(bar, alongX, fixedCoord) {
+    bar.userData.extras = bar.userData.extras || [];
+    const span = alongX ? WALL_LENGTH : (FOOTING_Z1 - FOOTING_Z0);
+    const start = alongX ? WALL_X0 : FOOTING_Z0;
+    for (let s = start + 0.6; s < start + span - 0.4; s += 1.4) {
+      const chair = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.1, 0.05), MAT.concreteDark);
+      if (alongX) chair.position.set(s, y - 0.05, fixedCoord);
+      else chair.position.set(fixedCoord, y - 0.05, s);
+      chair.visible = false;
+      group.add(chair);
+      bar.userData.extras.push(chair);
+    }
+  }
+
   if (dir === 1) {
     // bars run along X, spaced along Z across the footing width
     for (let z = FOOTING_Z0 + 0.15; z <= FOOTING_Z1 - 0.1; z += spacing) {
-      const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, WALL_LENGTH, 6), MAT.rebarSteel);
+      const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, WALL_LENGTH, 6), MAT.rebarSteel);
       bar.rotation.z = Math.PI / 2;
       bar.position.set(0, y, z);
       bar.visible = false;
       group.add(bar);
       bars.push(bar);
+      if (opts.hooks) addHooks(bar, 0, z, true);
+      if (opts.chairs) addChairs(bar, true, z);
     }
   } else {
     // bars run along Z, spaced along X across the wall length
     for (let x = WALL_X0 + 0.15; x <= WALL_X1 - 0.1; x += spacing) {
-      const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, FOOTING_Z1 - FOOTING_Z0, 6), MAT.rebarSteel);
-      bar.rotation.x = Math.PI / 2;
-      bar.position.set(x, y, (FOOTING_Z0 + FOOTING_Z1) / 2);
+      let bar;
+      if (opts.endBends) {
+        const curve = new FootingEndHookCurve(x, y, FOOTING_Z0, FOOTING_Z1, 0.12);
+        bar = new THREE.Mesh(new THREE.TubeGeometry(curve, 24, 0.02, 6, false), MAT.rebarSteel);
+      } else {
+        bar = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, FOOTING_Z1 - FOOTING_Z0, 6), MAT.rebarSteel);
+        bar.rotation.x = Math.PI / 2;
+        bar.position.set(x, y, (FOOTING_Z0 + FOOTING_Z1) / 2);
+      }
       bar.visible = false;
       group.add(bar);
       bars.push(bar);
+      if (opts.hooks) addHooks(bar, x, (FOOTING_Z0 + FOOTING_Z1) / 2, false);
+      if (opts.chairs) addChairs(bar, false, x);
     }
+  }
+  function reveal(pct) {
+    const n = Math.round(bars.length * pct);
+    bars.forEach((b, i) => {
+      const v = i < n;
+      b.visible = v;
+      if (b.userData.extras) b.userData.extras.forEach(e => { e.visible = v; });
+    });
+  }
+  return { group, bars, reveal };
+}
+
+// Stem starter/main bars, built as continuous bent dowels -- each one is a
+// single curved tube that lies flat in the footing (lap-spliced with the
+// mat), bends 90 degrees, and rises the full stem height, matching the
+// reference's L-shaped dowel-to-stem detail instead of separate floating
+// straight rods. Two rows (front/back stem face), revealed progressively
+// along X at the same spacing as the Direction-2 mat bars so they read as
+// the same reinforcement system, not two unrelated cages.
+class DowelBendCurve extends THREE.Curve {
+  constructor(x, y0, yTop, zBend, sign) {
+    super();
+    this.pts = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(x, y0, zBend + sign * 0.55),
+      new THREE.Vector3(x, y0, zBend + sign * 0.05),
+      new THREE.Vector3(x, y0 + 0.16, zBend),
+      new THREE.Vector3(x, yTop, zBend)
+    ]);
+  }
+  getPoint(t, target = new THREE.Vector3()) {
+    return this.pts.getPoint(t, target);
+  }
+}
+
+function buildStemVerticals(spacing) {
+  const group = new THREE.Group();
+  const bars = [];
+  const y0 = FOOTING_BOT_Y + 0.15;
+  const yTop = STEM_TOP_Y - 0.15;
+
+  for (let x = WALL_X0 + 0.15; x <= WALL_X1 - 0.15; x += spacing) {
+    [{ z: STEM_Z0, sign: -1 }, { z: STEM_Z1, sign: 1 }].forEach(({ z, sign }) => {
+      const curve = new DowelBendCurve(x, y0, yTop, z, sign);
+      const geo = new THREE.TubeGeometry(curve, 16, 0.02, 6, false);
+      const bar = new THREE.Mesh(geo, MAT.rebarSteel);
+      bar.visible = false;
+      group.add(bar);
+      bars.push(bar);
+    });
   }
   function reveal(pct) {
     const n = Math.round(bars.length * pct);
     bars.forEach((b, i) => { b.visible = i < n; });
   }
   return { group, bars, reveal };
-}
-
-// Vertical stem starter/main bars, revealed progressively along X and
-// rising from the footing dowel height up toward full stem height.
-function buildStemVerticals(spacing) {
-  const group = new THREE.Group();
-  const bars = [];
-  const topY = STEM_TOP_Y - 0.15;
-  const botY = FOOTING_BOT_Y + 0.15;
-  const fullHeight = topY - botY;
-  for (let x = WALL_X0 + 0.2; x <= WALL_X1 - 0.2; x += spacing) {
-    [STEM_Z0 + 0.05, STEM_Z1 - 0.05].forEach(z => {
-      const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, fullHeight, 6), MAT.rebarSteel);
-      bar.position.set(x, (topY + botY) / 2, z);
-      bar.visible = false;
-      bar.userData.fullHeight = fullHeight;
-      bar.userData.botY = botY;
-      group.add(bar);
-      bars.push(bar);
-    });
-  }
-  // grow(pct) -- bars rise from the footing dowels up toward full height
-  function grow(pct) {
-    bars.forEach(b => {
-      b.visible = pct > 0.02;
-      const h = Math.max(0.05, b.userData.fullHeight * pct);
-      b.scale.y = h / b.userData.fullHeight;
-      b.position.y = b.userData.botY + h / 2;
-    });
-  }
-  return { group, bars, grow };
 }
 
 // Horizontal binder ties across the stem verticals, revealed progressively.
@@ -1774,10 +1868,10 @@ const STEP_HANDLERS = [
 
       const bottomY = FOOTING_BOT_Y + 0.18;
       const topY    = FOOTING_TOP_Y - 0.08;
-      const matBottom1 = buildRebarMat(1, bottomY, 0.35);
-      const matBottom2 = buildRebarMat(2, bottomY + 0.02, 0.6);
-      const matTop1    = buildRebarMat(1, topY, 0.35);
-      const matTop2    = buildRebarMat(2, topY - 0.02, 0.6);
+      const matBottom1 = buildRebarMat(1, bottomY, REBAR_SPACING_1, { chairs: true });
+      const matBottom2 = buildRebarMat(2, bottomY + 0.02, REBAR_SPACING_2, { endBends: true });
+      const matTop1    = buildRebarMat(1, topY, REBAR_SPACING_1, { hooks: true });
+      const matTop2    = buildRebarMat(2, topY - 0.02, REBAR_SPACING_2);
       [matBottom1, matBottom2, matTop1, matTop2].forEach(m => addStep(m.group));
 
       const stages = [
@@ -1837,12 +1931,12 @@ const STEP_HANDLERS = [
       );
       pccSlab.position.set(0, FOOTING_BOT_Y + 0.05, (TRENCH_Z0 + TRENCH_Z1) / 2);
       addStep(pccSlab);
-      [buildRebarMat(1, FOOTING_BOT_Y + 0.18, 0.35), buildRebarMat(2, FOOTING_BOT_Y + 0.2, 0.6)].forEach(m => {
+      [buildRebarMat(1, FOOTING_BOT_Y + 0.18, REBAR_SPACING_1), buildRebarMat(2, FOOTING_BOT_Y + 0.2, REBAR_SPACING_2, { endBends: true })].forEach(m => {
         m.reveal(1);
         addStep(m.group);
       });
 
-      const verticals = buildStemVerticals(0.4);
+      const verticals = buildStemVerticals(STEM_DOWEL_SPACING);
       addStep(verticals.group);
 
       const ab = DOM.actionBar();
@@ -1853,7 +1947,7 @@ const STEP_HANDLERS = [
         let t = 0;
         const iv = safeInterval(() => {
           t += 0.025;
-          verticals.grow(Math.min(1, t));
+          verticals.reveal(Math.min(1, t));
           if (t >= 1) {
             clearInterval(iv);
             markSubtask(0);
@@ -1881,13 +1975,13 @@ const STEP_HANDLERS = [
       );
       pccSlab.position.set(0, FOOTING_BOT_Y + 0.05, (TRENCH_Z0 + TRENCH_Z1) / 2);
       addStep(pccSlab);
-      [buildRebarMat(1, FOOTING_BOT_Y + 0.18, 0.35), buildRebarMat(2, FOOTING_BOT_Y + 0.2, 0.6),
-       buildRebarMat(1, FOOTING_TOP_Y - 0.08, 0.35), buildRebarMat(2, FOOTING_TOP_Y - 0.06, 0.6)].forEach(m => {
+      [buildRebarMat(1, FOOTING_BOT_Y + 0.18, REBAR_SPACING_1), buildRebarMat(2, FOOTING_BOT_Y + 0.2, REBAR_SPACING_2, { endBends: true }),
+       buildRebarMat(1, FOOTING_TOP_Y - 0.08, REBAR_SPACING_1), buildRebarMat(2, FOOTING_TOP_Y - 0.06, REBAR_SPACING_2)].forEach(m => {
         m.reveal(1);
         addStep(m.group);
       });
-      const verticals = buildStemVerticals(0.4);
-      verticals.grow(1);
+      const verticals = buildStemVerticals(STEM_DOWEL_SPACING);
+      verticals.reveal(1);
       addStep(verticals.group);
 
       const ab = DOM.actionBar();
@@ -1967,8 +2061,8 @@ const STEP_HANDLERS = [
       footing.position.set(0, (FOOTING_TOP_Y + FOOTING_BOT_Y) / 2, (FOOTING_Z0 + FOOTING_Z1) / 2);
       addStep(footing);
 
-      const verticals = buildStemVerticals(0.4);
-      verticals.grow(1);
+      const verticals = buildStemVerticals(STEM_DOWEL_SPACING);
+      verticals.reveal(1);
       addStep(verticals.group);
 
       const binders = buildStemBinders(0.3);
@@ -2008,7 +2102,7 @@ const STEP_HANDLERS = [
       );
       footing.position.set(0, (FOOTING_TOP_Y + FOOTING_BOT_Y) / 2, (FOOTING_Z0 + FOOTING_Z1) / 2);
       addStep(footing);
-      const verticals = buildStemVerticals(0.4); verticals.grow(1); addStep(verticals.group);
+      const verticals = buildStemVerticals(STEM_DOWEL_SPACING); verticals.reveal(1); addStep(verticals.group);
       const binders = buildStemBinders(0.3); binders.reveal(1); addStep(binders.group);
 
       const panels = [
@@ -2118,7 +2212,7 @@ const STEP_HANDLERS = [
       );
       footing.position.set(0, (FOOTING_TOP_Y + FOOTING_BOT_Y) / 2, (FOOTING_Z0 + FOOTING_Z1) / 2);
       addStep(footing);
-      const verticals = buildStemVerticals(0.4); verticals.grow(1); addStep(verticals.group);
+      const verticals = buildStemVerticals(STEM_DOWEL_SPACING); verticals.reveal(1); addStep(verticals.group);
       const binders = buildStemBinders(0.3); binders.reveal(1); addStep(binders.group);
 
       const frontPanel = buildFormworkPanel('front');
