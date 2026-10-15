@@ -162,6 +162,27 @@ function courseStepMeta(courseNum) {
   ];
 }
 
+function supervisedCourseStepDef(courseNum, stepNumber) {
+  return {
+    title: `${stepNumber}. Course ${courseNum} — Supervised Automated Cycle`,
+    desc: `Use the Course 1 method as the crew builds Course ${courseNum} automatically. Monitor the sequence and release work at the quality hold point.`,
+    subtasks: ['Start the automated course cycle', 'Approve the quality hold point', 'Monitor reinforcement and compacted backfill'],
+    why: 'Real construction crews repeat established work while the engineer supervises quality gates. You already learned the hands-on sequence in Course 1; now your job changes from installer to supervisor.',
+    warning: 'Automation does not remove quality control — panels, connections, and lift compaction still have to be verified before the crew proceeds.'
+  };
+}
+
+function supervisedCourseStepMeta(courseNum) {
+  return {
+    purpose: `Build Course ${courseNum} efficiently by repeating the proven Course 1 method under active quality supervision.`,
+    userAction: 'Start the crew, observe the sequence, and answer the quality hold-point question before backfilling is released.',
+    tools: ['Precast facing panels', 'Steel strip reinforcement', 'Loader', 'Roller compactor', 'QA hold-point checklist'],
+    qualityCheck: 'Panel row braced and plumb, every strip connected, and each soil lift compacted before the next course.',
+    commonMistake: 'Treating repetitive work as automatic approval and missing a bad connection or under-compacted lift.',
+    learningObjective: 'Repetitive construction is managed through production cycles plus deliberate quality gates, not by repeating every manual action yourself.'
+  };
+}
+
 const STEPS = [
   {
     title: '1. Site Investigation',
@@ -192,24 +213,24 @@ const STEPS = [
     warning: 'A crooked leveling pad throws every panel course above it out of alignment.'
   },
   ...courseStepDefs(1, 4),
-  ...courseStepDefs(2, 7),
-  ...courseStepDefs(3, 10),
+  supervisedCourseStepDef(2, 8),
+  supervisedCourseStepDef(3, 9),
   {
-    title: '14. Crest Coping & Grading',
+    title: '10. Crest Coping & Grading',
     desc: 'Place the coping cap along the top course and grade the crest backfill to finished level.',
     subtasks: ['Place coping cap', 'Grade crest to finish level'],
     why: 'Coping protects the top panel edge and gives the crest a clean, finished line; final grading sheds water away from the wall face instead of into it.',
     warning: 'An ungraded crest lets water pond right behind the top course, defeating the whole point of using free-draining backfill.'
   },
   {
-    title: '15. Toe Pavement & Surface Finish',
+    title: '11. Toe Pavement & Surface Finish',
     desc: 'Compact the toe-side subbase and pave the finished surface in front of the wall.',
     subtasks: ['Compact toe subbase', 'Pave asphalt surface'],
     why: 'The finished surface is often the actual reason the wall exists -- e.g. widening a road cut -- so it is the last thing tied into the completed wall.',
     warning: 'Paving before the wall has taken its design load risks cracking the new surface if the wall settles further.'
   },
   {
-    title: '16. Final Inspection',
+    title: '12. Final Inspection',
     desc: 'Verify 5 quality checkpoints on the completed MSE wall.',
     subtasks: ['Check all 5 quality points', 'Average score ≥ 80%', 'Sign off construction'],
     why: 'Final QA confirms the reinforced soil system -- facing, connections, and compaction -- meets design intent before it is relied on.',
@@ -251,8 +272,8 @@ const STEP_META = [
     learningObjective: 'Like a blinding layer under a footing, the leveling pad is not structural -- it only exists to give the first course a true starting line.'
   },
   ...courseStepMeta(1),
-  ...courseStepMeta(2),
-  ...courseStepMeta(3),
+  supervisedCourseStepMeta(2),
+  supervisedCourseStepMeta(3),
   {
     purpose: 'Finish the crest of the wall so it sheds water and presents a clean top edge.',
     userAction: 'Place the coping cap, then grade the crest backfill to finished level.',
@@ -599,9 +620,9 @@ const CAM_WIDE  = { pos: new THREE.Vector3(15.0, 7.0, -7.5), look: new THREE.Vec
 const CAM_PRESETS = [
   CAM_SITE, CAM_SITE, CAM_SITE, CAM_SITE,      // 0-3 site / layout / excavation / pad
   CAM_NEAR, CAM_NEAR, CAM_NEAR,               // 4-6 course 1
-  CAM_MID,  CAM_MID,  CAM_MID,                // 7-9 course 2
-  CAM_TALL, CAM_TALL, CAM_TALL,               // 10-12 course 3
-  CAM_WIDE, CAM_WIDE, CAM_WIDE                // 13-15 coping / pavement / inspection
+  CAM_MID,                                     // 7 supervised course 2
+  CAM_TALL,                                    // 8 supervised course 3
+  CAM_WIDE, CAM_WIDE, CAM_WIDE                // 9-11 coping / pavement / inspection
 ];
 
 let camTarget = null;
@@ -1769,6 +1790,189 @@ function makeCourseHandlers(c) {
   ];
 }
 
+// Courses 2 and 3 reuse the method the learner performed hands-on in
+// Course 1. The crew carries out the repetitive production work while the
+// learner acts as the supervising engineer at a deliberate QA hold point.
+function makeSupervisedCourseHandler(c) {
+  const label = c + 1;
+  const question = c === 1
+    ? {
+        prompt: 'Supervisor hold point: what must be confirmed before backfill covers the reinforcement?',
+        answers: [
+          ['Every strip is hooked to its panel connector and runs perpendicular to the face', true],
+          ['The facing color matches the previous course', false],
+          ['The loader can reach the entire wall in one pass', false]
+        ]
+      }
+    : {
+        prompt: 'Supervisor hold point: why must the crew compact each lift before placing the next?',
+        answers: [
+          ['To develop soil-strip friction and prevent weak, settling pockets', true],
+          ['To make the concrete facing carry the soil pressure', false],
+          ['To eliminate the need for strip reinforcement', false]
+        ]
+      };
+
+  return {
+    enter() {
+      const ss = STATE.stepState;
+      ss.running = false;
+
+      addSubgradeFill();
+      for (let k = 0; k < c; k++) rebuildCourseFull(k);
+
+      const panels = buildPanelsForCourse(c); addStep(panels.group);
+      const braces = buildBracesForCourse(c, panels.panels); addStep(braces.group);
+      const strips = buildStripsForCourse(c); addStep(strips.group);
+      const fill = buildFillForCourse(c); addStep(fill.mesh);
+
+      const loader = buildLoaderModel(); loader.visible = false; addStep(loader); OBJ.loader = loader;
+      const compactor = buildCompactorModel(); compactor.visible = false; addStep(compactor); OBJ.compactor = compactor;
+
+      const ab = DOM.actionBar();
+      ab.innerHTML = '';
+      const instr = el('div', 'step-instruction', `Course ${label} is ready for a supervised production cycle`);
+      ab.appendChild(instr);
+
+      const progressWrap = el('div', 'fill-meter-wrap');
+      const progressTrack = el('div', 'fill-meter-track');
+      const progressBar = el('div', 'fill-meter-bar');
+      progressBar.style.background = 'linear-gradient(to right,#4d7ea8,#27ae60)';
+      progressBar.style.width = '0%';
+      progressTrack.appendChild(progressBar);
+      progressWrap.appendChild(progressTrack);
+      ab.appendChild(progressWrap);
+
+      const qaWrap = el('div', 'supervisor-gate');
+      ab.appendChild(qaWrap);
+
+      function setProgress(message, pct) {
+        instr.textContent = message;
+        progressBar.style.width = `${pct}%`;
+      }
+
+      function animateFraction(duration, onFrame, onDone) {
+        let elapsedMs = 0;
+        const iv = safeInterval(() => {
+          elapsedMs += 40;
+          const t = Math.min(1, elapsedMs / duration);
+          onFrame(t);
+          if (t >= 1) {
+            clearInterval(iv);
+            onDone();
+          }
+        }, 40);
+      }
+
+      function automatePanels() {
+        setProgress(`Crew placing and bracing Course ${label} panels...`, 5);
+        animateFraction(1200, t => {
+          panels.reveal(t);
+          braces.reveal(Math.max(0, (t - 0.35) / 0.65));
+          progressBar.style.width = `${5 + t * 25}%`;
+        }, automateStrips);
+      }
+
+      function automateStrips() {
+        setProgress(`Crew connecting Course ${label} reinforcement strips...`, 32);
+        animateFraction(1100, t => {
+          strips.reveal(t);
+          progressBar.style.width = `${32 + t * 23}%`;
+        }, showQualityGate);
+      }
+
+      function showQualityGate() {
+        setProgress(`Course ${label} paused at the engineer's quality hold point`, 58);
+        qaWrap.innerHTML = '';
+        const prompt = el('div', 'step-instruction', question.prompt);
+        prompt.style.color = '#f5a623';
+        qaWrap.appendChild(prompt);
+
+        question.answers.forEach(([answer, correct]) => {
+          const btn = makeBtn(answer, 'btn-primary', () => {
+            if (!correct) {
+              penalize('That check would not release the course for backfilling. Review the load path and try again.');
+              return;
+            }
+            Array.from(qaWrap.querySelectorAll('button')).forEach(b => { b.disabled = true; });
+            markSubtask(1);
+            showFeedback('correct', `Course ${label} quality gate approved — crew released to backfill.`);
+            qaWrap.innerHTML = '<div class="step-instruction" style="color:#27ae60;">✓ Hold point approved — automated lift placement and compaction underway</div>';
+            safeTimeout(() => automateLift(1), 500);
+          });
+          btn.style.fontSize = '0.75rem';
+          qaWrap.appendChild(btn);
+        });
+      }
+
+      function automateLift(liftNumber) {
+        fill.showLooseLift(liftNumber);
+        loader.visible = true;
+        loader.position.set(WALL_X0 - 1.2, fill.surfaceY() + 0.02, PANEL_Z1 + 1.6);
+        const baseProgress = liftNumber === 1 ? 60 : 80;
+        setProgress(`Loader placing Course ${label} soil lift ${liftNumber}/2...`, baseProgress);
+
+        animateFraction(900, t => {
+          loader.position.x = THREE.MathUtils.lerp(WALL_X0 - 1.2, WALL_X1 + 1.1, t);
+          fill.revealLoose(t);
+          progressBar.style.width = `${baseProgress + t * 7}%`;
+        }, () => {
+          loader.visible = false;
+          automateCompaction(liftNumber, baseProgress + 7);
+        });
+      }
+
+      function automateCompaction(liftNumber, baseProgress) {
+        compactor.visible = true;
+        STATE.stepState.compacting = true;
+        const surfaceY = COURSE_BASE_Y(c) + PANEL_H * liftNumber / 2 + 0.02;
+        compactor.position.set(WALL_X0 - 0.8, surfaceY, PANEL_Z1 + 1.1);
+        setProgress(`Roller compacting Course ${label} lift ${liftNumber}/2...`, baseProgress);
+
+        animateFraction(1100, t => {
+          const leg = t < 0.5 ? t * 2 : (1 - t) * 2;
+          compactor.position.x = THREE.MathUtils.lerp(WALL_X0 - 0.7, WALL_X1 + 0.7, leg);
+          compactor.position.z = t < 0.5 ? PANEL_Z1 + 1.15 : PANEL_Z1 + 2.25;
+          if (compactor.userData.drum) compactor.userData.drum.rotation.y -= 0.24;
+          fill.spreadLoose(liftNumber, t);
+          progressBar.style.width = `${baseProgress + t * 10}%`;
+        }, () => {
+          fill.setPct(liftNumber * 50);
+          fill.clearLoose();
+          compactor.visible = false;
+          STATE.stepState.compacting = false;
+          if (liftNumber < 2) {
+            safeTimeout(() => automateLift(2), 350);
+          } else {
+            braces.hideAll();
+            progressBar.style.width = '100%';
+            markSubtask(2);
+            setProgress(`Course ${label} complete — panels, strips, and compacted fill accepted`, 100);
+            showFeedback('correct', `Course ${label} production cycle completed under your supervision.`);
+            safeTimeout(() => completeStep(), 1400);
+          }
+        });
+      }
+
+      const startBtn = makeBtn(`Start Course ${label} Crew`, 'btn-primary', () => {
+        if (ss.running) return;
+        ss.running = true;
+        startBtn.disabled = true;
+        startBtn.style.display = 'none';
+        markSubtask(0);
+        showFeedback('info', `Course ${label} crew started — monitor the sequence.`);
+        automatePanels();
+      });
+      qaWrap.appendChild(startBtn);
+    },
+    cleanup() {
+      STATE.stepState.compacting = false;
+      if (OBJ.loader) OBJ.loader.visible = false;
+      if (OBJ.compactor) OBJ.compactor.visible = false;
+    }
+  };
+}
+
 const STEP_HANDLERS = [
 
   /* ─────────────────── 0: Site Investigation ─── */
@@ -2152,13 +2356,13 @@ const STEP_HANDLERS = [
   /* ─────────────────── 4-6: Course 1 ─── */
   ...makeCourseHandlers(0),
 
-  /* ─────────────────── 7-9: Course 2 ─── */
-  ...makeCourseHandlers(1),
+  /* ─────────────────── 7: Course 2 supervised production cycle ─── */
+  makeSupervisedCourseHandler(1),
 
-  /* ─────────────────── 10-12: Course 3 ─── */
-  ...makeCourseHandlers(2),
+  /* ─────────────────── 8: Course 3 supervised production cycle ─── */
+  makeSupervisedCourseHandler(2),
 
-  /* ─────────────────── 13: Crest Coping & Grading ─── */
+  /* ─────────────────── 9: Crest Coping & Grading ─── */
   {
     enter() {
       const ss = STATE.stepState;
@@ -2204,7 +2408,7 @@ const STEP_HANDLERS = [
     cleanup() {}
   },
 
-  /* ─────────────────── 14: Toe Pavement & Surface Finish ─── */
+  /* ─────────────────── 10: Toe Pavement & Surface Finish ─── */
   {
     enter() {
       const ss = STATE.stepState;
@@ -2251,7 +2455,7 @@ const STEP_HANDLERS = [
     cleanup() { STATE.stepState.compacting = false; }
   },
 
-  /* ─────────────────── 15: Final Inspection ─── */
+  /* ─────────────────── 11: Final Inspection ─── */
   {
     enter() {
       const ss = STATE.stepState;

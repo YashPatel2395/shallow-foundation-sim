@@ -112,6 +112,22 @@
       white-space: nowrap;
     }
     .info-chip b { color: #f5a623; }
+
+    .supervisor-gate {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      justify-content: center;
+      gap: 8px;
+    }
+    .supervisor-gate .btn {
+      flex: 1 1 220px;
+      justify-content: center;
+      text-align: center;
+      line-height: 1.25;
+      white-space: normal;
+    }
   </style>
 </head>
 <body>
@@ -146,7 +162,7 @@
     <div id="header-meta">
       <button id="reset-sim-btn" onclick="resetSimulation()">↺ Reset</button>
       <div id="score-badge">Score: <span id="score-val">1000</span></div>
-      <div id="step-badge">Step <span id="step-cur">1</span> / 16</div>
+      <div id="step-badge">Step <span id="step-cur">1</span> / 12</div>
     </div>
   </header>
 

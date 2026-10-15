@@ -187,11 +187,11 @@ const STEPS = [
     warning: 'Backfilling before the stem has cured, or compacting too close with heavy equipment, can crack or push over the wall.'
   },
   {
-    title: '13. Final Inspection',
-    desc: 'Verify 5 quality checkpoints on the completed retaining wall.',
-    subtasks: ['Check all 5 quality points', 'Average score ≥ 80%', 'Sign off construction'],
-    why: 'Final QA confirms the wall meets design specifications before it is relied on to hold back the retained soil.',
-    warning: 'A defective retaining wall fails silently for years before it finally gives way.'
+    title: '13. Road Opening & Final Inspection',
+    desc: 'Open the completed road on the upper grade, then verify 5 quality checkpoints on the retaining wall supporting it.',
+    subtasks: ['Open upper road to traffic', 'Check all 5 quality points', 'Average score ≥ 80%', 'Sign off construction'],
+    why: 'The operating road makes the wall’s purpose tangible: it safely creates usable transportation space where the natural slope could not support it.',
+    warning: 'The road must not open until wall alignment, drainage, backfill compaction, and upper-grade support all pass inspection.'
   }
 ];
 
@@ -293,12 +293,12 @@ const STEP_META = [
     learningObjective: 'Backfilling in lifts lets the wall pick up load gradually instead of all at once.'
   },
   {
-    purpose: 'Confirm the retaining wall meets design specification before it is relied on to hold back soil.',
-    userAction: 'Click each inspection point and review the pass/fail results.',
-    tools: ['Inspection checklist', 'Level', 'Measuring tools'],
-    qualityCheck: 'All 5 checkpoints pass with an average score of 80% or higher.',
+    purpose: 'Commission the upper road and confirm the retaining wall safely supports the finished transportation corridor.',
+    userAction: 'Observe live traffic on the upper road, then click each inspection point and review the pass/fail results.',
+    tools: ['Inspection checklist', 'Level', 'Drainage probe', 'Density records', 'Road level survey'],
+    qualityCheck: 'All 5 checkpoints pass with an average score of 80% or higher, including roadway support.',
     commonMistake: 'Signing off on visual appearance alone without checking alignment, drainage, and backfill compaction.',
-    learningObjective: 'A retaining wall that looks fine on the surface can still be one blocked weep hole away from failure.'
+    learningObjective: 'The retaining wall is infrastructure for the road above it, so wall performance and road serviceability are one connected system.'
   }
 ];
 
@@ -315,7 +315,7 @@ const FINAL_CHECKS = [
   { label: 'Concrete Finish',   note: 'Smooth, void-free, no honeycombing.' },
   { label: 'Weep Hole Flow',    note: 'All weep holes clear and draining.' },
   { label: 'Backfill Compaction', note: 'Density meets specification at each lift.' },
-  { label: 'Vertical Plumb',    note: 'Stem within tolerance of true vertical.' }
+  { label: 'Roadway Support',   note: 'Finished road is level, supported, and safely set back from the wall crest.' }
 ];
 
 /* ══════════════════════════════════════════════════════════════
@@ -563,6 +563,7 @@ function clearScene3D() {
   delete OBJ.truckChuteGroup;
   delete OBJ.inspector;
   delete OBJ.compactor;
+  delete OBJ.roadVehicles;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -574,7 +575,8 @@ function clearScene3D() {
 // cross-section visible without diagonal foreshortening, and clears the
 // permanent hillside (which starts past Z=2.15 -- see addHillside()/
 // RAMP_Z0 in the GROUND/SITE section).
-const CAM_DEFAULT = { pos: new THREE.Vector3(13.93, 3.87, -3.66), look: new THREE.Vector3(-3.00, -1.23, 0.40) };
+const CAM_DEFAULT  = { pos: new THREE.Vector3(25, 8.5, -12), look: new THREE.Vector3(0, 0.2, 1.2) };
+const CAM_USE_CASE = { pos: new THREE.Vector3(25, 12, -15), look: new THREE.Vector3(0, 2.1, 5.2) };
 const CAM_PRESETS = [
   CAM_DEFAULT, // 0 investigation
   CAM_DEFAULT, // 1 layout
@@ -587,8 +589,8 @@ const CAM_PRESETS = [
   CAM_DEFAULT, // 8 stem formwork
   CAM_DEFAULT, // 9 stem casting
   CAM_DEFAULT, // 10 drainage
-  CAM_DEFAULT, // 11 backfilling
-  CAM_DEFAULT  // 12 final inspection
+  CAM_DEFAULT,  // 11 backfilling
+  CAM_USE_CASE  // 12 road opening + final inspection
 ];
 
 let camTarget = null;
@@ -763,7 +765,10 @@ function updateParticles(dt) {
    backfilled side) is +Z.
 ══════════════════════════════════════════════════════════════ */
 
-const WALL_LENGTH   = 10;
+// The wall is a real site-scale linear structure, not an isolated sample.
+// A 30 m run fills most of the 36 m-wide site while retaining enough room at
+// both ends to see how the wall terminates into the surrounding land.
+const WALL_LENGTH   = 30;
 const WALL_X0        = -WALL_LENGTH / 2;
 const WALL_X1        =  WALL_LENGTH / 2;
 const TOE_WIDTH      = 0.8;
@@ -1183,6 +1188,107 @@ function buildWeepPipe() {
   return pipe;
 }
 
+/* ══════════════════════════════════════════════════════════════
+   COMPLETED ROADWAY
+   The road sits on the retained plateau above the finished wall. Moving
+   traffic makes the wall's purpose immediately legible: it creates and
+   supports usable transportation space at the upper grade.
+══════════════════════════════════════════════════════════════ */
+
+const ROAD_LENGTH = WALL_LENGTH + 2;
+const ROAD_WIDTH = 5.2;
+const ROAD_CENTER_Z = RAMP_Z1 + ROAD_WIDTH / 2 + 0.35;
+const ROAD_Y = RETAINED_GRADE_Y + 0.035;
+
+function buildRoadVehicle(color, x, z, direction, speed) {
+  const vehicle = new THREE.Group();
+  const bodyMat = new THREE.MeshLambertMaterial({ color });
+  const glassMat = new THREE.MeshLambertMaterial({ color: 0x9cc9df });
+
+  const body = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.36, 0.64), bodyMat);
+  body.position.y = 0.34;
+  body.castShadow = true;
+  vehicle.add(body);
+
+  const cabin = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.3, 0.55), glassMat);
+  cabin.position.set(-0.08 * direction, 0.64, 0);
+  cabin.castShadow = true;
+  vehicle.add(cabin);
+
+  const wheelMat = new THREE.MeshLambertMaterial({ color: 0x16191b });
+  [-0.43, 0.43].forEach(wx => {
+    [-0.34, 0.34].forEach(wz => {
+      const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.11, 12), wheelMat);
+      wheel.rotation.x = Math.PI / 2;
+      wheel.position.set(wx, 0.18, wz);
+      vehicle.add(wheel);
+    });
+  });
+
+  vehicle.position.set(x, ROAD_Y + 0.03, z);
+  vehicle.rotation.y = direction < 0 ? Math.PI : 0;
+  vehicle.userData.direction = direction;
+  vehicle.userData.speed = speed;
+  return vehicle;
+}
+
+function buildOperationalRoad() {
+  const roadGroup = new THREE.Group();
+
+  const asphalt = new THREE.Mesh(
+    new THREE.BoxGeometry(ROAD_LENGTH, 0.08, ROAD_WIDTH),
+    new THREE.MeshLambertMaterial({ color: 0x30343a })
+  );
+  asphalt.position.set(0, ROAD_Y, ROAD_CENTER_Z);
+  asphalt.receiveShadow = true;
+  roadGroup.add(asphalt);
+
+  const shoulderMat = new THREE.MeshLambertMaterial({ color: 0x8e9397 });
+  [-1, 1].forEach(side => {
+    const shoulder = new THREE.Mesh(new THREE.BoxGeometry(ROAD_LENGTH, 0.055, 0.38), shoulderMat);
+    shoulder.position.set(0, ROAD_Y + 0.045, ROAD_CENTER_Z + side * (ROAD_WIDTH / 2 - 0.19));
+    roadGroup.add(shoulder);
+  });
+
+  const whiteMat = new THREE.MeshBasicMaterial({ color: 0xf4f4ef });
+  const yellowMat = new THREE.MeshBasicMaterial({ color: 0xf5c542 });
+  [-1, 1].forEach(side => {
+    const edgeLine = new THREE.Mesh(new THREE.BoxGeometry(ROAD_LENGTH - 0.4, 0.018, 0.07), whiteMat);
+    edgeLine.position.set(0, ROAD_Y + 0.09, ROAD_CENTER_Z + side * (ROAD_WIDTH / 2 - 0.55));
+    roadGroup.add(edgeLine);
+  });
+  for (let x = -ROAD_LENGTH / 2 + 1; x < ROAD_LENGTH / 2 - 0.5; x += 2.5) {
+    const dash = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.02, 0.09), yellowMat);
+    dash.position.set(x, ROAD_Y + 0.095, ROAD_CENTER_Z);
+    roadGroup.add(dash);
+  }
+
+  // A guard rail on the wall side reinforces that traffic is operating at
+  // the upper grade created by the retaining structure.
+  const railMat = new THREE.MeshLambertMaterial({ color: 0xc7cdd1 });
+  const railZ = ROAD_CENTER_Z - ROAD_WIDTH / 2 - 0.22;
+  for (let x = -ROAD_LENGTH / 2 + 0.5; x <= ROAD_LENGTH / 2 - 0.5; x += 2) {
+    const post = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.65, 0.08), railMat);
+    post.position.set(x, ROAD_Y + 0.34, railZ);
+    roadGroup.add(post);
+  }
+  const rail = new THREE.Mesh(new THREE.BoxGeometry(ROAD_LENGTH, 0.12, 0.12), railMat);
+  rail.position.set(0, ROAD_Y + 0.62, railZ);
+  roadGroup.add(rail);
+
+  const vehicles = [
+    buildRoadVehicle(0xd84343, -10, ROAD_CENTER_Z - 1.25,  1, 3.2),
+    buildRoadVehicle(0x2f74c0,   7, ROAD_CENTER_Z - 1.25,  1, 2.7),
+    buildRoadVehicle(0xf0b429,  11, ROAD_CENTER_Z + 1.25, -1, 3.0),
+    buildRoadVehicle(0xeeeeee,  -3, ROAD_CENTER_Z + 1.25, -1, 2.5)
+  ];
+  vehicles.forEach(vehicle => roadGroup.add(vehicle));
+  OBJ.roadVehicles = vehicles;
+
+  addStep(roadGroup);
+  return roadGroup;
+}
+
 let stagedFormworkPanels = null;
 
 /* ══════════════════════════════════════════════════════════════
@@ -1385,18 +1491,19 @@ function showResult() {
     rc.innerHTML = `
       <div id="result-icon">🧱</div>
       <h2>Retaining Wall Complete!</h2>
-      <p>Wall cast, drained, and backfilled to grade.</p>
+      <p>Wall cast, drained, backfilled, and supporting a fully operational upper road.</p>
       <div id="result-score-line">Final Score: <span id="result-score">${STATE.score}</span></div>
       <div id="result-grade">${getGrade()}</div>
       <div class="pile-report">
         <h3 style="color:#f5a623;margin-bottom:10px;">Construction Report</h3>
         <table style="width:100%;text-align:left;font-size:0.85rem;">
           <tr><td style="color:#aaa;">Wall Type:</td><td>Cantilever Retaining Wall</td></tr>
-          <tr><td style="color:#aaa;">Wall Length:</td><td>10.0m</td></tr>
+          <tr><td style="color:#aaa;">Wall Length:</td><td>${WALL_LENGTH.toFixed(1)}m</td></tr>
           <tr><td style="color:#aaa;">Stem Height:</td><td>4.0m</td></tr>
           <tr><td style="color:#aaa;">Footing:</td><td>Two-mat reinforced</td></tr>
           <tr><td style="color:#aaa;">Drainage:</td><td style="color:#27ae60;">Weep holes + gravel layer</td></tr>
           <tr><td style="color:#aaa;">Backfill:</td><td style="color:#27ae60;">Compacted in lifts</td></tr>
+          <tr><td style="color:#aaa;">Supported Use:</td><td style="color:#27ae60;">Two-lane operational road</td></tr>
           <tr><td style="color:#aaa;">Status:</td><td style="color:#27ae60;font-weight:700;">PASS</td></tr>
         </table>
       </div>
@@ -1497,6 +1604,15 @@ function animate() {
 
   if (OBJ.inspector) {
     OBJ.inspector.position.y = 0 + 0.05 * Math.sin(elapsed * 1.5);
+  }
+
+  if (OBJ.roadVehicles) {
+    const limit = ROAD_LENGTH / 2 + 1.2;
+    OBJ.roadVehicles.forEach(vehicle => {
+      vehicle.position.x += vehicle.userData.direction * vehicle.userData.speed * dt;
+      if (vehicle.position.x > limit) vehicle.position.x = -limit;
+      if (vehicle.position.x < -limit) vehicle.position.x = limit;
+    });
   }
 
   updateParticles(dt);
@@ -2523,7 +2639,7 @@ const STEP_HANDLERS = [
     }
   },
 
-  /* ─────────────────── 12: Final Inspection ─── */
+  /* ─────────────────── 12: Road Opening & Final Inspection ─── */
   {
     enter() {
       const ss = STATE.stepState;
@@ -2543,6 +2659,10 @@ const STEP_HANDLERS = [
       heelFill.position.set(0, (RETAINED_GRADE_Y + FOOTING_TOP_Y) / 2, STEM_Z1 + (HEEL_WIDTH + 0.3) / 2);
       addStep(heelFill);
 
+      buildOperationalRoad();
+      markSubtask(0);
+      showFeedback('correct', 'Upper road opened — traffic now demonstrates the usable grade created by the wall.');
+
       const checkPositions = [
         new THREE.Vector3(WALL_X0 + 1, STEM_TOP_Y + 0.4, STEM_ZC),
         new THREE.Vector3(WALL_X0 + 3.5, STEM_TOP_Y + 0.4, STEM_ZC),
@@ -2552,7 +2672,7 @@ const STEP_HANDLERS = [
       ];
 
       const ab = DOM.actionBar();
-      ab.innerHTML = '<div class="step-instruction">Click each pulsing checkpoint to run the inspection</div>';
+      ab.innerHTML = '<div class="step-instruction">Road open above — inspect the wall system supporting live traffic</div>';
 
       checkPositions.forEach((pos, i) => {
         const m = new THREE.Mesh(new THREE.OctahedronGeometry(0.18, 0), MAT.diamondBlue.clone());
@@ -2579,7 +2699,7 @@ const STEP_HANDLERS = [
               `<strong>${chk.label}</strong><span style="color:#f5a623;font-weight:700;">${score}%</span><span style="font-size:.7rem;opacity:.8;">${chk.note}</span>`,
               2200
             );
-            markSubtask(0);
+            markSubtask(1);
             showFeedback('correct', `${chk.label}: ${score}%`);
 
             if (ss.checked === FINAL_CHECKS.length) {
@@ -2587,8 +2707,8 @@ const STEP_HANDLERS = [
               safeTimeout(() => {
                 ab.innerHTML = '';
                 if (avg >= 80) {
-                  markSubtask(1);
                   markSubtask(2);
+                  markSubtask(3);
                   ab.appendChild(el('div', 'step-instruction', `Average score ${avg}% — PASS. Construction signed off.`));
                   showFeedback('correct', `Final inspection passed at ${avg}%!`);
                   safeTimeout(() => completeStep(), 1500);
