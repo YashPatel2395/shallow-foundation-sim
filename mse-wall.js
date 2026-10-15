@@ -1266,7 +1266,10 @@ function addCopingMesh() {
 
 const ROAD_LENGTH = WALL_LENGTH + 2;
 const ROAD_WIDTH = 5.2;
-const ROAD_CENTER_Z = RAMP_Z1 + ROAD_WIDTH / 2 + 0.35;
+// The finished roadway crosses the reinforced fill before tying into the
+// pre-existing upper plateau, making the wall's land-support function clear.
+const ROAD_NEAR_EDGE_Z = PANEL_Z1 + 0.8;
+const ROAD_CENTER_Z = ROAD_NEAR_EDGE_Z + ROAD_WIDTH / 2;
 const ROAD_Y = RETAINED_GRADE_Y + 0.04;
 
 function buildRoadVehicle(color, x, z, direction, speed) {

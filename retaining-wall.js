@@ -895,40 +895,41 @@ function buildGroundWithTrench() {
   addHillside();
 }
 
-// Compacted fill that transitions the rectangular heel backfill into the
-// natural rising bank. In section this is a triangular prism: its top stays
-// at finished grade while its underside follows the existing slope up to the
-// plateau. This removes the physically impossible air gap behind the wall.
-function buildBackfillTieIn() {
-  const z0 = STEM_Z1 + HEEL_WIDTH + 0.3;
-  const z1 = RAMP_Z1;
-  const y0 = TOE_GRADE_Y;
-  const y1 = RETAINED_GRADE_Y;
+// Retained soil is built in five horizontal lifts, just like the MSE module.
+// Each higher lift reaches farther back to the matching elevation on the
+// natural slope, so the compacted fill and existing bank meet continuously.
+const RETAINED_LIFT_COUNT = 5;
+const RETAINED_FILL_Z0 = STEM_Z1 + 0.3;
 
-  const positions = new Float32Array([
-    WALL_X0, y1, z0, // 0 top-front-left
-    WALL_X1, y1, z0, // 1 top-front-right
-    WALL_X1, y1, z1, // 2 top-back-right
-    WALL_X0, y1, z1, // 3 top-back-left
-    WALL_X0, y0, z0, // 4 bottom-front-left
-    WALL_X1, y0, z0  // 5 bottom-front-right
-  ]);
-  const indices = [
-    0, 1, 2, 0, 2, 3, // finished-grade top
-    4, 5, 1, 4, 1, 0, // front face against rectangular heel fill
-    4, 0, 3,           // west triangular end
-    5, 2, 1,           // east triangular end
-    4, 3, 2, 4, 2, 5  // underside following the natural bank
-  ];
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geo.setIndex(indices);
-  geo.computeVertexNormals();
+function buildRetainedBackfillLift(index) {
+  const liftH = (RETAINED_GRADE_Y - TOE_GRADE_Y) / RETAINED_LIFT_COUNT;
+  const yBottom = TOE_GRADE_Y + index * liftH;
+  const yTop = yBottom + liftH;
+  const slopeProgress = (yTop - TOE_GRADE_Y) / (RETAINED_GRADE_Y - TOE_GRADE_Y);
+  const zEnd = RAMP_Z0 + RAMP_RUN * slopeProgress;
+  const depth = zEnd - RETAINED_FILL_Z0;
 
-  const tieIn = new THREE.Mesh(geo, MAT.dirt);
-  tieIn.castShadow = true;
-  tieIn.receiveShadow = true;
-  return addStep(tieIn);
+  const lift = new THREE.Mesh(new THREE.BoxGeometry(WALL_LENGTH, liftH, depth), MAT.dirt);
+  lift.position.set(0, yBottom + liftH / 2, RETAINED_FILL_Z0 + depth / 2);
+  lift.castShadow = true;
+  lift.receiveShadow = true;
+  return lift;
+}
+
+function buildRetainedBackfill(liftCount) {
+  const group = new THREE.Group();
+  const baseH = TOE_GRADE_Y - FOOTING_TOP_Y;
+  const baseDepth = RAMP_Z0 - RETAINED_FILL_Z0;
+  const base = new THREE.Mesh(new THREE.BoxGeometry(WALL_LENGTH, baseH, baseDepth), MAT.dirt);
+  base.position.set(0, FOOTING_TOP_Y + baseH / 2, RETAINED_FILL_Z0 + baseDepth / 2);
+  base.castShadow = true;
+  base.receiveShadow = true;
+  group.add(base);
+
+  for (let i = 0; i < Math.min(liftCount, RETAINED_LIFT_COUNT); i++) {
+    group.add(buildRetainedBackfillLift(i));
+  }
+  return group;
 }
 
 let siteGroup = null;
@@ -1226,14 +1227,15 @@ function buildWeepPipe() {
 
 /* ══════════════════════════════════════════════════════════════
    COMPLETED ROADWAY
-   The road sits on the retained plateau above the finished wall. Moving
-   traffic makes the wall's purpose immediately legible: it creates and
-   supports usable transportation space at the upper grade.
+   The road crosses the new retained grade and ties into the original upper
+   land. Moving traffic makes the wall's purpose immediately legible: it
+   creates and supports usable transportation space at the upper grade.
 ══════════════════════════════════════════════════════════════ */
 
 const ROAD_LENGTH = WALL_LENGTH + 2;
 const ROAD_WIDTH = 5.2;
-const ROAD_CENTER_Z = RAMP_Z1 + ROAD_WIDTH / 2 + 0.35;
+const ROAD_NEAR_EDGE_Z = STEM_Z1 + 0.8;
+const ROAD_CENTER_Z = ROAD_NEAR_EDGE_Z + ROAD_WIDTH / 2;
 const ROAD_Y = RETAINED_GRADE_Y + 0.035;
 
 function buildRoadVehicle(color, x, z, direction, speed) {
@@ -2607,25 +2609,14 @@ const STEP_HANDLERS = [
       fillWrap.appendChild(fillTrack);
       ab.appendChild(fillWrap);
 
-      const heelFill = new THREE.Mesh(
-        new THREE.BoxGeometry(WALL_LENGTH, 0.02, HEEL_WIDTH + STEM_THICK + 0.3),
-        MAT.dirt
-      );
-      heelFill.position.set(0, FOOTING_TOP_Y + 0.01, STEM_Z1 + (HEEL_WIDTH + 0.3) / 2);
-      addStep(heelFill);
-
-      function updateHeelFill() {
-        const totalRise = RETAINED_GRADE_Y - FOOTING_TOP_Y;
-        const h = Math.max(0.02, totalRise * ss.fillPct / 100);
-        heelFill.scale.y = h / 0.02;
-        heelFill.position.y = FOOTING_TOP_Y + h / 2;
-      }
+      const retainedFill = buildRetainedBackfill(0);
+      addStep(retainedFill);
 
       const fillBtn = makeBtn('Add Soil Layer', 'btn-primary', () => {
         if (ss.fillCount >= 5) return;
         ss.fillCount++;
         ss.fillPct = Math.min(100, ss.fillPct + 20);
-        updateHeelFill();
+        retainedFill.add(buildRetainedBackfillLift(ss.fillCount - 1));
         const bar = $('backfill-bar'); if (bar) bar.style.width = ss.fillPct + '%';
         showFeedback('correct', `Backfill lift ${ss.fillCount}/5 added.`);
         markSubtask(1);
@@ -2664,10 +2655,6 @@ const STEP_HANDLERS = [
 
       function checkDone() {
         if (ss.toeFilled && ss.fillCount >= 5 && ss.compactCount >= 3) {
-          if (!ss.tieInBuilt) {
-            ss.tieInBuilt = true;
-            buildBackfillTieIn();
-          }
           markSubtask(3);
           showFeedback('correct', 'Backfilling complete — grade restored on both sides of the wall.');
           safeTimeout(() => completeStep(), 1200);
@@ -2695,10 +2682,7 @@ const STEP_HANDLERS = [
       const toeFill = new THREE.Mesh(new THREE.BoxGeometry(WALL_LENGTH, TOE_GRADE_Y - FOOTING_BOT_Y, TOE_WIDTH), MAT.dirt);
       toeFill.position.set(0, (TOE_GRADE_Y + FOOTING_BOT_Y) / 2, FOOTING_Z0 + TOE_WIDTH / 2);
       addStep(toeFill);
-      const heelFill = new THREE.Mesh(new THREE.BoxGeometry(WALL_LENGTH, RETAINED_GRADE_Y - FOOTING_TOP_Y, HEEL_WIDTH + STEM_THICK + 0.3), MAT.dirt);
-      heelFill.position.set(0, (RETAINED_GRADE_Y + FOOTING_TOP_Y) / 2, STEM_Z1 + (HEEL_WIDTH + 0.3) / 2);
-      addStep(heelFill);
-      buildBackfillTieIn();
+      addStep(buildRetainedBackfill(RETAINED_LIFT_COUNT));
 
       buildOperationalRoad();
       markSubtask(0);
