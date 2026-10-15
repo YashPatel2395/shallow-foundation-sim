@@ -105,6 +105,8 @@ class OrbitControls {
 ══════════════════════════════════════════════════════════════ */
 
 const N_COURSES = 3;
+const REINFORCEMENT_LAYERS_PER_COURSE = 3;
+const SOIL_LIFTS_PER_COURSE = 3;
 
 function courseStepDefs(courseNum, startIndex) {
   const seat = courseNum === 1 ? 'on the leveling pad' : `on top of Course ${courseNum - 1}`;
@@ -117,16 +119,16 @@ function courseStepDefs(courseNum, startIndex) {
       warning: 'An unbraced panel row can lean or topple before there is any backfill behind it to hold it upright.'
     },
     {
-      title: `${startIndex + 2}. Course ${courseNum} — Lay Strip Reinforcement`,
-      desc: `Lay the steel strip reinforcement for Course ${courseNum}, hooking each strip onto its panel's connector loop.`,
-      subtasks: ['Lay reinforcement strips'],
+      title: `${startIndex + 2}. Course ${courseNum} — Lay Base Strip Reinforcement`,
+      desc: `Lay the first of three steel-strip layers for Course ${courseNum}, hooking every strip onto its panel connector.`,
+      subtasks: ['Lay reinforcement layer 1 of 3'],
       why: "The strip-to-panel connection ties the facing to the reinforced soil mass -- without it the panels are just an unsupported, free-standing skin.",
       warning: "A strip that isn't properly hooked to its connector carries no load at all, no matter how well it is buried."
     },
     {
-      title: `${startIndex + 3}. Course ${courseNum} — Backfill & Compact Lift`,
-      desc: `Backfill behind Course ${courseNum} in lifts, compacting as you go, then strike the temporary bracing once the fill holds the panels in place.`,
-      subtasks: ['Add soil lift 1', 'Compact soil lift 1', 'Add soil lift 2', 'Compact soil lift 2'],
+      title: `${startIndex + 3}. Course ${courseNum} — Reinforce, Backfill & Compact`,
+      desc: `Build Course ${courseNum} in three compacted soil lifts, installing another strip layer before lifts 2 and 3, then strike the temporary bracing.`,
+      subtasks: ['Add soil lift 1', 'Compact soil lift 1', 'Install reinforcement layer 2', 'Add soil lift 2', 'Compact soil lift 2', 'Install reinforcement layer 3', 'Add soil lift 3', 'Compact soil lift 3'],
       why: "Compaction develops the friction between the soil and the strips -- an MSE wall's strength comes from this friction, not from the concrete facing.",
       warning: 'Under-compacted backfill lets the strips pull through the soil instead of gripping it -- a silent, hard-to-detect failure mode.'
     }
@@ -145,17 +147,17 @@ function courseStepMeta(courseNum) {
     },
     {
       purpose: `Connect the reinforced soil system to the Course ${courseNum} facing so load transfers from the panels into the strips.`,
-      userAction: 'Lay each strip and hook it onto its panel connector.',
+      userAction: 'Lay the base strip layer and hook every strip onto its panel connector.',
       tools: ['Steel strip reinforcement', 'Panel connector loops'],
-      qualityCheck: 'Every strip seated on its connector, running perpendicular to the wall face.',
+      qualityCheck: 'Every base-layer strip seated on its connector and running perpendicular to the wall face.',
       commonMistake: 'Laying strips loosely without confirming the connector hook is fully engaged.',
       learningObjective: 'The strip-to-panel connection, not the concrete facing, is what actually resists the retained soil pressure.'
     },
     {
       purpose: `Densify the Course ${courseNum} backfill so it grips the strip reinforcement by friction.`,
-      userAction: 'Place the first loose lift and compact it before placing and compacting the second lift.',
+      userAction: 'Place and compact three soil lifts, adding the next reinforcement layer before each higher lift.',
       tools: ['Select granular backfill', 'Plate / roller compactor'],
-      qualityCheck: 'Each loose lift is visibly spread and compacted before the next is placed; bracing is removed only after the second lift.',
+      qualityCheck: 'Three reinforcement elevations are connected and each loose lift is compacted before the next is placed; bracing is removed only after lift 3.',
       commonMistake: 'Compacting too close to the panel face with heavy equipment, which can shove the panels out of alignment.',
       learningObjective: "An MSE wall gets its strength from compacted soil friction on the strips, not from the facing panels resisting pressure directly."
     }
@@ -166,7 +168,7 @@ function supervisedCourseStepDef(courseNum, stepNumber) {
   return {
     title: `${stepNumber}. Course ${courseNum} — Supervised Automated Cycle`,
     desc: `Use the Course 1 method as the crew builds Course ${courseNum} automatically. Monitor the sequence and release work at the quality hold point.`,
-    subtasks: ['Start the automated course cycle', 'Approve the quality hold point', 'Monitor reinforcement and compacted backfill'],
+    subtasks: ['Start the automated course cycle', 'Approve the quality hold point', 'Monitor 3 reinforcement layers and 3 compacted lifts'],
     why: 'Real construction crews repeat established work while the engineer supervises quality gates. You already learned the hands-on sequence in Course 1; now your job changes from installer to supervisor.',
     warning: 'Automation does not remove quality control — panels, connections, and lift compaction still have to be verified before the crew proceeds.'
   };
@@ -177,7 +179,7 @@ function supervisedCourseStepMeta(courseNum) {
     purpose: `Build Course ${courseNum} efficiently by repeating the proven Course 1 method under active quality supervision.`,
     userAction: 'Start the crew, observe the sequence, and answer the quality hold-point question before backfilling is released.',
     tools: ['Precast facing panels', 'Steel strip reinforcement', 'Loader', 'Roller compactor', 'QA hold-point checklist'],
-    qualityCheck: 'Panel row braced and plumb, every strip connected, and each soil lift compacted before the next course.',
+    qualityCheck: 'Panel row braced and plumb, all three strip elevations connected, and each of the three soil lifts compacted before the next course.',
     commonMistake: 'Treating repetitive work as automatic approval and missing a bad connection or under-compacted lift.',
     learningObjective: 'Repetitive construction is managed through production cycles plus deliberate quality gates, not by repeating every manual action yourself.'
   };
@@ -310,7 +312,7 @@ const SOIL_RESULTS = [
 
 const FINAL_CHECKS = [
   { label: 'Panel Alignment',    note: 'Facing plumb within tolerance, joints tight along the run.' },
-  { label: 'Strip Connections',  note: 'All reinforcement ties fully engaged at the panel connectors.' },
+  { label: 'Strip Connections',  note: 'All 9 reinforcement layers fully engaged at their panel connectors.' },
   { label: 'Lift Compaction',    note: 'Each backfill lift meets target density behind the panels.' },
   { label: 'Crest Drainage',     note: 'Crest graded to shed water away from the wall face.' },
   { label: 'Roadway Support',    note: 'Upper road is level, supported, and safely protected at the wall crest.' }
@@ -818,6 +820,9 @@ const PAD_THICK     = 0.15;
 const PAD_TOP_Y     = SUBGRADE_Y + PAD_THICK;      // -0.20
 
 function COURSE_BASE_Y(c) { return PAD_TOP_Y + c * PANEL_H; }
+function REINFORCEMENT_LAYER_Y(c, layerIndex) {
+  return COURSE_BASE_Y(c) + 0.1 + layerIndex * (PANEL_H / SOIL_LIFTS_PER_COURSE);
+}
 
 const WALL_TOP_Y       = PAD_TOP_Y + N_COURSES * PANEL_H;   // 4.30
 const RETAINED_GRADE_Y = WALL_TOP_Y;                        // crest grade once finished
@@ -1038,7 +1043,6 @@ function buildPanelsForCourse(c) {
   const group = new THREE.Group();
   const panels = [];
   const yCenter = COURSE_BASE_Y(c) + PANEL_H / 2;
-  const connectorY = -PANEL_H / 2 + 0.12;
 
   panelSpecsForCourse(c).forEach(spec => {
     const pg = new THREE.Group();
@@ -1047,17 +1051,20 @@ function buildPanelsForCourse(c) {
     body.castShadow = true;
     pg.add(body);
 
-    connectorOffsets(spec.width).forEach(dx => {
-      const strap = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.48, 0.055), MAT.connector);
-      strap.position.set(dx, connectorY + 0.24, PANEL_THICK / 2 + 0.035);
-      pg.add(strap);
+    for (let layerIndex = 0; layerIndex < REINFORCEMENT_LAYERS_PER_COURSE; layerIndex++) {
+      const connectorY = REINFORCEMENT_LAYER_Y(c, layerIndex) - yCenter;
+      connectorOffsets(spec.width).forEach(dx => {
+        const strap = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.26, 0.055), MAT.connector);
+        strap.position.set(dx, connectorY + 0.13, PANEL_THICK / 2 + 0.035);
+        pg.add(strap);
 
-      const loop = new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.025, 6, 12, Math.PI), MAT.connector);
-      loop.rotation.x = Math.PI / 2;
-      loop.rotation.z = Math.PI;
-      loop.position.set(dx, connectorY, PANEL_THICK / 2 + 0.075);
-      pg.add(loop);
-    });
+        const loop = new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.025, 6, 12, Math.PI), MAT.connector);
+        loop.rotation.x = Math.PI / 2;
+        loop.rotation.z = Math.PI;
+        loop.position.set(dx, connectorY, PANEL_THICK / 2 + 0.075);
+        pg.add(loop);
+      });
+    }
 
     pg.position.set(spec.x, yCenter, PANEL_THICK / 2);
     pg.visible = false;
@@ -1098,30 +1105,41 @@ function buildBracesForCourse(c, panels) {
   return { group, braces, reveal, hideAll };
 }
 
-// One reinforcement layer per course -- flat steel strips hooked to the
-// panel connectors and running back into the reinforced soil zone.
+// Three reinforcement elevations per course -- flat steel strips hooked to
+// matching panel connectors and embedded between successive compacted lifts.
 function buildStripsForCourse(c) {
   const group = new THREE.Group();
   const bars = [];
-  const y = COURSE_BASE_Y(c) + 0.12;
+  const layers = [];
 
-  reinforcementXsForCourse(c).forEach(x => {
-    const bar = new THREE.Mesh(new THREE.BoxGeometry(0.085, 0.025, STRIP_LENGTH), MAT.steelStrip);
-    bar.position.set(x, y, PANEL_Z1 + STRIP_LENGTH / 2 + 0.04);
-    bar.visible = false;
-    group.add(bar);
-    bars.push(bar);
-  });
+  for (let layerIndex = 0; layerIndex < REINFORCEMENT_LAYERS_PER_COURSE; layerIndex++) {
+    const layerBars = [];
+    const y = REINFORCEMENT_LAYER_Y(c, layerIndex);
+    reinforcementXsForCourse(c).forEach(x => {
+      const bar = new THREE.Mesh(new THREE.BoxGeometry(0.085, 0.025, STRIP_LENGTH), MAT.steelStrip);
+      bar.position.set(x, y, PANEL_Z1 + STRIP_LENGTH / 2 + 0.04);
+      bar.visible = false;
+      group.add(bar);
+      bars.push(bar);
+      layerBars.push(bar);
+    });
+    layers.push(layerBars);
+  }
 
   function reveal(pct) {
     const n = Math.round(bars.length * pct);
     bars.forEach((b, i) => { b.visible = i < n; });
   }
-  return { group, bars, reveal };
+  function revealLayer(layerIndex, pct) {
+    const layerBars = layers[layerIndex] || [];
+    const n = Math.round(layerBars.length * pct);
+    layerBars.forEach((b, i) => { b.visible = i < n; });
+  }
+  return { group, bars, layers, reveal, revealLayer };
 }
 
-// A course's backfill has two states: loose granular piles delivered by a
-// loader, then a compacted mass that grows only while the roller passes.
+// A course's backfill has three successive lift states: loose granular piles
+// delivered by a loader, then a compacted mass that grows as the roller passes.
 // Its retained-side depth increases by course so the top of each lift meets
 // the existing hillside instead of ending as a detached rectangular block.
 function buildFillForCourse(c) {
@@ -1158,7 +1176,7 @@ function buildFillForCourse(c) {
 
   function showLooseLift(liftNumber) {
     clearLoose();
-    const surfaceY = baseY + PANEL_H * (liftNumber - 1) / 2;
+    const surfaceY = baseY + PANEL_H * (liftNumber - 1) / SOIL_LIFTS_PER_COURSE;
     const xs = [];
     for (let x = WALL_X0 + 0.8; x <= WALL_X1 - 0.8; x += 1.45) xs.push(x);
     looseMounds = xs.map((x, i) => {
@@ -1184,8 +1202,9 @@ function buildFillForCourse(c) {
   }
 
   function spreadLoose(liftNumber, progress) {
-    const startPct = (liftNumber - 1) * 50;
-    setPct(startPct + 50 * progress);
+    const liftPct = 100 / SOIL_LIFTS_PER_COURSE;
+    const startPct = (liftNumber - 1) * liftPct;
+    setPct(startPct + liftPct * progress);
     looseMounds.forEach(mound => {
       const s = Math.max(0.08, 1 - progress * 0.92);
       mound.scale.set(
@@ -1560,8 +1579,8 @@ function showResult() {
           <tr><td style="color:#aaa;">Wall Length:</td><td>${WALL_LENGTH.toFixed(1)}m</td></tr>
           <tr><td style="color:#aaa;">Wall Height:</td><td>${WALL_TOP_Y.toFixed(1)}m over ${N_COURSES} courses</td></tr>
           <tr><td style="color:#aaa;">Facing:</td><td>Precast panels, temporarily braced</td></tr>
-          <tr><td style="color:#aaa;">Reinforcement:</td><td style="color:#27ae60;">Steel strips, ${N_COURSES} layers</td></tr>
-          <tr><td style="color:#aaa;">Backfill:</td><td style="color:#27ae60;">Compacted in lifts per course</td></tr>
+          <tr><td style="color:#aaa;">Reinforcement:</td><td style="color:#27ae60;">Steel strips, ${N_COURSES * REINFORCEMENT_LAYERS_PER_COURSE} layers</td></tr>
+          <tr><td style="color:#aaa;">Backfill:</td><td style="color:#27ae60;">${SOIL_LIFTS_PER_COURSE} compacted lifts per course</td></tr>
           <tr><td style="color:#aaa;">Supported Use:</td><td style="color:#27ae60;">Two-lane operational road</td></tr>
           <tr><td style="color:#aaa;">Status:</td><td style="color:#27ae60;font-weight:700;">PASS</td></tr>
         </table>
@@ -1724,18 +1743,18 @@ function makeCourseHandlers(c) {
 
         const ab = DOM.actionBar();
         ab.innerHTML = '';
-        ab.appendChild(el('div', 'step-instruction', `Hook Course ${label} reinforcement strips to the panel connectors`));
+        ab.appendChild(el('div', 'step-instruction', `Hook Course ${label} base reinforcement layer to the lowest panel connectors`));
 
-        const btn = makeBtn('Lay Strip Reinforcement', 'btn-primary', () => {
+        const btn = makeBtn('Lay Reinforcement Layer 1 of 3', 'btn-primary', () => {
           btn.disabled = true;
           let t = 0;
           const iv = safeInterval(() => {
             t += 0.06;
-            strips.reveal(Math.min(1, t));
+            strips.revealLayer(0, Math.min(1, t));
             if (t >= 1) {
               clearInterval(iv);
               markSubtask(0);
-              showFeedback('correct', `Course ${label} strip reinforcement laid and connected.`);
+              showFeedback('correct', `Course ${label} reinforcement layer 1/3 laid and connected.`);
               safeTimeout(() => completeStep(), 1000);
             }
           }, 40);
@@ -1752,6 +1771,7 @@ function makeCourseHandlers(c) {
         ss.fillCount = 0;
         ss.compactCount = 0;
         ss.fillPct = 0;
+        ss.reinforcementCount = 1;
         ss.busy = false;
 
         addSubgradeFill();
@@ -1759,12 +1779,12 @@ function makeCourseHandlers(c) {
 
         const cur = buildPanelsForCourse(c); cur.reveal(1); addStep(cur.group);
         const braces = buildBracesForCourse(c, cur.panels); braces.reveal(1); addStep(braces.group);
-        const strips = buildStripsForCourse(c); strips.reveal(1); addStep(strips.group);
+        const strips = buildStripsForCourse(c); strips.revealLayer(0, 1); addStep(strips.group);
         const fill = buildFillForCourse(c); addStep(fill.mesh);
 
         const ab = DOM.actionBar();
         ab.innerHTML = '';
-        const instr = el('div', 'step-instruction', `Backfill Course ${label} in lifts, then compact`);
+        const instr = el('div', 'step-instruction', `Build Course ${label} in three reinforced, compacted lifts`);
         ab.appendChild(instr);
 
         const fillWrap = el('div', 'fill-meter-wrap');
@@ -1787,13 +1807,21 @@ function makeCourseHandlers(c) {
         addStep(compactor);
         OBJ.compactor = compactor;
 
+        function fillSubtaskIndex(liftNumber) {
+          return (liftNumber - 1) * 3;
+        }
+
+        function reinforcementSubtaskIndex(layerNumber) {
+          return (layerNumber - 1) * 3 - 1;
+        }
+
         function animateDelivery(liftNumber) {
           ss.busy = true;
           fill.showLooseLift(liftNumber);
           loader.visible = true;
           loader.position.set(WALL_X0 - 1.4, fill.surfaceY() + 0.02, PANEL_Z1 + 1.65);
           instr.textContent = `Loader delivering loose soil for lift ${liftNumber}`;
-          showFeedback('info', `Placing loose backfill lift ${liftNumber}/2...`);
+          showFeedback('info', `Placing loose backfill lift ${liftNumber}/${SOIL_LIFTS_PER_COURSE}...`);
 
           let t = 0;
           const iv = safeInterval(() => {
@@ -1812,12 +1840,12 @@ function makeCourseHandlers(c) {
               loader.visible = false;
               ss.fillCount = liftNumber;
               ss.busy = false;
-              markSubtask((liftNumber - 1) * 2);
+              markSubtask(fillSubtaskIndex(liftNumber));
               fillBtn.disabled = true;
               compactBtn.disabled = false;
               compactBtn.textContent = `Compact Lift ${liftNumber}`;
               instr.textContent = `Loose lift ${liftNumber} placed — compact it before adding another lift`;
-              showFeedback('correct', `Loose lift ${liftNumber}/2 placed. Compact it before proceeding.`);
+              showFeedback('correct', `Loose lift ${liftNumber}/${SOIL_LIFTS_PER_COURSE} placed. Compact it before proceeding.`);
             }
           }, 40);
         }
@@ -1826,10 +1854,10 @@ function makeCourseHandlers(c) {
           ss.busy = true;
           STATE.stepState.compacting = true;
           compactor.visible = true;
-          const targetSurfaceY = COURSE_BASE_Y(c) + PANEL_H * liftNumber / 2 + 0.02;
+          const targetSurfaceY = COURSE_BASE_Y(c) + PANEL_H * liftNumber / SOIL_LIFTS_PER_COURSE + 0.02;
           compactor.position.set(WALL_X0 - 0.8, targetSurfaceY, PANEL_Z1 + 1.1);
           instr.textContent = `Roller compacting lift ${liftNumber} — two visible passes`;
-          showFeedback('info', `Compacting lift ${liftNumber}/2...`);
+          showFeedback('info', `Compacting lift ${liftNumber}/${SOIL_LIFTS_PER_COURSE}...`);
 
           let t = 0;
           const iv = safeInterval(() => {
@@ -1839,41 +1867,72 @@ function makeCourseHandlers(c) {
             compactor.position.z = t < 0.5 ? PANEL_Z1 + 1.15 : PANEL_Z1 + 2.25;
             if (compactor.userData.drum) compactor.userData.drum.rotation.y -= 0.24;
             fill.spreadLoose(liftNumber, t);
-            fillBar.style.width = (50 * (liftNumber - 1) + 50 * t) + '%';
+            const liftPct = 100 / SOIL_LIFTS_PER_COURSE;
+            fillBar.style.width = (liftPct * (liftNumber - 1) + liftPct * t) + '%';
 
             if (t >= 1) {
               clearInterval(iv);
-              fill.setPct(liftNumber * 50);
+              const completedPct = liftNumber * 100 / SOIL_LIFTS_PER_COURSE;
+              fill.setPct(completedPct);
               fill.clearLoose();
               compactor.visible = false;
               STATE.stepState.compacting = false;
               ss.compactCount = liftNumber;
-              ss.fillPct = liftNumber * 50;
+              ss.fillPct = completedPct;
               ss.busy = false;
-              markSubtask((liftNumber - 1) * 2 + 1);
+              markSubtask(fillSubtaskIndex(liftNumber) + 1);
               compactBtn.disabled = true;
 
-              if (liftNumber < 2) {
-                fillBtn.textContent = 'Add Soil Lift 2';
-                fillBtn.disabled = false;
-                instr.textContent = `Lift 1 compacted — place loose lift 2`;
-                showFeedback('correct', 'Lift 1 compacted. The second lift can now be placed.');
+              if (liftNumber < SOIL_LIFTS_PER_COURSE) {
+                const nextLayer = liftNumber + 1;
+                reinforceBtn.textContent = `Lay Reinforcement Layer ${nextLayer} of ${REINFORCEMENT_LAYERS_PER_COURSE}`;
+                reinforceBtn.disabled = false;
+                instr.textContent = `Lift ${liftNumber} compacted — connect reinforcement layer ${nextLayer} before adding more soil`;
+                showFeedback('correct', `Lift ${liftNumber} compacted. Install reinforcement layer ${nextLayer} next.`);
               } else {
                 braces.hideAll();
-                instr.textContent = `Course ${label} fill compacted — temporary bracing removed`;
-                showFeedback('correct', `Course ${label} backfill compacted -- bracing struck.`);
+                instr.textContent = `Course ${label} has three reinforced, compacted lifts — temporary bracing removed`;
+                showFeedback('correct', `Course ${label} completed with three reinforcement layers -- bracing struck.`);
                 safeTimeout(() => completeStep(), 1300);
               }
             }
           }, 35);
         }
 
+        function animateReinforcement(layerNumber) {
+          ss.busy = true;
+          reinforceBtn.disabled = true;
+          instr.textContent = `Connecting reinforcement layer ${layerNumber} of ${REINFORCEMENT_LAYERS_PER_COURSE}`;
+          let t = 0;
+          const iv = safeInterval(() => {
+            t = Math.min(1, t + 0.06);
+            strips.revealLayer(layerNumber - 1, t);
+            if (t >= 1) {
+              clearInterval(iv);
+              ss.reinforcementCount = layerNumber;
+              ss.busy = false;
+              markSubtask(reinforcementSubtaskIndex(layerNumber));
+              fillBtn.textContent = `Add Soil Lift ${layerNumber}`;
+              fillBtn.disabled = false;
+              instr.textContent = `Reinforcement layer ${layerNumber} connected — place soil lift ${layerNumber}`;
+              showFeedback('correct', `Reinforcement layer ${layerNumber}/${REINFORCEMENT_LAYERS_PER_COURSE} connected.`);
+            }
+          }, 40);
+        }
+
         const fillBtn = makeBtn('Add Soil Lift 1', 'btn-primary', () => {
-          if (ss.busy || ss.fillCount >= 2 || ss.fillCount !== ss.compactCount) return;
+          if (ss.busy || ss.fillCount >= SOIL_LIFTS_PER_COURSE || ss.fillCount !== ss.compactCount || ss.reinforcementCount <= ss.fillCount) return;
           fillBtn.disabled = true;
           animateDelivery(ss.fillCount + 1);
         });
         ab.appendChild(fillBtn);
+
+        const reinforceBtn = makeBtn('Lay Reinforcement Layer 2 of 3', 'btn-primary', () => {
+          if (ss.busy || ss.reinforcementCount >= REINFORCEMENT_LAYERS_PER_COURSE || ss.compactCount < ss.reinforcementCount) return;
+          animateReinforcement(ss.reinforcementCount + 1);
+        });
+        reinforceBtn.disabled = true;
+        ab.appendChild(reinforceBtn);
 
         const compactBtn = makeBtn('Compact Lift 1', 'btn-primary', () => {
           if (ss.busy || ss.fillCount === 0 || ss.compactCount >= ss.fillCount) return;
@@ -1976,9 +2035,9 @@ function makeSupervisedCourseHandler(c) {
       }
 
       function automateStrips() {
-        setProgress(`Crew connecting Course ${label} reinforcement strips...`, 32);
+        setProgress(`Crew connecting Course ${label} reinforcement layer 1/3...`, 32);
         animateFraction(1100, t => {
-          strips.reveal(t);
+          strips.revealLayer(0, t);
           progressBar.style.width = `${32 + t * 23}%`;
         }, showQualityGate);
       }
@@ -1999,7 +2058,7 @@ function makeSupervisedCourseHandler(c) {
             Array.from(qaWrap.querySelectorAll('button')).forEach(b => { b.disabled = true; });
             markSubtask(1);
             showFeedback('correct', `Course ${label} quality gate approved — crew released to backfill.`);
-            qaWrap.innerHTML = '<div class="step-instruction" style="color:#27ae60;">✓ Hold point approved — automated lift placement and compaction underway</div>';
+            qaWrap.innerHTML = '<div class="step-instruction" style="color:#27ae60;">✓ Hold point approved — three-layer reinforcement and compaction cycle underway</div>';
             safeTimeout(() => automateLift(1), 500);
           });
           btn.style.fontSize = '0.75rem';
@@ -2011,25 +2070,37 @@ function makeSupervisedCourseHandler(c) {
         fill.showLooseLift(liftNumber);
         loader.visible = true;
         loader.position.set(WALL_X0 - 1.2, fill.surfaceY() + 0.02, PANEL_Z1 + 1.6);
-        const baseProgress = liftNumber === 1 ? 60 : 80;
-        setProgress(`Loader placing Course ${label} soil lift ${liftNumber}/2...`, baseProgress);
+        const baseProgress = [60, 74, 88][liftNumber - 1];
+        setProgress(`Loader placing Course ${label} soil lift ${liftNumber}/${SOIL_LIFTS_PER_COURSE}...`, baseProgress);
 
         animateFraction(900, t => {
           loader.position.x = THREE.MathUtils.lerp(WALL_X0 - 1.2, WALL_X1 + 1.1, t);
           fill.revealLoose(t);
-          progressBar.style.width = `${baseProgress + t * 7}%`;
+          progressBar.style.width = `${baseProgress + t * 4}%`;
         }, () => {
           loader.visible = false;
-          automateCompaction(liftNumber, baseProgress + 7);
+          automateCompaction(liftNumber, baseProgress + 4);
+        });
+      }
+
+      function automateReinforcement(layerNumber) {
+        const baseProgress = layerNumber === 2 ? 72 : 86;
+        setProgress(`Crew connecting Course ${label} reinforcement layer ${layerNumber}/${REINFORCEMENT_LAYERS_PER_COURSE}...`, baseProgress);
+        animateFraction(750, t => {
+          strips.revealLayer(layerNumber - 1, t);
+          progressBar.style.width = `${baseProgress + t * 2}%`;
+        }, () => {
+          showFeedback('correct', `Course ${label} reinforcement layer ${layerNumber}/${REINFORCEMENT_LAYERS_PER_COURSE} connected.`);
+          safeTimeout(() => automateLift(layerNumber), 250);
         });
       }
 
       function automateCompaction(liftNumber, baseProgress) {
         compactor.visible = true;
         STATE.stepState.compacting = true;
-        const surfaceY = COURSE_BASE_Y(c) + PANEL_H * liftNumber / 2 + 0.02;
+        const surfaceY = COURSE_BASE_Y(c) + PANEL_H * liftNumber / SOIL_LIFTS_PER_COURSE + 0.02;
         compactor.position.set(WALL_X0 - 0.8, surfaceY, PANEL_Z1 + 1.1);
-        setProgress(`Roller compacting Course ${label} lift ${liftNumber}/2...`, baseProgress);
+        setProgress(`Roller compacting Course ${label} lift ${liftNumber}/${SOIL_LIFTS_PER_COURSE}...`, baseProgress);
 
         animateFraction(1100, t => {
           const leg = t < 0.5 ? t * 2 : (1 - t) * 2;
@@ -2037,20 +2108,20 @@ function makeSupervisedCourseHandler(c) {
           compactor.position.z = t < 0.5 ? PANEL_Z1 + 1.15 : PANEL_Z1 + 2.25;
           if (compactor.userData.drum) compactor.userData.drum.rotation.y -= 0.24;
           fill.spreadLoose(liftNumber, t);
-          progressBar.style.width = `${baseProgress + t * 10}%`;
+          progressBar.style.width = `${baseProgress + t * 8}%`;
         }, () => {
-          fill.setPct(liftNumber * 50);
+          fill.setPct(liftNumber * 100 / SOIL_LIFTS_PER_COURSE);
           fill.clearLoose();
           compactor.visible = false;
           STATE.stepState.compacting = false;
-          if (liftNumber < 2) {
-            safeTimeout(() => automateLift(2), 350);
+          if (liftNumber < SOIL_LIFTS_PER_COURSE) {
+            safeTimeout(() => automateReinforcement(liftNumber + 1), 350);
           } else {
             braces.hideAll();
             progressBar.style.width = '100%';
             markSubtask(2);
-            setProgress(`Course ${label} complete — panels, strips, and compacted fill accepted`, 100);
-            showFeedback('correct', `Course ${label} production cycle completed under your supervision.`);
+            setProgress(`Course ${label} complete — 3 reinforcement layers and 3 compacted lifts accepted`, 100);
+            showFeedback('correct', `Course ${label} three-layer production cycle completed under your supervision.`);
             safeTimeout(() => completeStep(), 1400);
           }
         });
