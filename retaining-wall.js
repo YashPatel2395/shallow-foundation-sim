@@ -895,6 +895,42 @@ function buildGroundWithTrench() {
   addHillside();
 }
 
+// Compacted fill that transitions the rectangular heel backfill into the
+// natural rising bank. In section this is a triangular prism: its top stays
+// at finished grade while its underside follows the existing slope up to the
+// plateau. This removes the physically impossible air gap behind the wall.
+function buildBackfillTieIn() {
+  const z0 = STEM_Z1 + HEEL_WIDTH + 0.3;
+  const z1 = RAMP_Z1;
+  const y0 = TOE_GRADE_Y;
+  const y1 = RETAINED_GRADE_Y;
+
+  const positions = new Float32Array([
+    WALL_X0, y1, z0, // 0 top-front-left
+    WALL_X1, y1, z0, // 1 top-front-right
+    WALL_X1, y1, z1, // 2 top-back-right
+    WALL_X0, y1, z1, // 3 top-back-left
+    WALL_X0, y0, z0, // 4 bottom-front-left
+    WALL_X1, y0, z0  // 5 bottom-front-right
+  ]);
+  const indices = [
+    0, 1, 2, 0, 2, 3, // finished-grade top
+    4, 5, 1, 4, 1, 0, // front face against rectangular heel fill
+    4, 0, 3,           // west triangular end
+    5, 2, 1,           // east triangular end
+    4, 3, 2, 4, 2, 5  // underside following the natural bank
+  ];
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.setIndex(indices);
+  geo.computeVertexNormals();
+
+  const tieIn = new THREE.Mesh(geo, MAT.dirt);
+  tieIn.castShadow = true;
+  tieIn.receiveShadow = true;
+  return addStep(tieIn);
+}
+
 let siteGroup = null;
 
 function buildSiteElements() {
@@ -2628,6 +2664,10 @@ const STEP_HANDLERS = [
 
       function checkDone() {
         if (ss.toeFilled && ss.fillCount >= 5 && ss.compactCount >= 3) {
+          if (!ss.tieInBuilt) {
+            ss.tieInBuilt = true;
+            buildBackfillTieIn();
+          }
           markSubtask(3);
           showFeedback('correct', 'Backfilling complete — grade restored on both sides of the wall.');
           safeTimeout(() => completeStep(), 1200);
@@ -2658,6 +2698,7 @@ const STEP_HANDLERS = [
       const heelFill = new THREE.Mesh(new THREE.BoxGeometry(WALL_LENGTH, RETAINED_GRADE_Y - FOOTING_TOP_Y, HEEL_WIDTH + STEM_THICK + 0.3), MAT.dirt);
       heelFill.position.set(0, (RETAINED_GRADE_Y + FOOTING_TOP_Y) / 2, STEM_Z1 + (HEEL_WIDTH + 0.3) / 2);
       addStep(heelFill);
+      buildBackfillTieIn();
 
       buildOperationalRoad();
       markSubtask(0);

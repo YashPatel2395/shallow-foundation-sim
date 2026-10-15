@@ -223,18 +223,18 @@ const STEPS = [
     warning: 'An ungraded crest lets water pond right behind the top course, defeating the whole point of using free-draining backfill.'
   },
   {
-    title: '11. Toe Pavement & Surface Finish',
-    desc: 'Compact the toe-side subbase and pave the finished surface in front of the wall.',
-    subtasks: ['Compact toe subbase', 'Pave asphalt surface'],
-    why: 'The finished surface is often the actual reason the wall exists -- e.g. widening a road cut -- so it is the last thing tied into the completed wall.',
-    warning: 'Paving before the wall has taken its design load risks cracking the new surface if the wall settles further.'
+    title: '11. Upper Road & Surface Finish',
+    desc: 'Compact the upper-grade subbase and pave the two-lane road supported by the completed reinforced-soil mass.',
+    subtasks: ['Compact upper-road subbase', 'Pave two-lane asphalt road'],
+    why: 'The upper road is the usable space the MSE wall creates — reinforced soil makes a steep grade change practical without consuming land with a broad natural slope.',
+    warning: 'Paving before the reinforced fill has reached full compaction risks settlement and cracking in the finished road.'
   },
   {
-    title: '12. Final Inspection',
-    desc: 'Verify 5 quality checkpoints on the completed MSE wall.',
-    subtasks: ['Check all 5 quality points', 'Average score ≥ 80%', 'Sign off construction'],
-    why: 'Final QA confirms the reinforced soil system -- facing, connections, and compaction -- meets design intent before it is relied on.',
-    warning: 'An MSE wall that looks fine at the face can still have a poorly compacted or disconnected lift buried behind it.'
+    title: '12. Road Opening & Final Inspection',
+    desc: 'Open the completed upper road to traffic, then verify 5 quality checkpoints on the MSE wall supporting it.',
+    subtasks: ['Open upper road to traffic', 'Check all 5 quality points', 'Average score ≥ 80%', 'Sign off construction'],
+    why: 'Live traffic makes the completed system’s purpose clear: the panels provide the face, while the reinforced soil mass supports the working road above.',
+    warning: 'The road must not open until facing alignment, strip connections, lift compaction, drainage, and roadway support all pass inspection.'
   }
 ];
 
@@ -283,20 +283,20 @@ const STEP_META = [
     learningObjective: 'A wall built correctly below grade can still fail from water intrusion if the crest above it is not finished to shed water away.'
   },
   {
-    purpose: 'Tie the completed wall into the surface it was built to support.',
-    userAction: 'Compact the toe subbase, then pave the finished surface.',
+    purpose: 'Build the upper roadway that the completed reinforced-soil structure was designed to support.',
+    userAction: 'Compact the upper-road subbase, then pave the two-lane asphalt surface.',
     tools: ['Compactor', 'Asphalt paver', 'Subbase aggregate'],
-    qualityCheck: 'Subbase compacted to spec; pavement surface even and tied cleanly to the wall face.',
-    commonMistake: 'Paving immediately against the wall face with no compacted subbase transition.',
-    learningObjective: 'MSE walls are frequently built specifically to create the pavement widening or grade change now visible at the toe.'
+    qualityCheck: 'Subbase compacted to spec; pavement level and safely set back behind the coping and guardrail.',
+    commonMistake: 'Paving over incompletely compacted reinforced fill and assuming the asphalt will bridge later settlement.',
+    learningObjective: 'MSE walls frequently create roadway width at an upper grade that a natural slope could not provide.'
   },
   {
-    purpose: 'Confirm the completed MSE wall meets design specification before it is relied on.',
-    userAction: 'Click each inspection point and review the pass/fail results.',
-    tools: ['Inspection checklist', 'Level', 'Measuring tools'],
-    qualityCheck: 'All 5 checkpoints pass with an average score of 80% or higher.',
+    purpose: 'Commission the upper road and confirm the full MSE system safely supports active traffic.',
+    userAction: 'Observe live traffic, then click each inspection point and review the pass/fail results.',
+    tools: ['Inspection checklist', 'Level', 'Connection records', 'Density records', 'Road level survey'],
+    qualityCheck: 'All 5 checkpoints pass with an average score of 80% or higher, including roadway support.',
     commonMistake: 'Judging the wall only by how straight the facing looks, without checking what is buried behind it.',
-    learningObjective: 'An MSE wall is a soil structure wearing a concrete face -- inspection has to look past the facing to the reinforcement and compaction behind it.'
+    learningObjective: 'An MSE wall is a reinforced soil structure supporting real infrastructure, so buried construction quality controls surface performance.'
   }
 ];
 
@@ -313,7 +313,7 @@ const FINAL_CHECKS = [
   { label: 'Strip Connections',  note: 'All reinforcement ties fully engaged at the panel connectors.' },
   { label: 'Lift Compaction',    note: 'Each backfill lift meets target density behind the panels.' },
   { label: 'Crest Drainage',     note: 'Crest graded to shed water away from the wall face.' },
-  { label: 'Wall Line',          note: 'Wall face straight and true along its full length.' }
+  { label: 'Roadway Support',    note: 'Upper road is level, supported, and safely protected at the wall crest.' }
 ];
 
 /* ══════════════════════════════════════════════════════════════
@@ -603,6 +603,7 @@ function clearScene3D() {
   delete OBJ.loader;
   delete OBJ.digSpoil;
   delete OBJ.pccSlab;
+  delete OBJ.roadVehicles;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -611,11 +612,11 @@ function clearScene3D() {
    settles into a wide finishing shot for the last 3 steps.
 ══════════════════════════════════════════════════════════════ */
 
-const CAM_SITE  = { pos: new THREE.Vector3(10.5, 3.8, -6.5), look: new THREE.Vector3(-0.5, 0.4, 1.5) };
-const CAM_NEAR  = { pos: new THREE.Vector3(10.5, 4.0,  5.0), look: new THREE.Vector3(-0.5, 0.7, 1.7) };
-const CAM_MID   = { pos: new THREE.Vector3(11.5, 5.1,  5.2), look: new THREE.Vector3(-0.5, 1.6, 1.7) };
-const CAM_TALL  = { pos: new THREE.Vector3(12.5, 6.4,  5.4), look: new THREE.Vector3(-0.5, 2.5, 1.7) };
-const CAM_WIDE  = { pos: new THREE.Vector3(15.0, 7.0, -7.5), look: new THREE.Vector3(0,    2.1, 1.6) };
+const CAM_SITE  = { pos: new THREE.Vector3(25, 8.0, -12), look: new THREE.Vector3(0, 0.5, 1.6) };
+const CAM_NEAR  = { pos: new THREE.Vector3(24, 7.0,   9), look: new THREE.Vector3(0, 0.8, 1.8) };
+const CAM_MID   = { pos: new THREE.Vector3(25, 8.0,   9), look: new THREE.Vector3(0, 1.7, 1.9) };
+const CAM_TALL  = { pos: new THREE.Vector3(26, 9.5,   9), look: new THREE.Vector3(0, 2.6, 2.0) };
+const CAM_WIDE  = { pos: new THREE.Vector3(25, 13.0, -15), look: new THREE.Vector3(0, 2.4, 5.2) };
 
 const CAM_PRESETS = [
   CAM_SITE, CAM_SITE, CAM_SITE, CAM_SITE,      // 0-3 site / layout / excavation / pad
@@ -633,10 +634,10 @@ function setCamPreset(n) {
 }
 
 const VIEW_PRESETS = {
-  iso:     { pos: new THREE.Vector3(14, 6, -9), look: new THREE.Vector3(0, 1.5, 1.6) },
-  top:     { pos: new THREE.Vector3(0, 26, 2),  look: new THREE.Vector3(0, 0, 1.6) },
-  front:   { pos: new THREE.Vector3(0, 3, -14), look: new THREE.Vector3(0, 1.5, 1.6) },
-  cutaway: { pos: new THREE.Vector3(11, 5.2, 5.2), look: new THREE.Vector3(0, 1.4, 1.7) }
+  iso:     { pos: new THREE.Vector3(25, 10, -14), look: new THREE.Vector3(0, 1.8, 2.4) },
+  top:     { pos: new THREE.Vector3(0, 36, 2),   look: new THREE.Vector3(0, 0, 2.4) },
+  front:   { pos: new THREE.Vector3(0, 5, -28),  look: new THREE.Vector3(0, 1.8, 1.6) },
+  cutaway: { pos: new THREE.Vector3(25, 8, 9),   look: new THREE.Vector3(0, 1.8, 2.0) }
 };
 
 window.setCameraView = function(name) {
@@ -797,12 +798,14 @@ function updateParticles(dt) {
    toe/heel convention as the Retaining Wall module.
 ══════════════════════════════════════════════════════════════ */
 
-const WALL_LENGTH   = 10;
+// Match the site-scale retaining-wall module: a 30 m wall fills most of the
+// 36 m-wide property while leaving visible termination space at both ends.
+const WALL_LENGTH   = 30;
 const WALL_X0       = -WALL_LENGTH / 2;
 const WALL_X1       =  WALL_LENGTH / 2;
 
 const PANEL_W       = 2.0;
-const PANEL_COUNT   = WALL_LENGTH / PANEL_W;      // 5
+const PANEL_COUNT   = WALL_LENGTH / PANEL_W;      // 15
 const PANEL_H       = 1.5;
 const PANEL_THICK   = 0.18;
 
@@ -1156,7 +1159,8 @@ function buildFillForCourse(c) {
   function showLooseLift(liftNumber) {
     clearLoose();
     const surfaceY = baseY + PANEL_H * (liftNumber - 1) / 2;
-    const xs = [-4.2, -2.8, -1.35, 0.15, 1.65, 3.15, 4.35];
+    const xs = [];
+    for (let x = WALL_X0 + 0.8; x <= WALL_X1 - 0.8; x += 1.45) xs.push(x);
     looseMounds = xs.map((x, i) => {
       const radius = 0.48 + (i % 3) * 0.08;
       const mound = new THREE.Mesh(
@@ -1260,10 +1264,95 @@ function addCopingMesh() {
   return addStep(cap);
 }
 
+const ROAD_LENGTH = WALL_LENGTH + 2;
+const ROAD_WIDTH = 5.2;
+const ROAD_CENTER_Z = RAMP_Z1 + ROAD_WIDTH / 2 + 0.35;
+const ROAD_Y = RETAINED_GRADE_Y + 0.04;
+
+function buildRoadVehicle(color, x, z, direction, speed) {
+  const vehicle = new THREE.Group();
+  const bodyMat = new THREE.MeshLambertMaterial({ color });
+  const glassMat = new THREE.MeshLambertMaterial({ color: 0x9cc9df });
+
+  const body = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.36, 0.64), bodyMat);
+  body.position.y = 0.34;
+  body.castShadow = true;
+  vehicle.add(body);
+
+  const cabin = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.3, 0.55), glassMat);
+  cabin.position.set(-0.08 * direction, 0.64, 0);
+  cabin.castShadow = true;
+  vehicle.add(cabin);
+
+  [-0.43, 0.43].forEach(wx => {
+    [-0.34, 0.34].forEach(wz => {
+      const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.11, 12), MAT.tire);
+      wheel.rotation.x = Math.PI / 2;
+      wheel.position.set(wx, 0.18, wz);
+      vehicle.add(wheel);
+    });
+  });
+
+  vehicle.position.set(x, ROAD_Y + 0.04, z);
+  vehicle.rotation.y = direction < 0 ? Math.PI : 0;
+  vehicle.userData.direction = direction;
+  vehicle.userData.speed = speed;
+  return vehicle;
+}
+
+function buildOperationalRoad() {
+  const roadGroup = new THREE.Group();
+
+  const asphalt = new THREE.Mesh(new THREE.BoxGeometry(ROAD_LENGTH, 0.08, ROAD_WIDTH), MAT.asphalt);
+  asphalt.position.set(0, ROAD_Y, ROAD_CENTER_Z);
+  asphalt.receiveShadow = true;
+  roadGroup.add(asphalt);
+
+  const shoulderMat = new THREE.MeshLambertMaterial({ color: 0x8e9397 });
+  [-1, 1].forEach(side => {
+    const shoulder = new THREE.Mesh(new THREE.BoxGeometry(ROAD_LENGTH, 0.055, 0.38), shoulderMat);
+    shoulder.position.set(0, ROAD_Y + 0.045, ROAD_CENTER_Z + side * (ROAD_WIDTH / 2 - 0.19));
+    roadGroup.add(shoulder);
+  });
+
+  const whiteMat = new THREE.MeshBasicMaterial({ color: 0xf4f4ef });
+  const yellowMat = new THREE.MeshBasicMaterial({ color: 0xf5c542 });
+  [-1, 1].forEach(side => {
+    const edgeLine = new THREE.Mesh(new THREE.BoxGeometry(ROAD_LENGTH - 0.4, 0.018, 0.07), whiteMat);
+    edgeLine.position.set(0, ROAD_Y + 0.09, ROAD_CENTER_Z + side * (ROAD_WIDTH / 2 - 0.55));
+    roadGroup.add(edgeLine);
+  });
+  for (let x = -ROAD_LENGTH / 2 + 1; x < ROAD_LENGTH / 2 - 0.5; x += 2.5) {
+    const dash = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.02, 0.09), yellowMat);
+    dash.position.set(x, ROAD_Y + 0.095, ROAD_CENTER_Z);
+    roadGroup.add(dash);
+  }
+
+  const railMat = new THREE.MeshLambertMaterial({ color: 0xc7cdd1 });
+  const railZ = ROAD_CENTER_Z - ROAD_WIDTH / 2 - 0.22;
+  for (let x = -ROAD_LENGTH / 2 + 0.5; x <= ROAD_LENGTH / 2 - 0.5; x += 2) {
+    const post = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.65, 0.08), railMat);
+    post.position.set(x, ROAD_Y + 0.34, railZ);
+    roadGroup.add(post);
+  }
+  const rail = new THREE.Mesh(new THREE.BoxGeometry(ROAD_LENGTH, 0.12, 0.12), railMat);
+  rail.position.set(0, ROAD_Y + 0.62, railZ);
+  roadGroup.add(rail);
+
+  const vehicles = [
+    buildRoadVehicle(0xd84343, -10, ROAD_CENTER_Z - 1.25,  1, 3.2),
+    buildRoadVehicle(0x2f74c0,   7, ROAD_CENTER_Z - 1.25,  1, 2.7),
+    buildRoadVehicle(0xf0b429,  11, ROAD_CENTER_Z + 1.25, -1, 3.0),
+    buildRoadVehicle(0xeeeeee,  -3, ROAD_CENTER_Z + 1.25, -1, 2.5)
+  ];
+  vehicles.forEach(vehicle => roadGroup.add(vehicle));
+  OBJ.roadVehicles = vehicles;
+
+  return addStep(roadGroup);
+}
+
 function addPavementMesh() {
-  const road = new THREE.Mesh(new THREE.BoxGeometry(WALL_LENGTH + 4, 0.05, 3.2), MAT.asphalt);
-  road.position.set(0, TOE_GRADE_Y + 0.025, -1.9);
-  return addStep(road);
+  return buildOperationalRoad();
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -1458,18 +1547,19 @@ function showResult() {
     rc.innerHTML = `
       <div id="result-icon">⛰️</div>
       <h2>MSE Wall Complete!</h2>
-      <p>Reinforced soil wall built course by course, faced, drained, and paved.</p>
+      <p>Full-length reinforced soil wall complete and supporting a fully operational upper road.</p>
       <div id="result-score-line">Final Score: <span id="result-score">${STATE.score}</span></div>
       <div id="result-grade">${getGrade()}</div>
       <div class="pile-report">
         <h3 style="color:#f5a623;margin-bottom:10px;">Construction Report</h3>
         <table style="width:100%;text-align:left;font-size:0.85rem;">
           <tr><td style="color:#aaa;">Wall Type:</td><td>Mechanically Stabilized Earth (MSE) Wall</td></tr>
-          <tr><td style="color:#aaa;">Wall Length:</td><td>10.0m</td></tr>
+          <tr><td style="color:#aaa;">Wall Length:</td><td>${WALL_LENGTH.toFixed(1)}m</td></tr>
           <tr><td style="color:#aaa;">Wall Height:</td><td>${WALL_TOP_Y.toFixed(1)}m over ${N_COURSES} courses</td></tr>
           <tr><td style="color:#aaa;">Facing:</td><td>Precast panels, temporarily braced</td></tr>
           <tr><td style="color:#aaa;">Reinforcement:</td><td style="color:#27ae60;">Steel strips, ${N_COURSES} layers</td></tr>
           <tr><td style="color:#aaa;">Backfill:</td><td style="color:#27ae60;">Compacted in lifts per course</td></tr>
+          <tr><td style="color:#aaa;">Supported Use:</td><td style="color:#27ae60;">Two-lane operational road</td></tr>
           <tr><td style="color:#aaa;">Status:</td><td style="color:#27ae60;font-weight:700;">PASS</td></tr>
         </table>
       </div>
@@ -1536,6 +1626,15 @@ function animate() {
       c.mesh.scale.setScalar(s);
     }
   });
+
+  if (OBJ.roadVehicles) {
+    const limit = ROAD_LENGTH / 2 + 1.2;
+    OBJ.roadVehicles.forEach(vehicle => {
+      vehicle.position.x += vehicle.userData.direction * vehicle.userData.speed * dt;
+      if (vehicle.position.x > limit) vehicle.position.x = -limit;
+      if (vehicle.position.x < -limit) vehicle.position.x = limit;
+    });
+  }
 
   updateParticles(dt);
 
@@ -2408,7 +2507,7 @@ const STEP_HANDLERS = [
     cleanup() {}
   },
 
-  /* ─────────────────── 10: Toe Pavement & Surface Finish ─── */
+  /* ─────────────────── 10: Upper Road & Surface Finish ─── */
   {
     enter() {
       const ss = STATE.stepState;
@@ -2420,22 +2519,22 @@ const STEP_HANDLERS = [
       addCopingMesh();
 
       const ab = DOM.actionBar();
-      ab.innerHTML = '<div class="step-instruction">Compact the toe subbase, then pave the finished surface</div>';
+      ab.innerHTML = '<div class="step-instruction">Compact the upper-road subbase, then pave the supported roadway</div>';
 
-      const subBtn = makeBtn('Compact Toe Subbase', 'btn-primary', () => {
+      const subBtn = makeBtn('Compact Upper-Road Subbase', 'btn-primary', () => {
         if (ss.subbase) return;
         ss.subbase = true;
         subBtn.disabled = true;
-        const sub = new THREE.Mesh(new THREE.BoxGeometry(WALL_LENGTH + 4, 0.08, 3.2), MAT.gravel);
-        sub.position.set(0, TOE_GRADE_Y - 0.02, -1.9);
+        const sub = new THREE.Mesh(new THREE.BoxGeometry(ROAD_LENGTH, 0.08, ROAD_WIDTH), MAT.gravel);
+        sub.position.set(0, RETAINED_GRADE_Y + 0.01, ROAD_CENTER_Z);
         addStep(sub);
         OBJ.compactor = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.35, 12), MAT.darkGray);
-        OBJ.compactor.position.set(0, 0.3, -1.5);
+        OBJ.compactor.position.set(0, ROAD_Y + 0.3, ROAD_CENTER_Z - 1.2);
         addStep(OBJ.compactor);
         STATE.stepState.compacting = true;
         safeTimeout(() => { STATE.stepState.compacting = false; }, 700);
         markSubtask(0);
-        showFeedback('correct', 'Toe subbase compacted.');
+        showFeedback('correct', 'Upper-road subbase compacted over the reinforced soil mass.');
         paveBtn.disabled = false;
       });
       ab.appendChild(subBtn);
@@ -2446,7 +2545,7 @@ const STEP_HANDLERS = [
         paveBtn.disabled = true;
         addPavementMesh();
         markSubtask(1);
-        showFeedback('correct', 'Surface paved and tied into the finished wall.');
+        showFeedback('correct', 'Upper roadway paved and opened across the completed wall alignment.');
         safeTimeout(() => completeStep(), 1200);
       });
       paveBtn.disabled = true;
@@ -2455,7 +2554,7 @@ const STEP_HANDLERS = [
     cleanup() { STATE.stepState.compacting = false; }
   },
 
-  /* ─────────────────── 11: Final Inspection ─── */
+  /* ─────────────────── 11: Road Opening & Final Inspection ─── */
   {
     enter() {
       const ss = STATE.stepState;
@@ -2466,6 +2565,8 @@ const STEP_HANDLERS = [
       for (let k = 0; k < N_COURSES; k++) rebuildCourseFull(k);
       addCopingMesh();
       addPavementMesh();
+      markSubtask(0);
+      showFeedback('correct', 'Upper road opened — live traffic is now supported by the reinforced soil structure.');
 
       const checkPositions = [
         new THREE.Vector3(WALL_X0 + 1,   WALL_TOP_Y + 0.9, PANEL_Z1 / 2),
@@ -2476,7 +2577,7 @@ const STEP_HANDLERS = [
       ];
 
       const ab = DOM.actionBar();
-      ab.innerHTML = '<div class="step-instruction">Click each pulsing checkpoint to run the inspection</div>';
+      ab.innerHTML = '<div class="step-instruction">Road open above — inspect the MSE system supporting live traffic</div>';
 
       checkPositions.forEach((pos, i) => {
         const m = new THREE.Mesh(new THREE.OctahedronGeometry(0.18, 0), MAT.diamondBlue.clone());
@@ -2503,7 +2604,7 @@ const STEP_HANDLERS = [
               `<strong>${chk.label}</strong><span style="color:#f5a623;font-weight:700;">${score}%</span><span style="font-size:.7rem;opacity:.8;">${chk.note}</span>`,
               2200
             );
-            markSubtask(0);
+            markSubtask(1);
             showFeedback('correct', `${chk.label}: ${score}%`);
 
             if (ss.checked === FINAL_CHECKS.length) {
@@ -2511,8 +2612,8 @@ const STEP_HANDLERS = [
               safeTimeout(() => {
                 ab.innerHTML = '';
                 if (avg >= 80) {
-                  markSubtask(1);
                   markSubtask(2);
+                  markSubtask(3);
                   ab.appendChild(el('div', 'step-instruction', `Average score ${avg}% — PASS. Construction signed off.`));
                   showFeedback('correct', `Final inspection passed at ${avg}%!`);
                   safeTimeout(() => completeStep(), 1500);
