@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MSE Wall Simulation — Foundation Construction Lab</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* MSE Wall specific styles */
+    .fill-meter-wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: center;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      height: 6px;
+      border-radius: 3px;
+      background: #546e7a;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #f5a623;
+      cursor: pointer;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    #zoom-control {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 6px;
+      border-left: 1px solid rgba(255,255,255,0.12);
+      margin-left: 2px;
+    }
+    .zoom-icon {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      line-height: 1;
+      user-select: none;
+    }
+    #zoom-slider {
+      width: 72px;
+      height: 4px;
+      accent-color: #f5a623;
+      cursor: pointer;
+      background: rgba(255,255,255,0.12);
+      border-radius: 2px;
+    }
+
+    #info-popup-dock {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 60;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      padding: 0 16px;
+    }
+    .info-popup-card {
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(10, 20, 40, 0.94);
+      color: #fff;
+      border: 1px solid rgba(245, 166, 35, 0.5);
+      border-left: 3px solid #f5a623;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      line-height: 1.3;
+      max-width: min(90vw, 760px);
+      white-space: nowrap;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+    .info-popup-card.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .info-popup-card strong { color: #f5a623; flex-shrink: 0; }
+    .info-popup-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+    }
+    .info-chip {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 4px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.7rem;
+      white-space: nowrap;
+    }
+    .info-chip b { color: #f5a623; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div id="nav-brand">
+    <span class="nav-logo">🏗️</span>
+    <span id="nav-title">Foundation Construction Simulation Lab</span>
+  </div>
+  <div id="nav-links">
+    <button class="nav-btn" onclick="window.location.href='index.html'">Dashboard</button>
+    <button class="nav-btn" onclick="window.location.href='index.html'">Shallow Foundation</button>
+    <button class="nav-btn" onclick="window.location.href='driven-pile.html'">Driven Pile</button>
+    <button class="nav-btn" onclick="window.location.href='drilled-shaft.html'">Drilled Shaft</button>
+    <button class="nav-btn" onclick="window.location.href='retaining-wall.html'">Retaining Wall</button>
+    <button class="nav-btn active">MSE Wall</button>
+  </div>
+</nav>
+
+<!-- SIMULATION VIEW -->
+<div id="simView" class="view-section">
+
+  <header id="header">
+    <div id="header-left">
+      <button id="back-btn" onclick="window.location.href='index.html'">← Dashboard</button>
+      <div id="header-title">
+        <span class="hard-hat">⛰️</span>
+        MSE Wall Construction Simulation
+      </div>
+    </div>
+    <div id="header-meta">
+      <button id="reset-sim-btn" onclick="resetSimulation()">↺ Reset</button>
+      <div id="score-badge">Score: <span id="score-val">1000</span></div>
+      <div id="step-badge">Step <span id="step-cur">1</span> / 16</div>
+    </div>
+  </header>
+
+  <main id="main">
+    <aside id="task-panel">
+      <div id="task-title">Loading...</div>
+      <div id="task-desc"></div>
+      <ul id="task-subtasks"></ul>
+      <div id="task-why"></div>
+      <div id="task-warning"></div>
+      <div id="task-metadata"></div>
+    </aside>
+    <section id="center-col">
+      <div id="scene">
+        <div id="labels-3d"></div>
+        <div id="info-popup-dock"></div>
+        <div id="cam-controls">
+          <button class="cam-btn" onclick="setCameraView('iso')" title="3/4 section view">Section</button>
+          <button class="cam-btn" onclick="setCameraView('front')" title="Front elevation">Elevation</button>
+          <button class="cam-btn" onclick="setCameraView('cutaway')" title="From the retained side">Retained</button>
+          <button class="cam-btn" onclick="setCameraView('top')" title="Plan view">Plan</button>
+          <button class="cam-btn" id="reset-cam-btn" onclick="resetCamera()">↺ Reset</button>
+          <div id="zoom-control">
+            <span class="zoom-icon">−</span>
+            <input type="range" id="zoom-slider" min="4" max="75" step="1" value="30" title="Zoom">
+            <span class="zoom-icon">+</span>
+          </div>
+        </div>
+      </div>
+      <div id="action-bar"></div>
+    </section>
+    <aside id="steps-panel">
+      <div class="steps-heading">Construction Steps</div>
+      <ol id="checklist"></ol>
+    </aside>
+  </main>
+
+</div>
+
+<!-- Fixed overlays -->
+<div id="feedback-bar" class="hidden"></div>
+<div id="result-overlay" class="hidden">
+  <div id="result-card">
+    <div id="result-icon">⛰️</div>
+    <h2>MSE Wall Complete!</h2>
+    <p>Reinforced soil wall built course by course, faced, drained, and paved.</p>
+    <div id="result-score-line">Final Score: <span id="result-score">0</span></div>
+    <div id="result-grade"></div>
+    <div class="result-actions">
+      <button id="result-replay" onclick="resetSimulation()">Play Again</button>
+      <button id="result-dashboard-btn" onclick="window.location.href='index.html'">← Dashboard</button>
+    </div>
+  </div>
+</div>
+
+<script src="three.min.js"></script>
+<script defer src="mse-wall.js"></script>
+</body>
+</html>
